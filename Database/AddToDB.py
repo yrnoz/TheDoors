@@ -1,4 +1,3 @@
-import pymongo  # import the module for the mongoDB
 from pymongo import MongoClient
 
 client = MongoClient()  # making the connection with the DB
