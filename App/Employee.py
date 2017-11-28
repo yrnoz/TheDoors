@@ -3,3 +3,5 @@ class Employee:
         self.id = id
         self.name = name
         self.access_permission = access_permission
+        self.friends = []
+        self.schedule = {}
