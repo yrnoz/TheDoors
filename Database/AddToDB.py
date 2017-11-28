@@ -16,7 +16,7 @@ def read_employees_details(inputfile):
         for line in details.readlines():
             id, name, role, premission = line.split(",")  # get the parameters we need from the line
             premission.rstrip()
-            employee = {"id": str(id), "name": name, "role": role, "premission": str(premission), "friends": []}
+            employee = {"id": int(id), "name": name, "role": role, "premission": premission, "friends": []}
             Employees.insert(employee)  # add employee's details to the DB
 
 
@@ -30,6 +30,6 @@ def read_rooms_details(inputfile):
         for line in details.readlines():
             id, capacity, premission, floor = line.split(",")  # get the parameters we need from the line
             floor.rstrip()
-            room = {"id": id, "capacity": str(capacity), "premission": str(premission), "floor": str(floor),
+            room = {"id": id, "capacity": int(capacity), "premission": premission, "floor": int(floor),
                     "schedule": []}
             Rooms.insert(room)  # add employee's details to the DB
