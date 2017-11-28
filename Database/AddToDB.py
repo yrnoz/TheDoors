@@ -15,8 +15,8 @@ def read_employees_details(inputfile):
     with open(inputfile) as details:  # open the file
         for line in details.readlines():
             id, name, role, premission = line.split(",")  # get the parameters we need from the line
-            premission.rstrip()
-            employee = {"id": str(id), "name": name, "role": role, "premission": str(premission), "friends": []}
+            premission = premission.rstrip()
+            employee = {"id": int(id), "name": name, "role": role, "premission": int(premission), "friends": []}
             Employees.insert(employee)  # add employee's details to the DB
 
 
@@ -29,7 +29,14 @@ def read_rooms_details(inputfile):
     with open(inputfile) as details:  # open the file
         for line in details.readlines():
             id, capacity, premission, floor = line.split(",")  # get the parameters we need from the line
-            floor.rstrip()
-            room = {"id": id, "capacity": str(capacity), "premission": str(premission), "floor": str(floor),
+            floor = floor.rstrip()
+            room = {"id": id, "capacity": int(capacity), "premission": int(premission), "floor": str(floor),
                     "schedule": []}
             Rooms.insert(room)  # add employee's details to the DB
+
+
+def get_access_permissiom_of_employee_by_id(id):
+    global Employees
+    employee = Employees.find_one({"id": int(id)})
+    return int(employee["premission"])
+
