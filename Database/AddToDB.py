@@ -30,7 +30,7 @@ def read_rooms_details(inputfile):
         for line in details.readlines():
             id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
-                    "schedule": []}
+                    "schedule": {}}
             Rooms.insert(room)  # add employee's details to the DB
 
 
