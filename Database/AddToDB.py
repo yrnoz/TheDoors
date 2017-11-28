@@ -16,7 +16,8 @@ def read_employees_details(inputfile):
     with open(inputfile) as details:  # open the file
         for line in details.readlines():
             id, name, role, permission = line[:-1].split(",")  # get the parameters we need from the line
-            employee = {"id": int(id), "name": name, "role": role, "permission": int(permission), "friends": []}
+            employee = {"id": int(id), "name": name, "role": role, "permission": int(permission), "friends": [],
+                        "schedule": {}}
             Employees.insert(employee)  # add employee's details to the DB
 
 
