@@ -33,3 +33,10 @@ def read_rooms_details(inputfile):
             room = {"id": id, "capacity": int(capacity), "premission": premission, "floor": int(floor),
                     "schedule": []}
             Rooms.insert(room)  # add employee's details to the DB
+
+
+def get_access_permissiom_of_employee_by_id(id):
+    global Employees
+    employee = Employees.find_one({"id": int(id)})
+    return int(employee["premission"])
+
