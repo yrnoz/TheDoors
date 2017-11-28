@@ -1,10 +1,10 @@
 class Room:
     # list of sched_item
 
-    def __init__(self, ID, floor, maxCapacity, schedule_item):
-        self.ID = ID
+    def __init__(self, id, floor, max_capacity, schedule_item):
+        self.id = id
         self.floor = floor
-        self.maxCapacity = maxCapacity
+        self.maxCapacity = max_capacity
         self.schedule_item = schedule_item
 
     def print_floor(self):
