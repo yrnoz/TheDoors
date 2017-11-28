@@ -1,8 +1,5 @@
 class RoomOrder:
-
-    def _init_ (self, date_time, num_participents):
+    def __init__(self, date_time, timedelta, num_participants):
         self.date_time = date_time
-        self.num_participents = num_participents
-
-    def get_numParticpents(self):
-        return self.num_participents
+        self.timedelta = timedelta
+        self.num_participants = num_participants
