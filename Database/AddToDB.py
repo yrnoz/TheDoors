@@ -48,14 +48,17 @@ def assign_employees_to_room(date_time, room, num_employees):
     global Rooms
     capacity = room["capacity"]
     schedule = room["schedule"]
-    converted_date_time = datetime.strptime(date_time, "%d/%m/%y %H")
-    if not (converted_date_time in schedule):
+    try:
+        datetime.strptime(date_time, "%d/%m/%y %H")  # check the date_time format is correct
+    except ValueError:
+        return False
+    if not (date_time in schedule):
         if num_employees > capacity:
             return False
-        schedule[converted_date_time] = (num_employees, None)
+        schedule[date_time] = (num_employees, None)
     else:
-        if schedule[converted_date_time][0] + num_employees > capacity:
+        if schedule[date_time][0] + num_employees > capacity:
             return False
-        schedule[converted_date_time] = (schedule[converted_date_time][0] + num_employees, None)
+        schedule[date_time] = (schedule[date_time][0] + num_employees, None)
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
