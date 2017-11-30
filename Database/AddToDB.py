@@ -40,6 +40,13 @@ def get_access_permission_of_employee_by_id(id):
     employee = Employees.find_one({"id": int(id)})
     return int(employee["permission"])
 
+def check_id_of_employee(id):
+    global Employees
+    employee = Employees.find_one({"id": int(id)})
+    if employee == None:
+        return False
+    return True
+
 
 # this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees
 # and number of employees to assign.
