@@ -12,3 +12,4 @@ class Room:
 
     def size_list_schedule(self):
         print len(self.schedule)
+
