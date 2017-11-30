@@ -49,10 +49,6 @@ def check_id_of_employee(id):
     return True
 
 
-#
-#
-# output: False - in case the employees can not be assigned to the room
-# True - in case the employees were assigned to the room
 def assign_employees_to_room_one_hour(date_time, room, num_employees):
     """
     this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees,
