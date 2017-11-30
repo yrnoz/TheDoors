@@ -5,3 +5,6 @@ class Employee:
         self.access_permission = access_permission
         self.friends = []
         self.schedule = {}
+
+
+
