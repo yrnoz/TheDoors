@@ -21,6 +21,34 @@ def read_employees_details(input_file):
             Employees.insert(employee)  # add employee's details to the DB
 
 
+def add_employee(employee):
+    """
+    Adds a given employee into the db.
+    Useful for on-the-fly addition of employees into the DB when the system is already up-and-running (i.e. after
+    the DB initialization phase)
+    :param employee: the employee object to be added into the DB.
+    """
+    global Employees
+    employee_json = {"id": int(employee.id), "name": employee.name, "role": employee.role,
+                     "permission": int(employee.access_permission), "friends": employee.friends,
+                     "schedule": {}}
+    Employees.insert(employee_json)
+
+
+def add_room(room):
+    """
+    Adds a new room into the db.
+    Useful for on-the-fly addition of rooms into the DB when the system is already up-and-running (i.e. after
+    the DB initialization phase)
+    :param room: room to be added into the DB
+    """
+    global Rooms
+    room_json = {"id": room.id, "capacity": int(room.maxCapacity), "permission": int(room.access_permission),
+                 "floor": int(room.floor),
+                 "schedule": {}}
+    Rooms.insert(room_json)
+
+
 # The function gets a CSV file with details about rooms in the
 # factory and adds them to the DB
 # input: CSV file
@@ -90,7 +118,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours):
     for i in range(0, num_hours):
         is_asigned_previous = assign_employees_to_room_one_hour(date_time, previous_room, num_employees)
         if not is_asigned_previous:
-            for j in range(0, 11):  ##find normal way to iterate over the DB
+            for j in range(0, 11):  # TODO: find a better way to iterate over the DB
                 room = Rooms.find()[j]
                 is_asigned = assign_employees_to_room_one_hour(date_time, room, num_employees)
                 if is_asigned:

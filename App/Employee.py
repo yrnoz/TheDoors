@@ -1,7 +1,8 @@
 class Employee:
-    def __init__(self, id, name, access_permission):
+    def __init__(self, id, name, role, access_permission):
         self.id = id
         self.name = name
+        self.role = role
         self.access_permission = access_permission
         self.friends = []
         self.schedule = {}
