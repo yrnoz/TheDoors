@@ -52,7 +52,7 @@ def check_id_of_employee(id):
 # and number of employees to assign.
 # output: False - in case the employees can not be assigned to the room
 # True - in case the employees were assigned to the room
-def assign_employees_to_room(date_time, room, num_employees):
+def assign_employees_to_room_one_hour(date_time, room, num_employees):
     global Rooms
     capacity = room["capacity"]
     schedule = room["schedule"]
@@ -70,3 +70,21 @@ def assign_employees_to_room(date_time, room, num_employees):
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
+
+
+#iterate on the range of hours. prefer to look at the previous room
+def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours):
+    previous_room = Rooms.find()[0]
+    for i in range(0, num_hours):
+        is_asigned_previous = assign_employees_to_room_one_hour(date_time, previous_room, num_employees)
+        if is_asigned_previous == False:
+            for j in range(0, 11): ##find normal way to iterate over the DB
+                room = Rooms.find()[j]
+                is_asigned = assign_employees_to_room_one_hour(date_time, room, num_employees)
+                if is_asigned == True:
+                    previous_room = room
+                    break
+            if is_asigned == False:
+                print "There is no free room the %(i)d hour! Sorry." % {"i": i+1}
+
+
