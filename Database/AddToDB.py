@@ -11,9 +11,9 @@ Employees = db["Employees"]  # create new table that called Employees
 # factory and adds them to the DB
 # input: CSV file
 # output: side effect  - the details added to the DB
-def read_employees_details(inputfile):
+def read_employees_details(input_file):
     global Employees
-    with open(inputfile) as details:  # open the file
+    with open(input_file) as details:  # open the file
         for line in details.readlines():
             id, name, role, permission = line[:-1].split(",")  # get the parameters we need from the line
             employee = {"id": int(id), "name": name, "role": role, "permission": int(permission), "friends": [],
@@ -25,9 +25,9 @@ def read_employees_details(inputfile):
 # factory and adds them to the DB
 # input: CSV file
 # output: side effect  - the details added to the DB
-def read_rooms_details(inputfile):
+def read_rooms_details(input_file):
     global Rooms
-    with open(inputfile) as details:  # open the file
+    with open(input_file) as details:  # open the file
         for line in details.readlines():
             id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
@@ -40,19 +40,29 @@ def get_access_permission_of_employee_by_id(id):
     employee = Employees.find_one({"id": int(id)})
     return int(employee["permission"])
 
+
 def check_id_of_employee(id):
     global Employees
     employee = Employees.find_one({"id": int(id)})
-    if employee == None:
+    if employee is None:
         return False
     return True
 
 
-# this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees
-# and number of employees to assign.
+#
+#
 # output: False - in case the employees can not be assigned to the room
 # True - in case the employees were assigned to the room
 def assign_employees_to_room_one_hour(date_time, room, num_employees):
+    """
+    this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees,
+    and number of employees to assign, if possible - they would be assigned to the room.
+    :param date_time: date time in format "D/M/Y Hour"
+    :param room: the room from the DB to assign employees
+    :param num_employees: number of employees to assign
+    :return:  False - in case the employees can not be assigned to the room
+              True - in case the employees were assigned to the room
+    """
     global Rooms
     capacity = room["capacity"]
     schedule = room["schedule"]
@@ -72,19 +82,23 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees):
     return True
 
 
-#iterate on the range of hours. prefer to look at the previous room
+# iterate on the range of hours. prefer to look at the previous room
 def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours):
+    """
+
+    :param date_time:
+    :param num_employees:
+    :param num_hours:
+    """
     previous_room = Rooms.find()[0]
     for i in range(0, num_hours):
         is_asigned_previous = assign_employees_to_room_one_hour(date_time, previous_room, num_employees)
-        if is_asigned_previous == False:
-            for j in range(0, 11): ##find normal way to iterate over the DB
+        if not is_asigned_previous:
+            for j in range(0, 11):  ##find normal way to iterate over the DB
                 room = Rooms.find()[j]
                 is_asigned = assign_employees_to_room_one_hour(date_time, room, num_employees)
-                if is_asigned == True:
+                if is_asigned:
                     previous_room = room
                     break
-            if is_asigned == False:
-                print "There is no free room the %(i)d hour! Sorry." % {"i": i+1}
-
-
+            if not is_asigned:
+                print "There is no free room the %(i)d hour! Sorry." % {"i": i + 1}
