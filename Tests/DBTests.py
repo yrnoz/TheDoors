@@ -15,8 +15,16 @@ if __name__ == "__main__":
     add_employee(employee)
     assert check_id_of_employee(777) is True
     print("Finished Testing")
-    assign_employees_to_room_one_hour('24/07/17 12', room, 10)
-    assign_employees_to_room_to_X_hours('24/07/17 12', 70, 10)
+    #assign_employees_to_room_one_hour('24/07/17 12', room, 10)
+    #assign_employees_to_room_to_X_hours('24/07/17 12', 10, 3)
+    #assign_employees_to_room_to_X_hours('24/07/17 12', 70, 10)
+
+    item1 = RoomOrder('24/07/17 12', 3, 170)
+    item2 = RoomOrder('24/07/17 12', 3, 100)
+    RoomOrderItems = []
+    RoomOrderItems.append(item1)
+    RoomOrderItems.append(item2)
+    add_weekly_schedule(123, RoomOrderItems)
     p.terminate()
 
 
