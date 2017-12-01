@@ -103,7 +103,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, worker):
     except ValueError:
         return False
     if not (date_time in schedule):
-        if num_employees > capacity or (date_time in schedule_worker): ##
+        if num_employees > capacity or (date_time in schedule_worker):
             return False
         schedule[date_time] = (num_employees, None)
         schedule_worker[date_time] = (num_employees, room["id"])
@@ -134,6 +134,8 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, wor
     for i in range(0, num_hours):
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
+        if check_worker_already_ordered(worker, updated_time):
+            continue
 
         is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, worker)
         if not is_asigned_previous:
@@ -160,3 +162,11 @@ def add_weekly_schedule(worker_id , RoomOrderItems =[]):
 
     schedule_worker = worker["schedule"]
     print schedule_worker[date_time]
+
+# the function check if there is a worker which have already ordered room for the same date_time
+def check_worker_already_ordered(worker , date_time):
+    schedule_worker = worker["schedule"]
+    if (date_time in schedule_worker): #there is an order
+        print "You have already ordered room for this time"
+        return True
+    return False
