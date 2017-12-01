@@ -76,6 +76,11 @@ def check_id_of_employee(id):
         return False
     return True
 
+def find_worker(id):
+    if check_id_of_employee(id):
+        return Employees.find_one({"id": int(id)})
+
+
 
 def assign_employees_to_room_one_hour(date_time, room, num_employees):
     """
@@ -98,6 +103,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees):
         if num_employees > capacity:
             return False
         schedule[date_time] = (num_employees, None)
+
     else:
         if schedule[date_time][0] + num_employees > capacity:
             return False
