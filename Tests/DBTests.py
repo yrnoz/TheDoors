@@ -18,7 +18,7 @@ if __name__ == "__main__":
     assign_employees_to_room_one_hour('24/07/17 12', room, 10)
     assign_employees_to_room_to_X_hours('24/07/17 12', 20, 10)
 
-    worker = findWorker(123)
+    worker = find_worker(123)
     print worker['name']
     p.terminate()
 

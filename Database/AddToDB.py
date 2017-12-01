@@ -120,6 +120,8 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours):
     :param num_employees:
     :param num_hours:
     """
+
+
     previous_room = Rooms.find()[0]
     for i in range(0, num_hours):
         is_asigned_previous = assign_employees_to_room_one_hour(date_time, previous_room, num_employees)
