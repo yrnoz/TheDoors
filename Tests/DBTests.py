@@ -16,7 +16,7 @@ if __name__ == "__main__":
     assert check_id_of_employee(777) is True
     print("Finished Testing")
     assign_employees_to_room_one_hour('24/07/17 12', room, 10)
-    assign_employees_to_room_to_X_hours('24/07/17 12', 20, 10)
+    assign_employees_to_room_to_X_hours('24/07/17 12', 70, 10)
 
     worker = find_worker(123)
     print worker['name']
