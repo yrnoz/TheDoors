@@ -25,6 +25,11 @@ if __name__ == "__main__":
     RoomOrderItems.append(item1)
     RoomOrderItems.append(item2)
     add_weekly_schedule(123, RoomOrderItems)
+
+    item21 = RoomOrder('24/07/17 12', 3, 100)
+    RoomOrderItems2 = []
+    RoomOrderItems2.append(item21)
+    add_weekly_schedule(456, RoomOrderItems2)
     p.terminate()
 
 

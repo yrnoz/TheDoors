@@ -107,15 +107,15 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, worker):
             return False
         schedule[date_time] = (num_employees, None)
         schedule_worker[date_time] = (num_employees, room["id"])
-        print "The room that was chosen for you is: %(room['id'])s. For the time: %(date_time)s " %{"room['id']": room['id'], "date_time": date_time}
+        print "Dear %(worker['name'])s! The room that was chosen for you is: %(room['id'])s. For the time: %(date_time)s " %{"worker['name']": worker['name'], "room['id']": room['id'], "date_time": date_time}
 
     else:
         if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_worker):
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
-        schedule_worker[date_time] = (schedule_worker[date_time][0] + num_employees, room["id"])
-        print "The room that was chosen for you is: %(room['id'])s. For the time: %(date_time)s " % {
-            "room['id']": room['id'], "date_time": date_time}
+        schedule_worker[date_time] = (num_employees, room["id"])
+        print "Dear %(worker['name'])s! The room that was chosen for you is: %(room['id'])s. For the time: %(date_time)s " % {
+            "worker['name']": worker['name'], "room['id']": room['id'], "date_time": date_time}
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
 
@@ -146,7 +146,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, wor
                     previous_room = room
                     break
             if not is_asigned:
-                print "There is no free room the %(updated_time)s ! Sorry." % {"updated_time": updated_time}
+                print "Dear %(worker['name'])s! There is no free room the %(updated_time)s ! Sorry." % {worker['name']: worker['name'], "updated_time": updated_time}
 
 
 def add_weekly_schedule(worker_id , RoomOrderItems =[]):
@@ -160,13 +160,12 @@ def add_weekly_schedule(worker_id , RoomOrderItems =[]):
         num_hours = item.num_hours
         assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, worker)
 
-    schedule_worker = worker["schedule"]
-    print schedule_worker[date_time]
 
 # the function check if there is a worker which have already ordered room for the same date_time
 def check_worker_already_ordered(worker , date_time):
     schedule_worker = worker["schedule"]
     if (date_time in schedule_worker): #there is an order
-        print "You have already ordered room for this time"
+        name = worker['name']
+        print "Dear %(name)s! You have already ordered room for this time." %{"name": name}
         return True
     return False
