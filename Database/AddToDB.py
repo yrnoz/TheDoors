@@ -121,14 +121,18 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours):
     :param num_hours:
     """
 
+
     num_rooms =  Rooms.find().count() #size of the DB of Rooms
     previous_room = Rooms.find()[0]
     for i in range(0, num_hours):
-        is_asigned_previous = assign_employees_to_room_one_hour(date_time, previous_room, num_employees)
+        updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
+        updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
+
+        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees)
         if not is_asigned_previous:
             for j in range(0, num_rooms):
                 room = Rooms.find()[j]
-                is_asigned = assign_employees_to_room_one_hour(date_time, room, num_employees)
+                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees)
                 if is_asigned:
                     previous_room = room
                     break
