@@ -82,7 +82,7 @@ def find_worker(id):
 
 
 
-def assign_employees_to_room_one_hour(date_time, room, num_employees):
+def assign_employees_to_room_one_hour(date_time, room, num_employees, worker):
     """
     this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees,
     and number of employees to assign, if possible - they would be assigned to the room.
@@ -93,22 +93,27 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees):
               True - in case the employees were assigned to the room
     """
     global Rooms
+    global Employees
     capacity = room["capacity"]
     schedule = room["schedule"]
+    schedule_worker = worker["schedule"]
+
     try:
         datetime.strptime(date_time, "%d/%m/%y %H")  # check the date_time format is correct
     except ValueError:
         return False
     if not (date_time in schedule):
-        if num_employees > capacity:
+        if num_employees > capacity or (date_time in schedule_worker): ##
             return False
         schedule[date_time] = (num_employees, None)
+        schedule_worker[date_time] = (num_employees, room["id"])
         print "The room that was chosen for you is: %(room['id'])s. For the time: %(date_time)s " %{"room['id']": room['id'], "date_time": date_time}
 
     else:
-        if schedule[date_time][0] + num_employees > capacity:
+        if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_worker):
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
+        schedule_worker[date_time] = (schedule_worker[date_time][0] + num_employees, room["id"])
         print "The room that was chosen for you is: %(room['id'])s. For the time: %(date_time)s " % {
             "room['id']": room['id'], "date_time": date_time}
     Rooms.replace_one({'_id': room['_id']}, room)
@@ -116,7 +121,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees):
 
 
 # iterate on the range of hours. prefer to look at the previous room
-def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours):
+def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, worker):
     """
 
     :param date_time:
@@ -124,18 +129,17 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours):
     :param num_hours:
     """
 
-
     num_rooms =  Rooms.find().count() #size of the DB of Rooms
     previous_room = Rooms.find()[0]
     for i in range(0, num_hours):
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
 
-        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees)
+        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, worker)
         if not is_asigned_previous:
             for j in range(0, num_rooms):
                 room = Rooms.find()[j]
-                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees)
+                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, worker)
                 if is_asigned:
                     previous_room = room
                     break
@@ -144,9 +148,15 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours):
 
 
 def add_weekly_schedule(worker_id , RoomOrderItems =[]):
+    global Employees
+    global Rooms
+    worker = find_worker(worker_id)
 
     for item in RoomOrderItems:
         date_time = item.date_time
         num_employees = item.num_employees
         num_hours = item.num_hours
-        assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours)
+        assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, worker)
+
+    schedule_worker = worker["schedule"]
+    print schedule_worker[date_time]
