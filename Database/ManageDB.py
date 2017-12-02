@@ -8,11 +8,13 @@ Rooms = db["Rooms"]  # create new table that called Rooms
 Employees = db["Employees"]  # create new table that called Employees
 
 
-# The function gets a CSV file with details about employees in the
-# factory and adds them to the DB
-# input: CSV file
-# output: side effect  - the details added to the DB
 def read_employees_details(input_file):
+	"""
+	The function gets a CSV file with details about employees in the
+	factory and adds them to the DB
+	input: CSV file
+	output: side effect  - the details added to the DB
+	"""
 	global Employees
 	with open(input_file) as details:  # open the file
 		for line in details.readlines():
@@ -36,6 +38,19 @@ def add_employee(employee):
 	Employees.insert(employee_json)
 
 
+def remove_employee(id):
+	global Employees
+	if not Employees.delete_one({"id": id}).deleted_count:
+		print 'No such employee'
+
+
+def update_employee(id, name, role, permission):
+	global Employees
+	if not Employees.update_one({'id': id},
+	                            {'$set': {'name': name, 'role': role, 'permission': permission}}).matched_count:
+		print 'No such employee'
+
+
 def add_room(room):
 	"""
 	Adds a new room into the db.
@@ -45,16 +60,31 @@ def add_room(room):
 	"""
 	global Rooms
 	room_json = {"id": room.id, "capacity": int(room.maxCapacity), "permission": int(room.access_permission),
-	             "floor": int(room.floor),
-	             "schedule": {}}
+	             "floor": int(room.floor), "schedule": {}}
 	Rooms.insert(room_json)
 
 
-# The function gets a CSV file with details about rooms in the
-# factory and adds them to the DB
-# input: CSV file
-# output: side effect  - the details added to the DB
+def remove_room(id):
+	global Rooms
+	if not Rooms.delete_one({"id": id}).deleted_count:
+		print 'No such room'
+
+
+def update_room(id, floor, max_capacity, access_permission):
+	global Rooms
+	if not Rooms.update_one({'id': id},
+	                        {'$set': {'floor': floor, 'capacity': max_capacity,
+	                                  'access_permission': access_permission}}).matched_count:
+		print 'No such room'
+
+
 def read_rooms_details(input_file):
+	"""
+	The function gets a CSV file with details about rooms in the
+	factory and adds them to the DB
+	input: CSV file
+	output: side effect  - the details added to the DB
+	"""
 	global Rooms
 	with open(input_file) as details:  # open the file
 		for line in details.readlines():
@@ -78,15 +108,16 @@ def check_id_of_employee(id):
 	return True
 
 
-def find_worker(id):
+def find_employee(id):
 	if check_id_of_employee(id):
 		return Employees.find_one({"id": int(id)})
 
 
-def assign_employees_to_room_one_hour(date_time, room, num_employees, worker):
+def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
 	"""
 	this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees,
 	and number of employees to assign, if possible - they would be assigned to the room.
+	:param employee:
 	:param date_time: date time in format "D/M/Y Hour"
 	:param room: the room from the DB to assign employees
 	:param num_employees: number of employees to assign
@@ -97,35 +128,35 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, worker):
 	global Employees
 	capacity = room["capacity"]
 	schedule = room["schedule"]
-	schedule_worker = worker["schedule"]
+	schedule_employee = employee["schedule"]
 
 	try:
 		datetime.strptime(date_time, "%d/%m/%y %H")  # check the date_time format is correct
 	except ValueError:
 		return False
 	if not (date_time in schedule):
-		if num_employees > capacity or (date_time in schedule_worker):
+		if num_employees > capacity or (date_time in schedule_employee):
 			return False
 		schedule[date_time] = (num_employees, None)
-		schedule_worker[date_time] = (num_employees, room["id"])
-		print "Dear %(worker['name'])s! The room that was chosen for you is: %(room['id'])s. For the time: %(date_time)s" \
-		      " " % {"worker['name']": worker['name'], "room['id']": room['id'], "date_time": date_time}
+		schedule_employee[date_time] = (num_employees, room["id"])
+		print "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
+		                                                                                  date_time)
 
 	else:
-		if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_worker):
+		if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_employee):
 			return False
 		schedule[date_time] = (schedule[date_time][0] + num_employees, None)
-		schedule_worker[date_time] = (num_employees, room["id"])
-		print "Dear %(worker['name'])s! The room that was chosen for you is: %(room['id'])s. For the time: %(date_time)s " % {
-			"worker['name']": worker['name'], "room['id']": room['id'], "date_time": date_time}
+		schedule_employee[date_time] = (num_employees, room["id"])
+		print "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
+		                                                                                  date_time)
 	Rooms.replace_one({'_id': room['_id']}, room)
 	return True
 
 
 # iterate on the range of hours. prefer to look at the previous room
-def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, worker):
+def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee):
 	"""
-
+	:param employee:
 	:param date_time:
 	:param num_employees:
 	:param num_hours:
@@ -136,39 +167,40 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, wor
 	for i in range(0, num_hours):
 		updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
 		updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
-		if check_worker_already_ordered(worker, updated_time):
+		if check_employee_already_ordered(employee, updated_time):
 			continue
 
-		is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, worker)
+		is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee)
 		if not is_asigned_previous:
 			for j in range(0, num_rooms):
 				room = Rooms.find()[j]
-				is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, worker)
+				is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee)
 				if is_asigned:
 					previous_room = room
 					break
-			if not is_asigned:
-				print "Dear %(worker['name'])s! There is no free room the %(updated_time)s ! Sorry." % \
-				      {worker['name']: worker['name'], "updated_time": updated_time}
+				if not is_asigned:
+					print "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time)
 
 
-def add_weekly_schedule(worker_id, room_order_items=[]):
+def add_weekly_schedule(employee_id, room_order_items=None):
+	if room_order_items is None:
+		room_order_items = []
 	global Employees
 	global Rooms
-	worker = find_worker(worker_id)
+	employee = find_employee(employee_id)
 
 	for item in room_order_items:
 		date_time = item.date_time
 		num_employees = item.num_employees
 		num_hours = item.num_hours
-		assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, worker)
+		assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee)
 
 
-# the function check if there is a worker which have already ordered room for the same date_time
-def check_worker_already_ordered(worker, date_time):
-	schedule_worker = worker["schedule"]
-	if date_time in schedule_worker:  # there is an order
-		name = worker['name']
-		print "Dear %(name)s! You have already ordered room for this time." % {"name": name}
+# the function check if there is a employee which have already ordered room for the same date_time
+def check_employee_already_ordered(employee, date_time):
+	schedule_employee = employee["schedule"]
+	if date_time in schedule_employee:  # there is an order
+		name = employee['name']
+		print "Dear {}! You have already ordered room for this time.".format(name)
 		return True
 	return False
