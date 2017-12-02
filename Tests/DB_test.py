@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-sys.path.append('C:\\Users\\Stav\\PycharmProjects\\TheDoors')
+sys.path.append(os.getcwd())
 from App.Employee import Employee
 from App.RoomOrder import RoomOrder
 from Database.ManageDB import *

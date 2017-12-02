@@ -5,7 +5,8 @@ import sys
 from Employee import Employee
 from Room import Room
 
-sys.path.append('C:\\Users\\Stav\\PycharmProjects\\TheDoors')
+sys.path.append(os.getcwd())
+
 from Database.ManageDB import *
 
 
