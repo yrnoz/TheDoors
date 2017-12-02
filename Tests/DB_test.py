@@ -12,9 +12,8 @@ def test_DB():
 	p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
 	Rooms.drop()
 	Employees.drop()
-	print os.getcwd()
-	read_employees_details("Tests\\employees_test.csv")
-	read_rooms_details("Tests\\rooms_test.csv")
+	read_employees_details("Tests%semployees_test.csv" % os.sep)
+	read_rooms_details("Tests%srooms_test.csv" % os.rep)
 	# room = Rooms.find()[0]
 	employee = Employee(777, "John", "Engineer", 2)
 	add_employee(employee)
