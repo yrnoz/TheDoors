@@ -13,7 +13,7 @@ def test_DB():
 	Rooms.drop()
 	Employees.drop()
 	read_employees_details("Tests%semployees_test.csv" % os.sep)
-	read_rooms_details("Tests%srooms_test.csv" % os.rep)
+	read_rooms_details("Tests%srooms_test.csv" % os.sep)
 	# room = Rooms.find()[0]
 	employee = Employee(777, "John", "Engineer", 2)
 	add_employee(employee)
