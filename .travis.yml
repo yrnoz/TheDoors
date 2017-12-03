@@ -4,10 +4,8 @@ python:
 services:
   - mongodb
 script:
-  - pytest
+  - pytest --cov=./
 notifications:
-  email:
-    on_success: never
-    on_failure: never
-install:
-  pip install pymongo
+  email: false
+after_success:
+  - codecov -t 2cb8c1a7-baf7-488f-82f8-afcc92fa7ef1
