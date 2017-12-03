@@ -7,5 +7,3 @@ script:
   - pytest --cov=./
 notifications:
   email: false
-after_success:
-  - codecov -t 2cb8c1a7-baf7-488f-82f8-afcc92fa7ef1
