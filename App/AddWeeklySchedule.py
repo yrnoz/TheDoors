@@ -19,7 +19,7 @@ def weekly_schedule_for_employee(id, inputfile):
             if matching_rooms.count() == 0:
                 return "There is no room matching to the permission - " + str(room_permission)
             for room in matching_rooms:
-                if (assign_employees_to_room_one_hour(date, room, num_employees)):
+                if (assign_employees_to_room_one_hour(date, room, num_employees, employee)):
                     rooms_assigned += " " + room["id"]
                     break
     return rooms_assigned
