@@ -8,7 +8,7 @@ Rooms = db["Rooms"]  # create new table that called Rooms
 Employees = db["Employees"]  # create new table that called Employees
 
 
-def read_employees_details(input_file):
+def import_employees_from_file(input_file):
     """
     The function gets a CSV file with details about employees in the
     factory and adds them to the DB
@@ -19,7 +19,7 @@ def read_employees_details(input_file):
     with open(input_file) as details:  # open the file
         for line in details.readlines():
             id, name, role, permission = line[:-1].split(",")  # get the parameters we need from the line
-            employee = {"id": int(id), "name": name, "role": role, "permission": int(permission), "friends": [],
+            employee = {"id": id, "name": name, "role": role, "permission": int(permission), "friends": [],
                         "schedule": {}}
             Employees.insert(employee)  # add employee's details to the DB
 
@@ -94,7 +94,8 @@ def export_rooms_to_file(output_file):
             output.write(room["id"] + ", " + str(room["capacity"]) + ", " + str(room["permission"]) + ", "
                          + str(room["floor"]) + "\n")
 
-def read_rooms_details(input_file):
+
+def import_room_details_from_file(input_file):
     """
     The function gets a CSV file with details about rooms in the
     factory and adds them to the DB
@@ -104,21 +105,21 @@ def read_rooms_details(input_file):
     global Rooms
     with open(input_file) as details:  # open the file
         for line in details.readlines():
-            id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
-            room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
+            id, name, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
+            room = {"id": id, "name": name, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
             Rooms.insert(room)  # add employee's details to the DB
 
 
 def get_access_permission_of_employee_by_id(id):
     global Employees
-    employee = Employees.find_one({"id": int(id)})
+    employee = Employees.find_one({"id": id})
     return int(employee["permission"])
 
 
 def check_id_of_employee(id):
     global Employees
-    employee = Employees.find_one({"id": int(id)})
+    employee = Employees.find_one({"id": id})
     if employee is None:
         return False
     return True
@@ -126,7 +127,7 @@ def check_id_of_employee(id):
 
 def find_employee(id):
     if check_id_of_employee(id):
-        return Employees.find_one({"id": int(id)})
+        return Employees.find_one({"id": id})
 
 
 def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
