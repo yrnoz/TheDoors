@@ -34,7 +34,7 @@ def test_import_rooms_succeeds():
     p.terminate()
 
 
-@pytest.mark.skip(reason="should be separated into different tests")
+#@pytest.mark.skip(reason="should be separated into different tests")
 def test_db():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
