@@ -4,11 +4,11 @@ from pymongo import MongoClient
 
 client = MongoClient()  # making the connection with the DB
 db = client['test-database']  # create a new DB
-Rooms = db["Rooms"]  # create new table that's called Rooms
-Employees = db["Employees"]  # create new table that's called Employees
+Rooms = db["Rooms"]  # create new table that called Rooms
+Employees = db["Employees"]  # create new table that called Employees
 
 
-def import_employees_from_file(input_file):
+def read_employees_details(input_file):
     """
     The function gets a CSV file with details about employees in the
     factory and adds them to the DB
@@ -22,6 +22,15 @@ def import_employees_from_file(input_file):
             employee = {"id": int(id), "name": name, "role": role, "permission": int(permission), "friends": [],
                         "schedule": {}}
             Employees.insert(employee)  # add employee's details to the DB
+
+
+def export_employees_to_file(output_file):
+    global Employees
+    with open(output_file, 'w') as output:
+        for employee in Employees.find():
+            output.write(str(employee["id"]) + ", " + employee["name"] + ", " + employee["role"] + ", "
+                         + str(employee["permission"]) + "\n")
+
 
 
 def add_employee(employee):
@@ -78,7 +87,14 @@ def update_room(id, floor, max_capacity, access_permission):
         print 'No such room'
 
 
-def import_room_details_from_file(input_file):
+def export_rooms_to_file(output_file):
+    global Rooms
+    with open(output_file, 'w') as output:
+        for room in Rooms.find():
+            output.write(room["id"] + ", " + str(room["capacity"]) + ", " + str(room["permission"]) + ", "
+                         + str(room["floor"]) + "\n")
+
+def read_rooms_details(input_file):
     """
     The function gets a CSV file with details about rooms in the
     factory and adds them to the DB
