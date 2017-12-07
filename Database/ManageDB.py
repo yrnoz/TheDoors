@@ -28,7 +28,7 @@ def export_employees_to_file(output_file):
     global Employees
     with open(output_file, 'w') as output:
         for employee in Employees.find():
-            output.write(str(employee["id"]) + ", " + employee["name"] + ", " + employee["role"] + ", "
+            output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
                          + str(employee["permission"]) + "\n")
 
 
@@ -40,7 +40,7 @@ def add_employee(employee):
     :param employee: the employee object to be added into the DB.
     """
     global Employees
-    employee_json = {"id": int(employee.id), "name": employee.name, "role": employee.role,
+    employee_json = {"id": employee.id, "name": employee.name, "role": employee.role,
                      "permission": int(employee.access_permission), "friends": employee.friends,
                      "schedule": {}}
     Employees.insert(employee_json)

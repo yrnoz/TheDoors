@@ -12,7 +12,7 @@ def delete_content(pfile):
     pfile.truncate()
 
 
-@pytest.mark.skip(reason="not working as of now")
+@pytest.mark.skip(reason="not working as of now, remove this when you're working on it")
 def test_add_weekly_schedule():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()

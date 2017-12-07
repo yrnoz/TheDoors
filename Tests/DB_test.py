@@ -1,6 +1,10 @@
+import filecmp
 import os
 import subprocess
 
+import pytest
+
+from App.Employee import Employee
 from App.RoomOrder import RoomOrder
 from Database.ManageDB import *
 
@@ -45,6 +49,62 @@ def test_import_rooms_succeeds():
     p.terminate()
 
 
+def test_export_employees_without_change_shouldnt_change():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file(file_name)
+    output_file = "Tests%soutput_test.csv" % os.sep
+    export_employees_to_file(output_file)
+    with open(output_file, 'r') as output, open(file_name, 'r') as _input:
+        file_in = _input.readlines()
+        file_out = output.readlines()
+    for line, line2 in zip(file_out, file_in):
+        assert line2 in file_out
+        assert line in file_in
+    Employees.drop()
+    p.terminate()
+    os.remove(output_file)
+
+
+def test_export_employees_with_removal_should_decrease():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    remove_employee("965")
+    output_file = "Tests%soutput_test.csv" % os.sep
+    assert check_id_of_employee("965") is False
+    export_employees_to_file(output_file)
+    with open(output_file, 'r') as output, open(file_name, 'r') as _input:
+        file_in = _input.readlines()
+        file_out = output.readlines()
+    for line in file_out:
+        assert line in file_in
+    p.terminate()
+    Employees.drop()
+    os.remove(output_file)
+
+def test_export_employees_with_addition_should_increase():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    add_employee(Employee("900", "Johnny", "Engineer", 1))
+    output_file = "Tests%soutput_test.csv" % os.sep
+    assert check_id_of_employee("900") is True
+    export_employees_to_file(output_file)
+    with open(output_file, 'r') as output, open(file_name, 'r') as _input:
+        file_in = _input.readlines()
+        file_out = output.readlines()
+    for line in file_in:
+        assert line in file_out
+    p.terminate()
+    Employees.drop()
+    os.remove(output_file)
+
+
 # @pytest.mark.skip(reason="should be separated into different tests")
 def test_db():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
@@ -75,4 +135,4 @@ def test_db():
 
 
 if __name__ == "__main__":
-    test_db()
+    pass
