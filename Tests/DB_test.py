@@ -24,7 +24,8 @@ def get_ids_from_file(file_name):
 
 
 def test_import_employees_succeeds():
-    file_name = "Resources%semployees_test.csv" % os.sep
+    #file_name = "Resources%semployees_test.csv" % os.sep
+    file_name = "../App/employees_test.csv"
     employee_ids = get_ids_from_file(file_name)
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Employees.drop()
@@ -37,7 +38,8 @@ def test_import_employees_succeeds():
 
 
 def test_import_rooms_succeeds():
-    file_name = "Resources%srooms_test.csv" % os.sep
+    #file_name = "Resources%srooms_test.csv" % os.sep
+    file_name = "../App/rooms_test.csv"
     room_ids = get_ids_from_file(file_name)
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -54,8 +56,10 @@ def test_db():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
-    import_employees_from_file("Resources%semployees_test.csv" % (os.sep))
-    import_room_details_from_file("Resources%srooms_test.csv" % (os.sep))
+    #import_employees_from_file("Resources%semployees_test.csv" % (os.sep))
+    #import_room_details_from_file("Resources%srooms_test.csv" % (os.sep))
+    import_employees_from_file("../App/employees_test.csv")
+    import_room_details_from_file("../App/rooms_test.csv")
     # room = Rooms.find()[0]
     # employee = Employee(777, "John", "Engineer", 2)
     # add_employee(employee)
