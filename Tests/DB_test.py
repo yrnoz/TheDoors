@@ -1,11 +1,8 @@
 import os
 import subprocess
-import sys
 
-# sys.path.append(os.getcwd())
 from App.RoomOrder import RoomOrder
 from Database.ManageDB import *
-
 
 
 # @pytest.fixture(autouse=True)
@@ -24,7 +21,6 @@ def get_ids_from_file(file_name):
 
 def test_import_employees_succeeds():
     file_name = "Tests%semployees_test.csv" % os.sep
-    print sys.path
     employee_ids = get_ids_from_file(file_name)
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Employees.drop()

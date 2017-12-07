@@ -2,7 +2,6 @@ import os
 import subprocess
 
 from App.AddWeeklySchedule import add_weekly_schedule_for_employee
-# sys.path.append(os.getcwd())
 from Database.ManageDB import *
 
 
