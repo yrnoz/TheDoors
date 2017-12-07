@@ -52,3 +52,9 @@ def test_add_weekly_schedule():
 
     # checking scheduling room successfuly.
     assert add_weekly_schedule_for_employee("234", schedule_file) is "taub 4"
+
+    p.terminate()
+
+
+if __name__ == '__main__':
+    test_add_weekly_schedule()
