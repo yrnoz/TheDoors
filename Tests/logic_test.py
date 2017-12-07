@@ -1,13 +1,8 @@
 import os
 import subprocess
-import sys
-import pytest
 
 from App.AddWeeklySchedule import add_weekly_schedule_for_employee
-
-sys.path.append(os.getcwd())
-from App.Employee import Employee
-from App.RoomOrder import RoomOrder
+# sys.path.append(os.getcwd())
 from Database.ManageDB import *
 
 
@@ -58,4 +53,3 @@ def test_add_weekly_schedule():
 
     # checking scheduling room successfuly.
     assert add_weekly_schedule_for_employee("234", schedule_file) is "taub 4"
-

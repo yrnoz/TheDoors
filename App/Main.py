@@ -1,12 +1,9 @@
 import os
 import subprocess
-import sys
 
 from App.Employee import Employee
 from App.Room import Room
 from Database.ManageDB import *
-
-sys.path.append(os.getcwd())
 
 
 def enter_rooms_csv(filename):
