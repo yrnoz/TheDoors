@@ -32,7 +32,6 @@ def export_employees_to_file(output_file):
                          + str(employee["permission"]) + "\n")
 
 
-
 def add_employee(employee):
     """
     Adds a given employee into the db.
@@ -57,7 +56,7 @@ def update_employee(id, name, role, permission):
     global Employees
     if not Employees.update_one({'id': id},
                                 {'$set': {'name': name, 'role': role, 'permission': permission}}).matched_count:
-        print 'No such employee'
+        print "No such employee"
 
 
 def add_room(room):
@@ -76,7 +75,8 @@ def add_room(room):
 def remove_room(id):
     global Rooms
     if not Rooms.delete_one({"id": id}).deleted_count:
-        print 'No such room'
+        print
+        'No such room'
 
 
 def update_room(id, floor, max_capacity, access_permission):
@@ -84,7 +84,8 @@ def update_room(id, floor, max_capacity, access_permission):
     if not Rooms.update_one({'id': id},
                             {'$set': {'floor': floor, 'capacity': max_capacity,
                                       'access_permission': access_permission}}).matched_count:
-        print 'No such room'
+        print
+        'No such room'
 
 
 def export_rooms_to_file(output_file):
@@ -156,16 +157,18 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        print "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
-                                                                                          date_time)
+        print
+        "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
+                                                                                    date_time)
 
     else:
         if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_employee):
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        print "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
-                                                                                          date_time)
+        print
+        "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
+                                                                                    date_time)
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
 
@@ -196,7 +199,8 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
                     previous_room = room
                     break
                 if not is_asigned:
-                    print "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time)
+                    print
+                    "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time)
 
 
 def add_weekly_schedule(employee_id, room_order_items=None):
@@ -218,6 +222,7 @@ def check_employee_already_ordered(employee, date_time):
     schedule_employee = employee["schedule"]
     if date_time in schedule_employee:  # there is an order
         name = employee['name']
-        print "Dear {}! You have already ordered room for this time.".format(name)
+        print
+        "Dear {}! You have already ordered room for this time.".format(name)
         return True
     return False

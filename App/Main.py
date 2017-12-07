@@ -2,12 +2,12 @@ import os
 import subprocess
 import sys
 
-from Employee import Employee
-from Room import Room
+from App.Employee import Employee
+from App.Room import Room
+from Database.ManageDB import *
 
 sys.path.append(os.getcwd())
 
-from Database.ManageDB import *
 
 
 def enter_rooms_csv(filename):
@@ -55,7 +55,7 @@ def get_room_recommendation(cmd_str):
 
 
 def help():
-    print '{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n'.format('Currently, available commands are: ',
+    print("{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n".format('Currently, available commands are: ',
                                                                 'enter_rooms_csv filename',
                                                                 'enter_employees_csv filename',
                                                                 'add_employee id name role access_permission',
@@ -66,12 +66,13 @@ def help():
                                                                 'update_room id floor max_capacity access_permission',
                                                                 # 'enter_week_sched_cvs id filename',
                                                                 # 'get_room_recommendation id DD/MM/YY HH',
-                                                                'help', 'quit')
+                                                                'help', 'quit'))
 
 
 if __name__ == "__main__":
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
-    print 'Welcome to TheDoors, The Program for Solving the Door Permissions Problem!'
+    print
+    'Welcome to TheDoors, The Program for Solving the Door Permissions Problem!'
     help()
 
     cmd_dict = {'enter_rooms_csv': enter_rooms_csv,
@@ -89,7 +90,8 @@ if __name__ == "__main__":
         if cmd_args == ['help']:
             help()
         elif cmd_args == ['quit']:
-            print 'Shutting down Program'
+            print
+            'Shutting down Program'
             p.terminate()
             break
         elif len(cmd_args) > 1 and cmd_args[0] in cmd_dict.keys():
@@ -97,6 +99,8 @@ if __name__ == "__main__":
             try:
                 cmd_dict[cmd](args)
             except (ValueError, TypeError) as e:
-                print 'Error! Invalid input, try again'
+                print
+                'Error! Invalid input, try again'
         else:
-            print 'Command does not exist, please try again.'
+            print
+            'Command does not exist, please try again.'
