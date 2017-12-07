@@ -49,7 +49,7 @@ def add_employee(employee):
 def remove_employee(id):
     global Employees
     if not Employees.delete_one({"id": id}).deleted_count:
-        print ('No such employee')
+        print 'No such employee'
 
 
 def update_employee(id, name, role, permission, friends):
@@ -57,7 +57,7 @@ def update_employee(id, name, role, permission, friends):
     if not Employees.update_one({'id': id},
                                 {'$set': {'name': name, 'role': role, 'permission': permission,
                                           'friends': friends}}).matched_count:
-        print ("No such employee")
+        print "No such employee"
 
 
 def add_room(room):

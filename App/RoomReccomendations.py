@@ -1,7 +1,8 @@
-from App.Employee import Employee
-from Database.ManageDB import *
 import os
 import subprocess
+
+from App.Employee import Employee
+from Database.ManageDB import *
 
 
 def initialize_from_dict(dict_employee):
@@ -82,15 +83,14 @@ def test_room_with_my_friends():
 
 def print_employees_db():
     for employee in Employees.find():
-        print (
-            "id: " + str(employee["id"]) + " name: " + employee["name"] + " role: " + employee["role"] + " permossion: "
-            + str(employee["permission"]) + "\n")
+        print "id: " + str(employee["id"]) + " name: " + employee["name"] + " role: " + \
+              employee["role"] + " permossion: " + str(employee["permission"]) + "\n"
 
 
 def print_rooms_db():
     for room in Rooms.find():
-        print ("id: " + room["id"] + " capacity: " + str(room["capacity"]) + " permossion: " + str(room["permission"])
-               + " floor: " + str(room["floor"]) + "\n")
+        print "id: " + room["id"] + " capacity: " + str(room["capacity"]) + " permossion: " + str(room["permission"])
+        + " floor: " + str(room["floor"]) + "\n"
 
 
 if __name__ == "__main__":
