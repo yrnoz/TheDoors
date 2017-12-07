@@ -8,6 +8,8 @@ class Employee:
         self.schedule = {}
         self.location = None
 
+
+
     def entrance_room(self, room):
         self.location = room
 
@@ -33,3 +35,13 @@ class Employee:
         if cur_room is None:
             raise "%d employee is not in a room right now".format(self.id)
         return cur_room.get_permission()
+
+    def add_friends(self, friends):
+        self.friends += friends
+
+    def remove_friends(self, friends):
+        for friend in friends:
+            self.friends.remove(friend)
+
+    def add_schedules(self, schedules):
+        self.schedule += schedules

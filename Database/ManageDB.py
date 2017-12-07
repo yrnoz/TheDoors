@@ -49,14 +49,15 @@ def add_employee(employee):
 def remove_employee(id):
     global Employees
     if not Employees.delete_one({"id": id}).deleted_count:
-        print 'No such employee'
+        print ('No such employee')
 
 
-def update_employee(id, name, role, permission):
+def update_employee(id, name, role, permission, friends):
     global Employees
     if not Employees.update_one({'id': id},
-                                {'$set': {'name': name, 'role': role, 'permission': permission}}).matched_count:
-        print "No such employee"
+                                {'$set': {'name': name, 'role': role, 'permission': permission,
+                                          'friends': friends}}).matched_count:
+        print ("No such employee")
 
 
 def add_room(room):
@@ -226,3 +227,7 @@ def check_employee_already_ordered(employee, date_time):
         "Dear {}! You have already ordered room for this time.".format(name)
         return True
     return False
+
+
+def add_friends_to_employee(employee, friends):
+    update_employee(employee["id"], employee["name"], employee["role"], employee["permission"], friends)

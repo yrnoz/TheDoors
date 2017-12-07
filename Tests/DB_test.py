@@ -74,3 +74,7 @@ def test_db():
     RoomOrderItems2 = [item21]
     add_weekly_schedule("456", RoomOrderItems2)
     p.terminate()
+
+if __name__ == "__main__":
+
+    test_db()
