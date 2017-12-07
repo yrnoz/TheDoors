@@ -86,6 +86,7 @@ def test_export_employees_with_removal_should_decrease():
     Employees.drop()
     os.remove(output_file)
 
+
 def test_export_employees_with_addition_should_increase():
     file_name = "Tests%semployees_test.csv" % os.sep
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))

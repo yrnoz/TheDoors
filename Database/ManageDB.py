@@ -93,7 +93,7 @@ def export_rooms_to_file(output_file):
     global Rooms
     with open(output_file, 'w') as output:
         for room in Rooms.find():
-            output.write(room["id"] + ", " + str(room["capacity"]) + ", " + str(room["permission"]) + ", "
+            output.write(room["id"] + "," + str(room["capacity"]) + "," + str(room["permission"]) + ","
                          + str(room["floor"]) + "\n")
 
 
