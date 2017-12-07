@@ -119,7 +119,7 @@ def test_db():
     # add_employee(employee)
     assert check_id_of_employee("123") is True
     # employee = find_employee(777)
-    # print (employee)
+    # print employee
     # assign_employees_to_room_one_hour('24/07/17 12', room, 10)
     # assign_employees_to_room_to_X_hours('24/07/17 12', 10, 3)
     # assign_employees_to_room_to_X_hours('24/07/17 12', 70, 10)
