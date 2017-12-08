@@ -1,3 +1,6 @@
+from Database.ManageDB import update_room
+
+
 class Room:
     # list of sched_item
 
@@ -19,3 +22,7 @@ class Room:
 
     def get_permission(self):
         return self.access_permission
+
+    def add_schedule(self, schedule):
+        self.schedule += schedule
+        update_room(self.id, self.floor, self.maxCapacity, self.access_permission , self.schedule)

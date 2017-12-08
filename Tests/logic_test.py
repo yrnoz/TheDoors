@@ -4,6 +4,7 @@ import subprocess
 import pytest
 
 from App.AddWeeklySchedule import add_weekly_schedule_for_employee
+from App.RoomReccomendations import initialize_employee_from_dict, initialize_room_from_dict
 from Database.ManageDB import *
 
 
@@ -58,6 +59,66 @@ def test_add_weekly_schedule():
 
     p.terminate()
 
+#########################################################################################################
+
+
+def print_friends():
+    for employee in Employees.find():
+        print "friends of {} id-{}:".format(employee["name"], employee["id"]) + str(employee["friends"])
+
+
+def test_recommend_by_friends():
+    # initial friends for every employee
+    for employee in Employees.find():
+        employee_obj = initialize_employee_from_dict(employee)
+        for friend in Employees.find():
+            if employee["id"] != friend["id"]:
+                employee_obj.add_friends([int(friend["id"])])
+        print employee_obj.friends
+    # initial schedule for every room
+    for room in Rooms.find():
+        room_obj = initialize_room_from_dict(room)
+        room_obj.add_schedule()
+
+
+def test_reccomendationToEmployeeByRoom():
+    pass
+
+
+def test_emptyRooms():
+    pass
+
+
+def test_room_with_my_friends():
+    pass
+
+
+def print_employees_db():
+    for employee in Employees.find():
+        print "id: " + str(employee["id"]) + " name: " + employee["name"] + " role: " + \
+              employee["role"] + " permossion: " + str(employee["permission"]) + "\n"
+
+
+def print_rooms_db():
+    for room in Rooms.find():
+        print "id: " + room["id"] + " capacity: " + str(room["capacity"]) + " permossion: " + str(
+            room["permission"]) + " floor: " + str(room["floor"]) + "\n"
+
+
+def test_roomRecommendation():
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Rooms.drop()
+    Employees.drop()
+    import_employees_from_file("employees_test.csv")
+    import_room_details_from_file("rooms_test.csv")
+    print_rooms_db()
+    print_employees_db()
+    test_recommend_by_friends()
+    test_reccomendationToEmployeeByRoom()
+    test_emptyRooms()
+    test_room_with_my_friends()
+
 
 if __name__ == '__main__':
-    test_add_weekly_schedule()
+ #   test_add_weekly_schedule()
+    test_roomRecommendation()

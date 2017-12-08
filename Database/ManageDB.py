@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 from pymongo import MongoClient
 
+
+
 client = MongoClient()  # making the connection with the DB
 db = client['test-database']  # create a new DB
 Rooms = db["Rooms"]  # create new table that called Rooms
@@ -52,11 +54,11 @@ def remove_employee(id):
         print 'No such employee'
 
 
-def update_employee(id, name, role, permission, friends):
+def update_employee(id, name, role, permission, friends, schedules):
     global Employees
     if not Employees.update_one({'id': id},
                                 {'$set': {'name': name, 'role': role, 'permission': permission,
-                                          'friends': friends}}).matched_count:
+                                          'friends': friends, "schedule": schedules}}).matched_count:
         print "No such employee"
 
 
@@ -80,11 +82,11 @@ def remove_room(id):
         'No such room'
 
 
-def update_room(id, floor, max_capacity, access_permission):
+def update_room(id, floor, max_capacity, access_permission, schedule):
     global Rooms
     if not Rooms.update_one({'id': id},
                             {'$set': {'floor': floor, 'capacity': max_capacity,
-                                      'access_permission': access_permission}}).matched_count:
+                                      'access_permission': access_permission, "schedule": schedule}}).matched_count:
         print
         'No such room'
 
@@ -229,5 +231,3 @@ def check_employee_already_ordered(employee, date_time):
     return False
 
 
-def add_friends_to_employee(employee, friends):
-    update_employee(employee["id"], employee["name"], employee["role"], employee["permission"], friends)

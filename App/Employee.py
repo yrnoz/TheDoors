@@ -1,3 +1,6 @@
+from Database.ManageDB import update_employee
+
+
 class Employee:
     def __init__(self, id, name, role, access_permission):
         self.id = id
@@ -7,8 +10,6 @@ class Employee:
         self.friends = []
         self.schedule = {}
         self.location = None
-
-
 
     def entrance_room(self, room):
         self.location = room
@@ -38,10 +39,29 @@ class Employee:
 
     def add_friends(self, friends):
         self.friends += friends
+        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
 
     def remove_friends(self, friends):
+        """
+        update the list of friends of self and write it to DB
+        :param friends: it is a list of id's of friends
+        """
         for friend in friends:
             self.friends.remove(friend)
+        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
 
     def add_schedules(self, schedules):
+        """
+        update the dictionary of schedules of self and write it to DB
+        :param schedules: assume it is a dictionary {k: date_time v: (occupancy, max_occupancy )}
+        """
         self.schedule += schedules
+        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
+
+    def change_permission(self, permission):
+        self.access_permission = permission
+        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
+
+    def change_role(self, role):
+        self.role = role
+        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
