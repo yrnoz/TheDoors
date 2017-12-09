@@ -1,8 +1,5 @@
 from datetime import datetime, timedelta
-
 from pymongo import MongoClient
-
-
 
 client = MongoClient()  # making the connection with the DB
 db = client['test-database']  # create a new DB
@@ -19,7 +16,7 @@ def import_employees_from_file(input_file):
     """
     global Employees
     with open(input_file) as details:  # open the file
-        for line in details.readlines():
+        for line in filter(lambda x: x.strip(), details.readlines()):
             id, name, role, permission = line[:-1].split(",")  # get the parameters we need from the line
             employee = {"id": id, "name": name, "role": role, "permission": int(permission), "friends": [],
                         "schedule": {}}
@@ -108,7 +105,7 @@ def import_room_details_from_file(input_file):
     """
     global Rooms
     with open(input_file) as details:  # open the file
-        for line in details.readlines():
+        for line in filter(lambda x: x.strip(), details.readlines()):
             id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
@@ -229,5 +226,3 @@ def check_employee_already_ordered(employee, date_time):
         "Dear {}! You have already ordered room for this time.".format(name)
         return True
     return False
-
-

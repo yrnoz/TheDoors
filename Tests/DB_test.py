@@ -4,6 +4,7 @@ import subprocess
 import pytest
 
 from App.Employee import Employee
+from App.Room import Room
 from App.RoomOrder import RoomOrder
 from Database.ManageDB import *
 
@@ -11,9 +12,9 @@ from Database.ManageDB import *
 @pytest.fixture(autouse=True)
 def p():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
-    print "before"
+   # print "before"
     yield p
-    print "after"
+    #print "after"
     p.terminate()
 
 # @pytest.fixture(autouse=True)
@@ -26,7 +27,7 @@ def p():
 def get_ids_from_file(file_name):
     list_ids = []
     with open(file_name) as details:
-        for line in details.readlines():
+        for line in filter(lambda x: x.strip(), details.readlines()):
             list_ids.append(line.split(',')[0])
     return list_ids
 
@@ -37,6 +38,7 @@ def test_import_employees_succeeds(p):
     employee_ids = get_ids_from_file(file_name)
     #p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Employees.drop()
+    Rooms.drop()
     import_employees_from_file(file_name)
     assert Employees.count() == 11
     for id in employee_ids:
@@ -68,7 +70,7 @@ def test_export_employees_without_change_shouldnt_change(p):
     output_file = "Tests%soutput_test.csv" % os.sep
     export_employees_to_file(output_file)
     with open(output_file, 'r') as output, open(file_name, 'r') as _input:
-        file_in = _input.readlines()
+        file_in = filter(lambda x: x.strip(), _input.readlines())
         file_out = output.readlines()
     for line, line2 in zip(file_out, file_in):
         assert line2 in file_out
@@ -88,7 +90,7 @@ def test_export_employees_with_removal_should_decrease(p):
     assert check_id_of_employee("965") is False
     export_employees_to_file(output_file)
     with open(output_file, 'r') as output, open(file_name, 'r') as _input:
-        file_in = _input.readlines()
+        file_in = filter(lambda x: x.strip(), _input.readlines())
         file_out = output.readlines()
     for line in file_out:
         assert line in file_in
@@ -107,12 +109,60 @@ def test_export_employees_with_addition_should_increase(p):
     assert check_id_of_employee("900") is True
     export_employees_to_file(output_file)
     with open(output_file, 'r') as output, open(file_name, 'r') as _input:
-        file_in = _input.readlines()
+        file_in = filter(lambda x: x.strip(), _input.readlines())
         file_out = output.readlines()
     for line in file_in:
         assert line in file_out
     #p.terminate()
     Employees.drop()
+    os.remove(output_file)
+
+
+def test_export_rooms_without_change_shouldnt_change(p):
+    file_name = "Tests%srooms_test.csv" % os.sep
+    Rooms.drop()
+    import_room_details_from_file(file_name)
+    output_file = "Tests%soutput_test.csv" % os.sep
+    export_rooms_to_file(output_file)
+    with open(output_file, 'r') as output, open(file_name, 'r') as _input:
+        file_in = filter(lambda x: x.strip(), _input.readlines())
+        file_out = output.readlines()
+    for line, line2 in zip(file_out, file_in):
+        assert line2 in file_out
+        assert line in file_in
+    Rooms.drop()
+    os.remove(output_file)
+
+
+def test_export_rooms_with_removal_should_decrease(p):
+    file_name = "Tests%srooms_test.csv" % os.sep
+    Rooms.drop()
+    import_room_details_from_file(file_name)
+    output_file = "Tests%soutput_test.csv" % os.sep
+    remove_room("taub 7")
+    export_rooms_to_file(output_file)
+    with open(output_file, 'r') as output, open(file_name, 'r') as _input:
+        file_in = filter(lambda x: x.strip(), _input.readlines())
+        file_out = output.readlines()
+    for line in file_out:
+        assert line in file_in
+    Rooms.drop()
+    os.remove(output_file)
+
+
+def test_export_rooms_with_addition_should_increase(p):
+    file_name = "Tests%srooms_test.csv" % os.sep
+    Rooms.drop()
+    import_room_details_from_file(file_name)
+    output_file = "Tests%soutput_test.csv" % os.sep
+    add_room(Room(id="taub 10", floor=5, max_capacity=100, access_permission=3))
+    export_rooms_to_file(output_file)
+    with open(output_file, 'r') as output, open(file_name, 'r') as _input:
+        file_in = filter(lambda x: x.strip(), _input.readlines())
+        file_out = output.readlines()
+    for line in file_in:
+        assert line in file_out
+    Rooms.drop()
     os.remove(output_file)
 
 
@@ -142,4 +192,6 @@ def test_db(p):
     item21 = RoomOrder('24/07/17 12', 3, 100)
     RoomOrderItems2 = [item21]
     add_weekly_schedule("456", RoomOrderItems2)
+    Rooms.drop()
+    Employees.drop()
     #p.terminate()
