@@ -13,7 +13,7 @@ def delete_content(pfile):
     pfile.truncate()
 
 
-@pytest.mark.skip(reason="not working as of now, remove this when you're working on it")
+#@pytest.mark.skip(reason="not working as of now, remove this when you're working on it")
 def test_add_weekly_schedule():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -21,20 +21,22 @@ def test_add_weekly_schedule():
     employees = open("employees.csv", "w+")
     rooms = open("rooms.csv", "w+")
     # entering two employees with permissions 2.
-    employees.write("234,Koby,Engineer,2")
-    employees.write("498,Elyasaf,Engineer,2")
+    employees.write("234,Koby,Engineer,2\n")
+    employees.write("498,Elyasaf,Engineer,2\n")
     # entering a room with permission 1.
-    rooms.write("taub 4,40,1,1")
-    import_employees_from_file(employees.name)
+    rooms.write("taub 4,40,1,1\n")
+    employees.seek(0)
+    rooms.seek(0)
+    import_employees_from_file("employees.csv")
     import_room_details_from_file(rooms.name)
     schedule_file = open("schedule_file.csv", "w+")
-    schedule_file.write("'24/07/17 12', 1, 170")
-
+    schedule_file.write("'24/07/17 12', 1, 170\n")
+    schedule_file.seek(0)
     # checking the validity of the id of the employee.
-    assert add_weekly_schedule_for_employee("000", schedule_file) is "Employee doesn't exist in the system"
+    assert add_weekly_schedule_for_employee("000", schedule_file) == "Employee doesn't exist in the system"
 
     # checking the permissions of the employee and the permissions of the room.
-    assert add_weekly_schedule_for_employee("234", schedule_file) is "You don't have the right access permission"
+    assert add_weekly_schedule_for_employee("234", schedule_file) == "You don't have the right access permission"
 
     Rooms.drop()
     Employees.drop()
@@ -49,13 +51,13 @@ def test_add_weekly_schedule():
     import_room_details_from_file(rooms.name)
 
     # checking the permissions of the existence of rooms with the demanded permission.
-    assert add_weekly_schedule_for_employee("234", schedule_file) is "There is no room matching to the permission - 1"
+    assert add_weekly_schedule_for_employee("234", schedule_file) == "There is no room matching to the permission - 1"
 
     delete_content(schedule_file)
     schedule_file.write("'24/07/17 12', 2, 2")
 
     # checking scheduling room successfuly.
-    assert add_weekly_schedule_for_employee("234", schedule_file) is "taub 4"
+    assert add_weekly_schedule_for_employee("234", schedule_file) == "taub 4"
 
     p.terminate()
 
