@@ -122,5 +122,5 @@ def test_roomRecommendation():
 
 
 if __name__ == '__main__':
- #   test_add_weekly_schedule()
-    test_roomRecommendation()
+   test_add_weekly_schedule()
+#test_roomRecommendation()

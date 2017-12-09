@@ -9,7 +9,7 @@ from App.RoomOrder import RoomOrder
 from Database.ManageDB import *
 
 
-@pytest.fixture(autouse=True)
+#@pytest.fixture(autouse=True)
 def p():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
    # print "before"
