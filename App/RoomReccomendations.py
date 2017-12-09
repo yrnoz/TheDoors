@@ -45,7 +45,7 @@ def room_with_my_friends(friends):
         location = friend.get_location()
         if location is not None:
             count = rooms.get(location, default=0) + 1
-            rooms += (location, count)
+            rooms.update(location, count)
     sorted_rooms = sorted(rooms, key=lambda x: x[1])
     return sorted_rooms[-1]
 

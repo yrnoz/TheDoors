@@ -55,7 +55,7 @@ class Employee:
         update the dictionary of schedules of self and write it to DB
         :param schedules: assume it is a dictionary {k: date_time v: (occupancy, max_occupancy )}
         """
-        self.schedule += schedules
+        self.schedule.update(schedules)
         update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
 
     def change_permission(self, permission):

@@ -24,5 +24,5 @@ class Room:
         return self.access_permission
 
     def add_schedule(self, schedule):
-        self.schedule += schedule
+        self.schedule.update(schedule)
         update_room(self.id, self.floor, self.maxCapacity, self.access_permission , self.schedule)
