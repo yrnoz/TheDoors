@@ -31,10 +31,10 @@ def test_add_weekly_schedule():
     schedule_file.write("'24/07/17 12', 1, 170")
 
     # checking the validity of the id of the employee.
-    assert add_weekly_schedule_for_employee("000", schedule_file) is "Employee doesn't exist in the system"
+    assert add_weekly_schedule_for_employee("000", schedule_file) == "Employee doesn't exist in the system"
 
     # checking the permissions of the employee and the permissions of the room.
-    assert add_weekly_schedule_for_employee("234", schedule_file) is "You don't have the right access permission"
+    assert add_weekly_schedule_for_employee("234", schedule_file) == "You don't have the right access permission"
 
     Rooms.drop()
     Employees.drop()
@@ -49,13 +49,13 @@ def test_add_weekly_schedule():
     import_room_details_from_file(rooms.name)
 
     # checking the permissions of the existence of rooms with the demanded permission.
-    assert add_weekly_schedule_for_employee("234", schedule_file) is "There is no room matching to the permission - 1"
+    assert add_weekly_schedule_for_employee("234", schedule_file) == "There is no room matching to the permission - 1"
 
     delete_content(schedule_file)
     schedule_file.write("'24/07/17 12', 2, 2")
 
     # checking scheduling room successfuly.
-    assert add_weekly_schedule_for_employee("234", schedule_file) is "taub 4"
+    assert add_weekly_schedule_for_employee("234", schedule_file) == "taub 4"
 
     p.terminate()
 
@@ -120,5 +120,5 @@ def test_roomRecommendation():
 
 
 if __name__ == '__main__':
- #   test_add_weekly_schedule()
-    test_roomRecommendation()
+   test_add_weekly_schedule()
+#test_roomRecommendation()
