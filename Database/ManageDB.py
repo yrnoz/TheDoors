@@ -114,13 +114,13 @@ def import_room_details_from_file(input_file):
 
 def get_access_permission_of_employee_by_id(id):
     global Employees
-    employee = Employees.find_one({"id": id})
+    employee = Employees.find_one({"id": str(id)})
     return int(employee["permission"])
 
 
 def check_id_of_employee(id):
     global Employees
-    employee = Employees.find_one({"id": id})
+    employee = Employees.find_one({"id": str(id)})
     if employee is None:
         return False
     return True
@@ -128,7 +128,7 @@ def check_id_of_employee(id):
 
 def find_employee(id):
     if check_id_of_employee(id):
-        return Employees.find_one({"id": id})
+        return Employees.find_one({"id": str(id)})
 
 
 def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
@@ -147,7 +147,6 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
     capacity = room["capacity"]
     schedule = room["schedule"]
     schedule_employee = employee["schedule"]
-
     try:
         datetime.strptime(date_time, "%d/%m/%y %H")  # check the date_time format is correct
     except ValueError:
@@ -158,9 +157,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
         print
-        "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
-                                                                                    date_time)
-
+        "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],date_time)
     else:
         if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_employee):
             return False

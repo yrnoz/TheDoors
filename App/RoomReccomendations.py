@@ -14,9 +14,9 @@ def recommend_by_friends(employee):
     rec_room = employee.recommendation_by_friends()
     res = []
     for room in rec_room:
-        room_tmp = Rooms.find({"id": room[0]})
+        room_tmp = Rooms.find({"id": room["id"]})
         if room.current_occupancy <= room_tmp.capcity:
-            res.append(room[0])
+            res.append(room["id"])
     return res
 
 
@@ -33,7 +33,7 @@ def reccomendationToEmployeeByRoom(date_time, occupancy):
 def emptyRooms(time):
     emptyPlaceInRooms = {}
     for room in Rooms.find():
-        emptyPlaceInRooms.update(room.id, room.maxCapacity - room.schedule[time].occupancy)
+        emptyPlaceInRooms.update(room["id"], room.maxCapacity - room.schedule[time].occupancy)
     return emptyPlaceInRooms
 
 
