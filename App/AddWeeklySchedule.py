@@ -10,7 +10,8 @@ def add_weekly_schedule_for_employee(id, input_file):
     with open(input_file) as schedule:
         for line in schedule.readlines():
             if line.count(',') == 2:
-                date, room_permission, num_employees = line.split(',')
+                date, room_permission, employees = line.split(',')
+                num_employees = int(employees)
             else:
                 date, room_permission = line.split(',')
                 num_employees = 1
