@@ -7,6 +7,10 @@ Rooms = db["Rooms"]  # create new table that called Rooms
 Employees = db["Employees"]  # create new table that called Employees
 
 
+##################################################################################
+
+#import and export from files functions
+
 def import_employees_from_file(input_file):
     """
     The function gets a CSV file with details about employees in the
@@ -30,62 +34,6 @@ def export_employees_to_file(output_file):
             output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
                          + str(employee["permission"]) + "\n")
 
-
-def add_employee(employee):
-    """
-    Adds a given employee into the db.
-    Useful for on-the-fly addition of employees into the DB when the system is already up-and-running (i.e. after
-    the DB initialization phase)
-    :param employee: the employee object to be added into the DB.
-    """
-    global Employees
-    employee_json = {"id": employee.id, "name": employee.name, "role": employee.role,
-                     "permission": int(employee.access_permission), "friends": employee.friends,
-                     "schedule": {}}
-    Employees.insert(employee_json)
-
-
-def remove_employee(id):
-    global Employees
-    if not Employees.delete_one({"id": id}).deleted_count:
-        print 'No such employee'
-
-
-def update_employee(id, name, role, permission, friends, schedules):
-    global Employees
-    if not Employees.update_one({'id': id},
-                                {'$set': {'name': name, 'role': role, 'permission': permission,
-                                          'friends': friends, "schedule": schedules}}).matched_count:
-        print "No such employee"
-
-
-def add_room(room):
-    """
-    Adds a new room into the db.
-    Useful for on-the-fly addition of rooms into the DB when the system is already up-and-running (i.e. after
-    the DB initialization phase)
-    :param room: room to be added into the DB
-    """
-    global Rooms
-    room_json = {"id": room.id, "capacity": int(room.maxCapacity), "permission": int(room.access_permission),
-                 "floor": int(room.floor), "schedule": {}}
-    Rooms.insert(room_json)
-
-
-def remove_room(id):
-    global Rooms
-    if not Rooms.delete_one({"id": id}).deleted_count:
-        print
-        'No such room'
-
-
-def update_room(id, floor, max_capacity, access_permission, schedule):
-    global Rooms
-    if not Rooms.update_one({'id': id},
-                            {'$set': {'floor': floor, 'capacity': max_capacity,
-                                      'access_permission': access_permission, "schedule": schedule}}).matched_count:
-        print
-        'No such room'
 
 
 def export_rooms_to_file(output_file):
@@ -111,24 +59,7 @@ def import_room_details_from_file(input_file):
                     "schedule": {}}
             Rooms.insert(room)  # add employee's details to the DB
 
-
-def get_access_permission_of_employee_by_id(id):
-    global Employees
-    employee = Employees.find_one({"id": str(id)})
-    return int(employee["permission"])
-
-
-def check_id_of_employee(id):
-    global Employees
-    employee = Employees.find_one({"id": str(id)})
-    if employee is None:
-        return False
-    return True
-
-
-def find_employee(id):
-    if check_id_of_employee(id):
-        return Employees.find_one({"id": str(id)})
+#######################################################################################
 
 
 def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
@@ -223,3 +154,81 @@ def check_employee_already_ordered(employee, date_time):
         "Dear {}! You have already ordered room for this time.".format(name)
         return True
     return False
+
+#######################################################################################
+
+#aux functions for the DB
+
+def add_employee(employee):
+    """
+    Adds a given employee into the db.
+    Useful for on-the-fly addition of employees into the DB when the system is already up-and-running (i.e. after
+    the DB initialization phase)
+    :param employee: the employee object to be added into the DB.
+    """
+    global Employees
+    employee_json = {"id": employee.id, "name": employee.name, "role": employee.role,
+                     "permission": int(employee.access_permission), "friends": employee.friends,
+                     "schedule": {}}
+    Employees.insert(employee_json)
+
+
+def remove_employee(id):
+    global Employees
+    if not Employees.delete_one({"id": id}).deleted_count:
+        print 'No such employee'
+
+
+def update_employee(id, name, role, permission, friends, schedules):
+    global Employees
+    if not Employees.update_one({'id': id},
+                                {'$set': {'name': name, 'role': role, 'permission': permission,
+                                          'friends': friends, "schedule": schedules}}).matched_count:
+        print "No such employee"
+
+
+def add_room(room):
+    """
+    Adds a new room into the db.
+    Useful for on-the-fly addition of rooms into the DB when the system is already up-and-running (i.e. after
+    the DB initialization phase)
+    :param room: room to be added into the DB
+    """
+    global Rooms
+    room_json = {"id": room.id, "capacity": int(room.maxCapacity), "permission": int(room.access_permission),
+                 "floor": int(room.floor), "schedule": {}}
+    Rooms.insert(room_json)
+
+
+def remove_room(id):
+    global Rooms
+    if not Rooms.delete_one({"id": id}).deleted_count:
+        print
+        'No such room'
+
+
+def update_room(id, floor, max_capacity, access_permission, schedule):
+    global Rooms
+    if not Rooms.update_one({'id': id},
+                            {'$set': {'floor': floor, 'capacity': max_capacity,
+                                      'access_permission': access_permission, "schedule": schedule}}).matched_count:
+        print
+        'No such room'
+
+def get_access_permission_of_employee_by_id(id):
+    global Employees
+    employee = Employees.find_one({"id": str(id)})
+    return int(employee["permission"])
+
+def check_id_of_employee(id):
+    global Employees
+    employee = Employees.find_one({"id": str(id)})
+    if employee is None:
+        return False
+    return True
+
+def find_employee(id):
+    if check_id_of_employee(id):
+        return Employees.find_one({"id": str(id)})
+
+####################################################################################################
