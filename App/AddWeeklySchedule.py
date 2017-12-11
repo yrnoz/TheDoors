@@ -2,39 +2,22 @@ from Database.ManageDB import *
 
 
 def add_weekly_schedule_for_employee(id, input_file):
-    """
-    :param id: int of employee's id
-    :param input_file: file of weekly schedule in the format: dd/mm/yy %H,room permission, num_of_employees(possible)
-    :return: two things: list with notes if something went wrong, list of the rooms the employee get so far.
-    """
     if not check_id_of_employee(id):
-        return ["Employee doesn't exist in the system"], []
+        return "Employee doesn't exist in the system"
     employee = find_employee(id)
     employee_permission = get_access_permission_of_employee_by_id(id)
-    rooms_assigned = []
-    room_cant_assigned = []
-    flag = False
+    rooms_assigned = ""
     with open(input_file) as schedule:
         for line in schedule.readlines():
+            count = line.count(',')
             if line.count(',') == 2:
-                date, room_permission, employees = line.split(',')
+                date, duration_hours,  employees = line.split(',')
                 num_employees = int(employees)
-            else:
-                date, room_permission = line.split(',')
+            if line.count(',') == 1:
+                date, duration_hours = line.split(',')
                 num_employees = 1
-            if int(room_permission) < employee_permission:
-                room_cant_assigned.append("You don't have the right access permission for rooms with permission: " + room_permission)
-                continue
-            matching_rooms = Rooms.find({"permission": int(room_permission)})
-            if matching_rooms.count() == 0:
-                room_cant_assigned.append("There is no room matching to the permission - " + str(room_permission) + " in date: " + date)
-                continue
-            for room in matching_rooms:
-                if assign_employees_to_room_one_hour(date, room, num_employees, employee):
-                    rooms_assigned.append(room["id"])
-                    flag = True
-                    break
-            if flag == False:
-                room_cant_assigned.append("There is no place in rooms with permissions: " + str(room_permission) + " in date: " + date)
-            flag = False
-    return room_cant_assigned, rooms_assigned
+            anouncments_list = assign_employees_to_room_to_X_hours(date, num_employees, int(duration_hours), employee)
+            anouncments_string =""
+            for announce in anouncments_list:
+                anouncments_string +=announce
+            return anouncments_string

@@ -62,7 +62,7 @@ def import_room_details_from_file(input_file):
 #######################################################################################
 
 
-def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
+def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, anouncments_list):
     """
     this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees,
     and number of employees to assign, if possible - they would be assigned to the room.
@@ -87,21 +87,17 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        print
-        "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],date_time)
+        anouncments_list.append("Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],date_time))
     else:
         if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_employee):
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        print
-        "Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
-                                                                                    date_time)
+        anouncments_list.append("Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
+                                                                                    date_time))
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
 
-
-# iterate on the range of hours. prefer to look at the previous room
 def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee):
     """
     :param employee:
@@ -110,26 +106,28 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
     :param num_hours:
     """
 
+    anouncments_list = []
     num_rooms = Rooms.find().count()  # size of the DB of Rooms
     previous_room = Rooms.find()[0]
     for i in range(0, num_hours):
+        temp = (datetime.strptime(date_time, '%d/%m/%y %H'))
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
         if check_employee_already_ordered(employee, updated_time):
             continue
 
-        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee)
+        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee, anouncments_list)
+        print anouncments_list
         if not is_asigned_previous:
             for j in range(0, num_rooms):
                 room = Rooms.find()[j]
-                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee)
+                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee, anouncments_list)
                 if is_asigned:
                     previous_room = room
                     break
                 if not is_asigned:
-                    print
-                    "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time)
-
+                    anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
+    return anouncments_list
 
 def add_weekly_schedule(employee_id, room_order_items=None):
     if room_order_items is None:
