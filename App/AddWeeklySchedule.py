@@ -5,7 +5,7 @@ def add_weekly_schedule_for_employee(id, input_file):
     """
     :param id: int of employee's id
     :param input_file: file of weekly schedule in the format: dd/mm/yy %H,room permission, num_of_employees(possible)
-    :return: two things: string with a note if something went wrong, string of the rooms the employee get so far.
+    :return: two things: list with notes if something went wrong, list of the rooms the employee get so far.
     """
     if not check_id_of_employee(id):
         return ["Employee doesn't exist in the system"], []
