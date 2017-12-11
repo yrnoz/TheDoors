@@ -20,20 +20,22 @@ def recommend_by_friends(employee):
     return res
 
 
-def reccomendationToEmployeeByRoom(date_time, occupancy):
+def reccomendationToEmployeeByRoom(employee, date_time, occupancy=1):
     reccomendedList = []
-    for room in Rooms.find():
-        if occupancy <= room.maxCapacity - room.schedule[date_time].occupancy:
+    for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
+        schedule = room['schedule']
+        if occupancy <= room['capacity'] - schedule[date_time].occupancy:
             reccomendedList.append(room)
     return reccomendedList
 
 
 # input: time requested to check num of empty places in each room.
 # output: a dictionary that for each room include the number of empty seats in that room in the given time.
-def emptyRooms(time):
+def emptyRooms(employee, time):
     emptyPlaceInRooms = {}
-    for room in Rooms.find():
-        emptyPlaceInRooms.update(room["id"], room.maxCapacity - room.schedule[time].occupancy)
+    for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
+        schedule = room['schedule']
+        emptyPlaceInRooms.update(room["id"], room['capacity'] - schedule[time].occupancy)
     return emptyPlaceInRooms
 
 
@@ -71,5 +73,3 @@ def initialize_room_from_dict(dict_room):
     room = Room(dict_room["id"], dict_room["floor"], dict_room["capacity"], dict_room["permission"])
     room.schedule = dict(dict_room["schedule"])
     return room
-
-
