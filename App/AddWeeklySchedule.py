@@ -24,15 +24,17 @@ def add_weekly_schedule_for_employee(id, input_file):
                 num_employees = 1
             if int(room_permission) < employee_permission:
                 room_cant_assigned.append("You don't have the right access permission for rooms with permission: " + room_permission)
+                continue
             matching_rooms = Rooms.find({"permission": int(room_permission)})
             if matching_rooms.count() == 0:
-                room_cant_assigned.append("There is no room matching to the permission - " + str(room_permission) + "in date: " + date)
+                room_cant_assigned.append("There is no room matching to the permission - " + str(room_permission) + " in date: " + date)
+                continue
             for room in matching_rooms:
                 if assign_employees_to_room_one_hour(date, room, num_employees, employee):
                     rooms_assigned.append(room["id"])
                     flag = True
                     break
             if flag == False:
-                room_cant_assigned.append("There is no place in rooms with permissions: " + str(room_permission))
+                room_cant_assigned.append("There is no place in rooms with permissions: " + str(room_permission) + " in date: " + date)
             flag = False
     return room_cant_assigned, rooms_assigned
