@@ -18,8 +18,8 @@ def test_add_weekly_schedule():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
-    employees = open("employees.csv", "w+")
-    rooms = open("rooms.csv", "w+")
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
     # entering two employees with permissions 2.
     employees.write("234,Koby,Engineer,2\n")
     employees.write("498,Elyasaf,Engineer,2\n")
@@ -27,13 +27,13 @@ def test_add_weekly_schedule():
     rooms.write("taub 4,40,1,1\n")
     employees.seek(0)
     rooms.seek(0)
-    import_employees_from_file("employees.csv")
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
-    schedule_file = open("schedule_file.csv", "w+")
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
     schedule_file.write("'24/07/17 12', 1, 170\n")
     schedule_file.seek(0)
     # checking the validity of the id of the employee.
-    assert add_weekly_schedule_for_employee("000", schedule_file) == "Employee doesn't exist in the system"
+    assert add_weekly_schedule_for_employee("000", schedule_file) == ("Employee doesn't exist in the system", [])
 
     # checking the permissions of the employee and the permissions of the room.
     assert add_weekly_schedule_for_employee("234", schedule_file) == "You don't have the right access permission"
@@ -111,8 +111,8 @@ def test_roomRecommendation():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
-    import_employees_from_file("employees_test.csv")
-    import_room_details_from_file("rooms_test.csv")
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
     print_rooms_db()
     print_employees_db()
     test_recommend_by_friends()
