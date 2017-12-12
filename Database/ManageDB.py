@@ -124,6 +124,8 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
         if not is_asigned_previous:
             for j in range(0, num_rooms):
                 room = Rooms.find()[j]
+                if room["id"] == previous_room["id"]:
+                    continue
                 is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee, anouncments_list)
                 if is_asigned:
                     previous_room = room
