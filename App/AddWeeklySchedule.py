@@ -20,4 +20,5 @@ def add_weekly_schedule_for_employee(id, input_file):
             anouncments_string =""
             for announce in anouncments_list:
                 anouncments_string +=announce
-            return anouncments_string
+        print anouncments_string
+        return anouncments_string

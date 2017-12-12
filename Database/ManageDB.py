@@ -87,13 +87,13 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        anouncments_list.append("Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],date_time))
+        anouncments_list.append("Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],date_time))
     else:
         if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_employee):
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        anouncments_list.append("Dear {}! The room that was chosen for you is: {}. For the time: {}".format(employee['name'], room['id'],
+        anouncments_list.append("Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
                                                                                     date_time))
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
@@ -106,11 +106,11 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
     :param num_hours:
     """
 
+    employee_permission = get_access_permission_of_employee_by_id(id)
     anouncments_list = []
     num_rooms = Rooms.find().count()  # size of the DB of Rooms
     previous_room = Rooms.find()[0]
     for i in range(0, num_hours):
-        temp = (datetime.strptime(date_time, '%d/%m/%y %H'))
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
         if check_employee_already_ordered(employee, updated_time):
@@ -228,5 +228,7 @@ def check_id_of_employee(id):
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.find_one({"id": str(id)})
+
+
 
 ####################################################################################################

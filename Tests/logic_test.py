@@ -27,6 +27,63 @@ def delete_content(pfile):
     pfile.seek(0)
     pfile.truncate()
 
+def test_add_weekly_schedule_succeed():
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Rooms.drop()
+    Employees.drop()
+    # employees = open("Tests%semployees.csv" % os.sep, "w+")
+    # rooms = open("Tests%srooms.csv" % os.sep, "w+")
+
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
+
+    employees.write("234,Koby,Engineer,2\n")
+    employees.write("498,Elyasaf,Engineer,2\n")
+    # entering a room with permission 1.
+    rooms.write("taub 4,40,1,1\n")
+    employees.seek(0)
+    rooms.seek(0)
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
+    import_room_details_from_file(rooms.name)
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+    schedule_file.write("24/07/17 12, 2, 35 \n") #need to succeed
+    schedule_file.seek(0)
+
+    assert add_weekly_schedule_for_employee("234",
+                                            "schedule_file.csv") =="Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. " \
+                                                                   "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 13. "
+
+
+
+
+def test_add_weekly_schedule_some_hours_fails():
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Rooms.drop()
+    Employees.drop()
+    # employees = open("Tests%semployees.csv" % os.sep, "w+")
+    # rooms = open("Tests%srooms.csv" % os.sep, "w+")
+
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
+
+    # entering two employees with permissions 2.
+    employees.write("234,Koby,Engineer,2\n")
+    employees.write("498,Elyasaf,Engineer,2\n")
+    # entering a room with permission 1.
+    rooms.write("taub 4,40,1,1\n")
+    employees.seek(0)
+    rooms.seek(0)
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
+    import_room_details_from_file(rooms.name)
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+    schedule_file.write("24/07/17 12, 2, 170 \n")
+    schedule_file.seek(0)
+
+    assert add_weekly_schedule_for_employee("234",
+                                            "schedule_file.csv") == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry." \
+                                                                    "Dear Koby! There is no free room the 24/07/17 13 ! Sorry."
+
+
 
 # @pytest.mark.skip(reason="not working as of now, remove this when you're working on it")
 def test_add_weekly_schedule():
@@ -35,6 +92,7 @@ def test_add_weekly_schedule():
     Employees.drop()
     employees = open("employees.csv", "w+")
     rooms = open("rooms.csv", "w+")
+
     # entering two employees with permissions 2.
     employees.write("234,Koby,Engineer,2\n")
     employees.write("498,Elyasaf,Engineer,2\n")
@@ -45,7 +103,7 @@ def test_add_weekly_schedule():
     import_employees_from_file("employees.csv")
     import_room_details_from_file(rooms.name)
     schedule_file = open("schedule_file.csv", "w+")
-    schedule_file.write("24/07/17 12, 1, 170 \n")
+    schedule_file.write("24/07/17 12, 1, 17 \n")
     schedule_file.seek(0)
     # checking the validity of the id of the employee.
     assert add_weekly_schedule_for_employee("000", "schedule_file.csv") == "Employee doesn't exist in the system"
@@ -53,28 +111,6 @@ def test_add_weekly_schedule():
     # checking the permissions of the employee and the permissions of the room.
     assert add_weekly_schedule_for_employee("234",
                                             "schedule_file.csv") == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry."
-
-    Rooms.drop()
-    Employees.drop()
-    delete_content(employees)
-    delete_content(rooms)
-    # entering two employees with permissions 2.
-    employees.write("234,Koby,Engineer,1")
-    employees.write("498,Elyasaf,Engineer,1")
-    # entering a room with permission 1.
-    rooms.write("taub 4,40,1,2")
-    import_employees_from_file(employees.name)
-    import_room_details_from_file(rooms.name)
-
-    # checking the permissions of the existence of rooms with the demanded permission.
-    assert add_weekly_schedule_for_employee("234", schedule_file) == "There is no room matching to the permission - 1"
-
-    delete_content(schedule_file)
-    schedule_file.write("'24/07/17 12', 2, 2")
-
-    # checking scheduling room successfuly.
-    assert add_weekly_schedule_for_employee("234", schedule_file) == "taub 4"
-
     p.terminate()
 
 
@@ -211,6 +247,8 @@ def test_roomRecommendation_many_rooms():
 
 if __name__ == '__main__':
     test_add_weekly_schedule()
+    test_add_weekly_schedule_succeed()
+    test_add_weekly_schedule_some_hours_fails()
     test_roomRecommendation_two_rooms()
     test_roomRecommendation_no_permission()
     test_roomRecommendation_no_place_in_rooms()
