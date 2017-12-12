@@ -24,7 +24,7 @@ def reccomendationToEmployeeByRoom(employee, date_time, occupancy=1):
     reccomendedList = []
     for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
         schedule = room['schedule']
-        if occupancy <= room['capacity'] - schedule[date_time].occupancy:
+        if occupancy <= room['capacity'] - schedule.get(date_time, (0, 0))[1]:
             reccomendedList.append(room)
     return reccomendedList
 

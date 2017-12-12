@@ -246,7 +246,7 @@ def test_roomRecommendation_many_rooms():
     Employees.drop()
 
 if __name__ == '__main__':
-    test_add_weekly_schedule()
+    #test_add_weekly_schedule()
     #test_add_weekly_schedule_succeed()
     #test_add_weekly_schedule_some_hours_fails()
     test_roomRecommendation_two_rooms()
