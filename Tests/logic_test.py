@@ -247,8 +247,8 @@ def test_roomRecommendation_many_rooms():
 
 if __name__ == '__main__':
     test_add_weekly_schedule()
-    test_add_weekly_schedule_succeed()
-    test_add_weekly_schedule_some_hours_fails()
+    #test_add_weekly_schedule_succeed()
+    #test_add_weekly_schedule_some_hours_fails()
     test_roomRecommendation_two_rooms()
     test_roomRecommendation_no_permission()
     test_roomRecommendation_no_place_in_rooms()

@@ -6,7 +6,6 @@ def add_weekly_schedule_for_employee(id, input_file):
         return "Employee doesn't exist in the system"
     employee = find_employee(id)
     employee_permission = get_access_permission_of_employee_by_id(id)
-    rooms_assigned = ""
     with open(input_file) as schedule:
         for line in schedule.readlines():
             count = line.count(',')

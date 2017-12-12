@@ -78,6 +78,9 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     capacity = room["capacity"]
     schedule = room["schedule"]
     schedule_employee = employee["schedule"]
+    if check_ligal_permission(employee, room) ==False:
+        anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], date_time))
+        return
     try:
         datetime.strptime(date_time, "%d/%m/%y %H")  # check the date_time format is correct
     except ValueError:
@@ -106,7 +109,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
     :param num_hours:
     """
 
-    employee_permission = get_access_permission_of_employee_by_id(id)
+    #employee_permission = get_access_permission_of_employee_by_id(id)
     anouncments_list = []
     num_rooms = Rooms.find().count()  # size of the DB of Rooms
     previous_room = Rooms.find()[0]
@@ -117,7 +120,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
             continue
 
         is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee, anouncments_list)
-        print anouncments_list
+        #print anouncments_list
         if not is_asigned_previous:
             for j in range(0, num_rooms):
                 room = Rooms.find()[j]
@@ -127,6 +130,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
                     break
                 if not is_asigned:
                     anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
+    print anouncments_list
     return anouncments_list
 
 def add_weekly_schedule(employee_id, room_order_items=None):
@@ -228,6 +232,13 @@ def check_id_of_employee(id):
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.find_one({"id": str(id)})
+
+def check_ligal_permission(employee, room):
+    employee_permission = int(employee["permission"])
+    room_permission = room["permission"]
+    if employee_permission <= room_permission:
+        return True
+    return False
 
 
 
