@@ -53,11 +53,11 @@ def import_room_details_from_file(input_file):
     """
     global Rooms
     with open(input_file) as details:  # open the file
-        for line in filter(lambda x: x.strip(), details.readlines()):
-            id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
+        for line in filter(lambda x: x.translate(None,'\n'), details.readlines()):
+            id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
-            Rooms.insert(room)  # add employee's details to the DB
+            Rooms.insert_one(room)  # add employee's details to the DB
 
 #######################################################################################
 
