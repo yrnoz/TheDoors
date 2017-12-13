@@ -31,8 +31,8 @@ def test_add_weekly_schedule_succeed():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
-    # employees = open("Tests%semployees.csv" % os.sep, "w+")
-    # rooms = open("Tests%srooms.csv" % os.sep, "w+")
+    #employees = open("employees.csv", "w+")
+    #rooms = open("rooms.csv", "w+")
 
     employees = open("Tests%semployees.csv" % os.sep, "w+")
     rooms = open("Tests%srooms.csv" % os.sep, "w+")
@@ -40,12 +40,17 @@ def test_add_weekly_schedule_succeed():
     employees.write("234,Koby,Engineer,2\n")
     employees.write("498,Elyasaf,Engineer,2\n")
     # entering a room with permission 1.
-    rooms.write("taub 4,40,1,1\n")
+    rooms.write("taub 4,40,2,1\n")
     employees.seek(0)
     rooms.seek(0)
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+
+    #import_employees_from_file("employees.csv")
+    #import_room_details_from_file(rooms.name)
+    #schedule_file = open("schedule_file.csv", "w+")
+
     schedule_file.write("24/07/17 12, 2, 35 \n") #need to succeed
     schedule_file.seek(0)
 
@@ -60,8 +65,8 @@ def test_add_weekly_schedule_some_hours_fails():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
-    # employees = open("Tests%semployees.csv" % os.sep, "w+")
-    # rooms = open("Tests%srooms.csv" % os.sep, "w+")
+    #employees = open("employees.csv", "w+")
+    #rooms = open("rooms.csv", "w+")
 
     employees = open("Tests%semployees.csv" % os.sep, "w+")
     rooms = open("Tests%srooms.csv" % os.sep, "w+")
@@ -76,6 +81,11 @@ def test_add_weekly_schedule_some_hours_fails():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+
+    #import_employees_from_file("employees.csv")
+    #import_room_details_from_file(rooms.name)
+    #schedule_file = open("schedule_file.csv", "w+")
+
     schedule_file.write("24/07/17 12, 2, 170 \n")
     schedule_file.seek(0)
 
@@ -90,8 +100,10 @@ def test_add_weekly_schedule():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
-    employees = open("employees.csv", "w+")
-    rooms = open("rooms.csv", "w+")
+    #employees = open("employees.csv", "w+")
+    #rooms = open("rooms.csv", "w+")
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
 
     # entering two employees with permissions 2.
     employees.write("234,Koby,Engineer,2\n")
@@ -100,9 +112,13 @@ def test_add_weekly_schedule():
     rooms.write("taub 4,40,1,1\n")
     employees.seek(0)
     rooms.seek(0)
-    import_employees_from_file("employees.csv")
+    #import_employees_from_file("employees.csv")
+    #import_room_details_from_file(rooms.name)
+    #schedule_file = open("schedule_file.csv", "w+")
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
-    schedule_file = open("schedule_file.csv", "w+")
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+
     schedule_file.write("24/07/17 12, 1, 17 \n")
     schedule_file.seek(0)
     # checking the validity of the id of the employee.
@@ -246,9 +262,9 @@ def test_roomRecommendation_many_rooms():
     Employees.drop()
 
 if __name__ == '__main__':
-    #test_add_weekly_schedule()
-    #test_add_weekly_schedule_succeed()
-    #test_add_weekly_schedule_some_hours_fails()
+    test_add_weekly_schedule()
+    test_add_weekly_schedule_succeed()
+    test_add_weekly_schedule_some_hours_fails()
     test_roomRecommendation_two_rooms()
     test_roomRecommendation_no_permission()
     test_roomRecommendation_no_place_in_rooms()
