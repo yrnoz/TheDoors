@@ -1,3 +1,0 @@
-ignore:
- - App\Main.py
- - App\ScheduleItem.py
