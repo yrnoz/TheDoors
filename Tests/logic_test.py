@@ -172,12 +172,8 @@ def test_emptyRooms():
     schedule_file.write("24/07/17 12, 2, 35 \n")
     schedule_file.seek(0)
     add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-    print "hello World!!"
     koby = Employee(234, 'Koby', 'Engineer', 2)
-    print "hello World!!!!"
     x=emptyRooms(koby, "24/07/17 12")
-    print "hello World!!!!"
-    print type(x)
     assert emptyRooms(koby, "24/07/17 12") == {"taub 4" : 5}
 
 @pytest.mark.skip(reason="not relevant for now")

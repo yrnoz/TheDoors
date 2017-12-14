@@ -30,7 +30,8 @@ class Room:
         update_room(self.id, self.floor, self.maxCapacity, self.access_permission, self.schedule)
 
     def get_capacity(self, date_time=datetime.now().strftime("%d/%m/%y %H")):
-        return self.schedule.get(date_time, (0, 0))[1]
+        res = self.schedule.get(date_time, (0, 0))[0]
+        return res
 
     def free_place(self, occupancy=1, date_time=datetime.now().strftime("%d/%m/%y %H")):
         """
