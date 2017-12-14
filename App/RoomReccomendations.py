@@ -36,7 +36,6 @@ def emptyRooms(employee, date_time=datetime.now().strftime("%d/%m/%y %H")):
     emptyPlaceInRooms = {}
     for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
         room = initialize_room_from_dict(room)
-        # schedule = room['schedule']
         emptyPlaceInRooms[room.id] = (room.maxCapacity - room.get_capacity(date_time))
     return emptyPlaceInRooms
 

@@ -53,7 +53,7 @@ class Employee:
     def add_schedules(self, schedules):
         """
         update the dictionary of schedules of self and write it to DB
-        :param schedules: assume it is a dictionary {k: date_time v: (occupancy, max_occupancy )}
+        :param schedules: assume it is a dictionary {k: date_time v: (num_employee, room_id )}
         """
         self.schedule.update(schedules)
         update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)

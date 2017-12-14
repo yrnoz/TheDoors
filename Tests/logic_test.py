@@ -5,7 +5,7 @@ import pytest
 from App.AddWeeklySchedule import add_weekly_schedule_for_employee
 from App.Room import Room
 from App.RoomReccomendations import initialize_employee_from_dict, initialize_room_from_dict, \
-    reccomendationToEmployeeByRoom, emptyRooms
+    reccomendationToEmployeeByRoom, emptyRooms, recommend_by_friends
 from Database.ManageDB import *
 from App.Employee import *
 
@@ -29,7 +29,7 @@ def delete_content(pfile):
     pfile.truncate()
 
 
-def ltest_add_weekly_schedule_succeed():
+def test_add_weekly_schedule_succeed():
     Rooms.drop()
     Employees.drop()
 
@@ -136,21 +136,6 @@ def print_friends():
 
 
 @pytest.mark.skip(reason="not relevant for now")
-def test_recommend_by_friends():
-    # initial friends for every employee
-    for employee in Employees.find():
-        employee_obj = initialize_employee_from_dict(employee)
-        for friend in Employees.find():
-            if employee["id"] != friend["id"]:
-                employee_obj.add_friends([int(friend["id"])])
-        # print employee_obj.friends
-    # initial schedule for every room
-    for room in Rooms.find():
-        room_obj = initialize_room_from_dict(room)
-        room_obj.add_schedule()
-
-
-@pytest.mark.skip(reason="not relevant for now")
 def test_reccomendationToEmployeeByRoom():
     pass
 
@@ -173,8 +158,9 @@ def test_emptyRooms():
     schedule_file.seek(0)
     add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
     koby = Employee(234, 'Koby', 'Engineer', 2)
-    x=emptyRooms(koby, "24/07/17 12")
-    assert emptyRooms(koby, "24/07/17 12") == {"taub 4" : 5}
+    x = emptyRooms(koby, "24/07/17 12")
+    assert emptyRooms(koby, "24/07/17 12") == {"taub 4": 5}
+
 
 @pytest.mark.skip(reason="not relevant for now")
 def test_room_with_my_friends():
@@ -280,11 +266,27 @@ def test_roomRecommendation_many_rooms():
     Employees.drop()
 
 
+def create_friend_relationship():
+    for employee in Employee.find():
+        employee = initialize_employee_from_dict(employee)
+        employee.add_schedules({datetime.now().strftime("%d/%m/%y %H"), (0, "taub 4")})
+        for friend in Employee.find({'permission': employee.access_permission}):
+            friend = initialize_employee_from_dict(employee)
+            if employee.id != friend.id:
+                employee.add_friends(list(friend.id))
+
+
+@pytest.mark.skip(reason="not relevant for now")
 def test_recommend_by_friends():
     Rooms.drop()
     Employees.drop()
-    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_employees_from_file("Tests%sfriends_test.csv" % os.sep)
     import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    create_friend_relationship()
+    for employee in Employee.find():
+        employee = initialize_employee_from_dict(employee)
+        res = recommend_by_friends(employee)
+        assert res == ["taub 4"]
 
 
 if __name__ == '__main__':
