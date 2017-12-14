@@ -5,7 +5,7 @@ import pytest
 from App.AddWeeklySchedule import add_weekly_schedule_for_employee
 from App.Room import Room
 from App.RoomReccomendations import initialize_employee_from_dict, initialize_room_from_dict, \
-    reccomendationToEmployeeByRoom
+    reccomendationToEmployeeByRoom, emptyRooms
 from Database.ManageDB import *
 from App.Employee import *
 
@@ -29,7 +29,7 @@ def delete_content(pfile):
     pfile.truncate()
 
 
-def test_add_weekly_schedule_succeed():
+def ltest_add_weekly_schedule_succeed():
     Rooms.drop()
     Employees.drop()
 
@@ -155,10 +155,30 @@ def test_reccomendationToEmployeeByRoom():
     pass
 
 
-@pytest.mark.skip(reason="not relevant for now")
 def test_emptyRooms():
-    pass
-
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Rooms.drop()
+    Employees.drop()
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
+    employees.write("234,Koby,Engineer,2\n")
+    employees.write("498,Elyasaf,Engineer,2\n")
+    rooms.write("taub 4,40,2,1\n")
+    employees.seek(0)
+    rooms.seek(0)
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
+    import_room_details_from_file(rooms.name)
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+    schedule_file.write("24/07/17 12, 2, 35 \n")
+    schedule_file.seek(0)
+    add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+    print "hello World!!"
+    koby = Employee(234, 'Koby', 'Engineer', 2)
+    print "hello World!!!!"
+    x=emptyRooms(koby, "24/07/17 12")
+    print "hello World!!!!"
+    print type(x)
+    assert emptyRooms(koby, "24/07/17 12") == {"taub 4" : 5}
 
 @pytest.mark.skip(reason="not relevant for now")
 def test_room_with_my_friends():

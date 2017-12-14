@@ -32,11 +32,12 @@ def reccomendationToEmployeeByRoom(employee, date_time=datetime.now().strftime("
 
 # input: time requested to check num of empty places in each room.
 # output: a dictionary that for each room include the number of empty seats in that room in the given time.
-def emptyRooms(employee, time):
+def emptyRooms(employee, date_time=datetime.now().strftime("%d/%m/%y %H")):
     emptyPlaceInRooms = {}
     for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
-        schedule = room['schedule']
-        emptyPlaceInRooms.update(room["id"], room['capacity'] - schedule[time].occupancy)
+        room = initialize_room_from_dict(room)
+       # schedule = room['schedule']
+        emptyPlaceInRooms.update(room.id, room.maxCapacity - room.get_capacity(date_time))
     return emptyPlaceInRooms
 
 
