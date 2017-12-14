@@ -14,18 +14,19 @@ def recommend_by_friends(employee):
     rec_room = employee.recommendation_by_friends()
     res = []
     for room in rec_room:
-        room_tmp = Rooms.find({"id": room["id"]})
-        if room.current_occupancy <= room_tmp.capcity:
-            res.append(room["id"])
+        room = initialize_room_from_dict(room)
+        room_tmp = initialize_room_from_dict(Rooms.find({"id": room.id}))
+        if room.current_occupancy <= room_tmp.get_capacity():
+            res.append(room.id)
     return res
 
 
 def reccomendationToEmployeeByRoom(employee, date_time=datetime.now().strftime("%d/%m/%y %H"), occupancy=1):
     reccomendedList = []
     for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
-        schedule = room['schedule']
-        if occupancy <= room['capacity'] - schedule.get(date_time, (0, 0))[1]:
-            reccomendedList.append(room['id'])
+        room = initialize_room_from_dict(room)
+        if room.free_place(occupancy, date_time):
+            reccomendedList.append(room.id)
     return reccomendedList
 
 

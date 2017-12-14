@@ -118,7 +118,8 @@ def test_add_weekly_schedule():
     schedule_file.write("24/07/17 12, 1, 17 \n")
     schedule_file.seek(0)
     # checking the validity of the id of the employee.
-    assert add_weekly_schedule_for_employee("000", "Tests%sschedule_file.csv" % os.sep) == "Employee doesn't exist in the system"
+    assert add_weekly_schedule_for_employee("000",
+                                            "Tests%sschedule_file.csv" % os.sep) == "Employee doesn't exist in the system"
 
     # checking the permissions of the employee and the permissions of the room.
     assert add_weekly_schedule_for_employee("234",
@@ -149,10 +150,12 @@ def test_recommend_by_friends():
         room_obj.add_schedule()
 
 
+@pytest.mark.skip(reason="not relevant for now")
 def test_reccomendationToEmployeeByRoom():
     pass
 
 
+@pytest.mark.skip(reason="not relevant for now")
 def test_emptyRooms():
     pass
 
@@ -259,6 +262,13 @@ def test_roomRecommendation_many_rooms():
     assert len(recommended) == 500
     Rooms.drop()
     Employees.drop()
+
+
+def test_recommend_by_friends():
+    Rooms.drop()
+    Employees.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
 
 
 if __name__ == '__main__':
