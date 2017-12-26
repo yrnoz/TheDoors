@@ -1,0 +1,4 @@
+{
+  "Tests/logic_test.py": true, 
+  "Tests/logic_test.py::test_roomRecommendation": true
+}
