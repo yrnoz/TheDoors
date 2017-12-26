@@ -21,15 +21,6 @@ def recommend_by_friends(employee):
     return res
 
 
-def reccomendationToEmployeeByRoom(employee, date_time=datetime.now().strftime("%d/%m/%y %H"), occupancy=1):
-    reccomendedList = []
-    for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
-        room = initialize_room_from_dict(room)
-        if room.free_place(occupancy, date_time):
-            reccomendedList.append(room.id)
-    return reccomendedList
-
-
 # input: time requested to check num of empty places in each room.
 # output: a dictionary that for each room include the number of empty seats in that room in the given time.
 def emptyRooms(employee, date_time=datetime.now().strftime("%d/%m/%y %H")):
