@@ -6,9 +6,10 @@ from App.Room import Room
 from Database.ManageDB import *
 
 
-def recommend_by_friends(employee):
+def recommend_by_friends(employee, floor_constraint=None, capacity_constraint=1):
     """
     :param employee:
+            capacity_constraint: a number between 0 and 1 which is the percentage of fullness of the room.
     :return:  list of rooms 'res' that highly recommended for employee
     """
     rec_room = employee.recommendation_by_friends()
@@ -16,8 +17,9 @@ def recommend_by_friends(employee):
     for room in rec_room:
         room = initialize_room_from_dict(room)
         room_tmp = initialize_room_from_dict(Rooms.find({"id": room.id}))
-        if room.current_occupancy <= room_tmp.get_capacity():
-            res.append(room.id)
+        if room.current_occupancy <= capacity_constraint*room_tmp.get_capacity():
+            if floor_constraint!=None and floor_constraint>=room.floor:
+                res.append(room.id)
     return res
 
 
