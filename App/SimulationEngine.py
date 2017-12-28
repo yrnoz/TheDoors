@@ -7,6 +7,32 @@ SimRooms = db["Rooms"]  # create new table that called SimRooms just for the Sim
 #SimEmployees contains: id, permission, schedule, friends
 SimEmployees = db["Employees"]  # create new table that called SimEmployees just for the Simulation
 
+def simulation_import_room_details_from_file(input_file):
+    """
+    The function gets a CSV file with details about rooms in the
+    factory and add them to the DB
+    input: CSV file
+    output: side effect  - the details added to the DB
+    """
+    global SimRooms
+    with open(input_file) as details:  # open the file
+        for line in filter(lambda x: x.strip(), details.readlines()):
+            id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
+            room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
+                    "schedule": {}}
+            SimRooms.insert(room)  # add room's details to the DB
+
+def simulation_export_rooms_to_file(output_file):
+    """
+    The function export to the manager a CSV file with all the rooms in the simulation factory
+    :param output_file: file to write the rooms to.
+    """
+    global SimRooms
+    with open(output_file, 'w') as output:
+        for room in SimRooms.find():
+            output.write(room["id"] + "," + str(room["capacity"]) + "," + str(room["permission"]) + ","
+                         + str(room["floor"]) + "\n")
+
 
 def simulation_add_random_employees(employees_number, min_permission):
     """

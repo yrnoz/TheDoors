@@ -57,8 +57,7 @@ def import_room_details_from_file(input_file):
             id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
-            Rooms.insert_one(room)  # add employee's details to the DB
-            Rooms.insert(room)  # add room's details to the DB
+            Rooms.insert_one(room)  # add room's details to the DB
 
 #######################################################################################
 
