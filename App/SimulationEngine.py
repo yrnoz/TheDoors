@@ -23,6 +23,7 @@ def simulation_add_random_employees(employees_number, min_permission):
         employee = {"id": int(id), "permission": int(permission), "friends": [], "schedule": {}}
         Employees.insert(employee)  # add employee's details to the DB
 
+
 def simulation_export_employees_to_file(output_file):
     global SimEmployees
     with open(output_file, 'w') as output:
