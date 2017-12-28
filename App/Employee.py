@@ -31,7 +31,7 @@ class Employee:
         """return Room object or None"""
         return self.location
 
-    def get_room_permission(self):
+    def get_curr_room_permission(self):
         cur_room = self.get_location()
         if cur_room is None:
             raise "%d employee is not in a room right now".format(self.id)
