@@ -57,7 +57,7 @@ def import_room_details_from_file(input_file):
             id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
-            Rooms.insert(room)  # add employee's details to the DB
+            Rooms.insert(room)  # add room's details to the DB
 
 #######################################################################################
 
@@ -214,12 +214,14 @@ def update_room(id, floor, max_capacity, access_permission, schedule):
                                       'access_permission': access_permission, "schedule": schedule}}).matched_count:
         print
         'No such room'
-
+# input: id. output: the permission of the employee with this id
 def get_access_permission_of_employee_by_id(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
     return int(employee["permission"])
 
+
+# input: id. output: True if there is employee with this id, other False
 def check_id_of_employee(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
@@ -227,8 +229,11 @@ def check_id_of_employee(id):
         return False
     return True
 
+# input: id. output: the employee with this id
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.find_one({"id": str(id)})
+    return None
+
 
 ####################################################################################################
