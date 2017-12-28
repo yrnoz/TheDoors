@@ -54,9 +54,16 @@ def simulation_export_employees_to_file(output_file):
     global SimEmployees
     with open(output_file, 'w') as output:
         for employee in SimEmployees.find():
-            output.write(str(employee["id"]) + "," + str(employee["permission"]) + "\n")
+            output.write(str(employee["id"]) + "," + str(employee["permission"]) + \
+                         simulation_get_schedule_of_employee(employee["id"]) + "\n")
 
-
+def simulation_get_schedule_of_employee(id):
+    employee = find_employee(id)
+    schedule = employee["schedule"]
+    employee_schedule = ""
+    for date_time, tuple in schedule.items():
+        employee_schedule += date_time + ": " + tuple[1] + "; "
+    return employee_schedule
 
 
 
