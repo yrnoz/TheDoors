@@ -6,48 +6,45 @@ from App.Room import Room
 from Database.ManageDB import *
 
 
-def recommend_by_friends(employee):
+def recommend_by_friends(employee, floor_constraint=None, capacity_constraint=1):
     """
     :param employee:
+            capacity_constraint: a number between 0 and 1 which is the percentage of fullness of the room.
     :return:  list of rooms 'res' that highly recommended for employee
     """
     rec_room = employee.recommendation_by_friends()
     res = []
     for room in rec_room:
-        room_tmp = Rooms.find({"id": room["id"]})
-        if room.current_occupancy <= room_tmp.capcity:
-            res.append(room["id"])
+        room = initialize_room_from_dict(room)
+        room_tmp = initialize_room_from_dict(Rooms.find({"id": room.id}))
+        if room.current_occupancy <= capacity_constraint * room_tmp.get_capacity():
+            if floor_constraint is not None and floor_constraint >= room.floor:
+                res.append(room.id)
     return res
-
-
-def reccomendationToEmployeeByRoom(employee, date_time, occupancy=1):
-    reccomendedList = []
-    for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
-        schedule = room['schedule']
-        if occupancy <= room['capacity'] - schedule[date_time].occupancy:
-            reccomendedList.append(room)
-    return reccomendedList
 
 
 # input: time requested to check num of empty places in each room.
 # output: a dictionary that for each room include the number of empty seats in that room in the given time.
-def emptyRooms(employee, time):
+def emptyRooms(employee, date_time=datetime.now().strftime("%d/%m/%y %H")):
     emptyPlaceInRooms = {}
     for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
-        schedule = room['schedule']
-        emptyPlaceInRooms.update(room["id"], room['capacity'] - schedule[time].occupancy)
+        room = initialize_room_from_dict(room)
+        emptyPlaceInRooms[room.id] = (room.maxCapacity - room.get_capacity(date_time))
     return emptyPlaceInRooms
 
 
-def room_with_my_friends(friends):
+def room_with_my_friends(employee_dict, friends):
     """this fun get list of friends which the user want to be with (in the same room) and return the room that
     the biggest sub group in it"""
     rooms = {}
+    employee = initialize_employee_from_dict(employee_dict)
     for friend in friends:
         location = friend.get_location()
         if location is not None:
-            count = rooms.get(location, default=0) + 1
-            rooms.update(location, count)
+            curr_room = initialize_room_from_dict(Rooms.find_one({"id": str(location)}))
+            if curr_room.access_permission <= employee.access_permission:
+                count = rooms.get(location, default=0) + 1
+                rooms.update(location, count)
     sorted_rooms = sorted(rooms, key=lambda x: x[1])
     return sorted_rooms[-1]
 

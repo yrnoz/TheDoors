@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from Database.ManageDB import update_room
 
 
@@ -25,4 +27,16 @@ class Room:
 
     def add_schedule(self, schedule):
         self.schedule.update(schedule)
-        update_room(self.id, self.floor, self.maxCapacity, self.access_permission , self.schedule)
+        update_room(self.id, self.floor, self.maxCapacity, self.access_permission, self.schedule)
+
+    def get_capacity(self, date_time=datetime.now().strftime("%d/%m/%y %H")):
+        res = self.schedule.get(date_time, (0, 0))[0]
+        return res
+
+    def free_place(self, occupancy=1, date_time=datetime.now().strftime("%d/%m/%y %H")):
+        """
+        :param occupancy: the amount we want to make sure that we have place for them
+        :param date_time: the time we want to enter the room
+        :return:  true if there is enough place in the room else false
+        """
+        return occupancy <= self.maxCapacity - self.get_capacity(date_time)
