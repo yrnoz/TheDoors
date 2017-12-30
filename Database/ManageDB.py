@@ -28,14 +28,26 @@ def import_employees_from_file(input_file):
 
 
 def export_employees_to_file(output_file):
+    """
+    exports employee collection in csv format
+    :param output_file: the name of file employees' collection will be exported to
+    """
     global Employees
     with open(output_file, 'w') as output:
         for employee in Employees.find():
-            output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                         + str(employee["permission"]) + "\n")
+            if not employee["friends"]:
+                output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+                             + str(employee["permission"]) + "\n")
+            else:
+                output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+                             + str(employee["permission"]) + "," + ",".join(employee["friends"]) + "\n")
 
 
 def export_rooms_to_file(output_file):
+    """
+    exports room collection in csv format
+    :param output_file: the name of file rooms' collection will be exported to
+    """
     global Rooms
     with open(output_file, 'w') as output:
         for room in Rooms.find():
@@ -78,7 +90,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     capacity = room["capacity"]
     schedule = room["schedule"]
     schedule_employee = employee["schedule"]
-    if check_ligal_permission(employee, room) == False:
+    if check_legal_permission(employee, room) == False:
         anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], date_time))
         return
     try:
@@ -277,7 +289,7 @@ def find_employee(id):
         return Employees.find_one({"id": str(id)})
 
 
-def check_ligal_permission(employee, room):
+def check_legal_permission(employee, room):
     employee_permission = int(employee["permission"])
     room_permission = room["permission"]
     if employee_permission <= room_permission:
@@ -288,4 +300,61 @@ def check_ligal_permission(employee, room):
 def find_room(id):
     return Rooms.find_one({"id": str(id)})
 
+
+def add_a_friend_for_employee(employee_id, friend_id):
+    """
+    adds a friend to employees' friend list (and vice versa)
+    :param employee_id: id of employee
+    :param friend_id: id of employees' friend
+    :return: side effect: employee and his friends are now in each others' friends' list
+    """
+    employee = find_employee(employee_id)
+    friend = find_employee(friend_id)
+    if employee is None or friend is None:
+        return
+    add_friend_aux(employee, friend_id)
+    add_friend_aux(friend, employee_id)
+
+
+def add_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: the employee who adds the friend
+    :param friend_id: the id of the friend
+    """
+    employee_friends = employee["friends"]
+    employee_friends.append(friend_id)
+    Employees.update_one({'id': employee["id"]},
+                         {'$set': {
+                             'friends': employee_friends}})
+
+
+def delete_a_friend_from_employee(employee_id, friend_id):
+    """
+    deletes a friend from employee's list
+    :param employee_id: the employee that wants to delete a friend
+    :param friend_id: the id of the friend to be deleted
+    :return: side effect, given employee and friend won't be friends any longer
+    """
+    employee = find_employee(employee_id)
+    friend = find_employee(friend_id)
+    if employee is None or friend is None:
+        return
+    delete_a_friend_aux(employee, friend_id)
+    delete_a_friend_aux(friend, employee_id)
+
+
+def delete_a_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: employee that wants to remove given id from his list
+    :param friend_id: id of the friend to be removed
+    """
+    employee_friends = employee["friends"]
+    employee_friends.remove(friend_id)
+
+    stam = Employees.update_one({'id': employee["id"]},
+                         {'$set': {
+                             'friends': employee_friends}}).matched_count
+    print "stam: " + str(stam)
 ####################################################################################################
