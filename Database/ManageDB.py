@@ -302,6 +302,12 @@ def find_room(id):
 
 
 def add_a_friend_for_employee(employee_id, friend_id):
+    """
+    adds a friend to employees' friend list (and vice versa)
+    :param employee_id: id of employee
+    :param friend_id: id of employees' friend
+    :return: side effect: employee and his friends are now in each others' friends' list
+    """
     employee = find_employee(employee_id)
     friend = find_employee(friend_id)
     if employee is None or friend is None:
@@ -311,10 +317,44 @@ def add_a_friend_for_employee(employee_id, friend_id):
 
 
 def add_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: the employee who adds the friend
+    :param friend_id: the id of the friend
+    """
     employee_friends = employee["friends"]
     employee_friends.append(friend_id)
     Employees.update_one({'id': employee["id"]},
                          {'$set': {
                              'friends': employee_friends}})
 
+
+def delete_a_friend_from_employee(employee_id, friend_id):
+    """
+    deletes a friend from employee's list
+    :param employee_id: the employee that wants to delete a friend
+    :param friend_id: the id of the friend to be deleted
+    :return: side effect, given employee and friend won't be friends any longer
+    """
+    employee = find_employee(employee_id)
+    friend = find_employee(friend_id)
+    if employee is None or friend is None:
+        return
+    delete_a_friend_aux(employee, friend_id)
+    delete_a_friend_aux(friend, employee_id)
+
+
+def delete_a_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: employee that wants to remove given id from his list
+    :param friend_id: id of the friend to be removed
+    """
+    employee_friends = employee["friends"]
+    employee_friends.remove(friend_id)
+
+    stam = Employees.update_one({'id': employee["id"]},
+                         {'$set': {
+                             'friends': employee_friends}}).matched_count
+    print "stam: " + str(stam)
 ####################################################################################################

@@ -163,6 +163,23 @@ def test_add_friend():
     Employees.drop()
     os.remove(output_file)
 
+
+def test_remove_friend():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    add_a_friend_for_employee("498", "123")
+    assert "123" in find_employee("498")["friends"]
+    assert "498" in find_employee("123")["friends"]
+    delete_a_friend_from_employee("123", "498")
+    assert "123" not in find_employee("498")["friends"]
+    assert "498" not in find_employee("123")["friends"]
+    output_file = "Tests%soutput_test.csv" % os.sep
+    export_employees_to_file(output_file)
+    Employees.drop()
+    os.remove(output_file)
+
 # @pytest.mark.skip(reason="should be separated into different tests")
 def test_db():
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
