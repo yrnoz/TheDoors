@@ -22,6 +22,7 @@ def simulation_import_room_details_from_file(input_file):
                     "schedule": {}}
             SimRooms.insert(room)  # add room's details to the DB
 
+
 def simulation_export_rooms_to_file(output_file):
     """
     The function export to the manager a CSV file with all the rooms in the simulation factory
