@@ -269,13 +269,15 @@ def update_room(id, floor, max_capacity, access_permission, schedule):
         print
         'No such room'
 
-
+#input: id. output: the permission of the employee
 def get_access_permission_of_employee_by_id(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
+    if employee is None:
+        return -1
     return int(employee["permission"])
 
-
+#input: id of employee. output: true if the employee exists
 def check_id_of_employee(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
@@ -283,7 +285,7 @@ def check_id_of_employee(id):
         return False
     return True
 
-
+#input: id of employee. output: the employee with the id
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.find_one({"id": str(id)})
@@ -357,4 +359,18 @@ def delete_a_friend_aux(employee, friend_id):
                          {'$set': {
                              'friends': employee_friends}}).matched_count
     print "stam: " + str(stam)
+
+def get_average_friends_of_employee():
+    '''
+    A function that calculate the average friends per employee
+    :return: the average friends per employee
+    '''
+    employees = Employees.find()
+    num_employees = employees.count()
+    num_friends = reduce(lambda x,y: x+y, map(lambda x: x["friends"].count(), employees))
+    return int(num_friends/num_employees)
+
+
+
+
 ####################################################################################################

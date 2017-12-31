@@ -48,7 +48,7 @@ def simulation_add_random_employees(employees_number, min_permission):
             id = random.randint(0, employees_number * 1000)
         permission = random.randint(1,min_permission)
         employee = {"id": int(id), "permission": int(permission), "friends": [], "schedule": {}}
-        Employees.insert(employee)  # add employee's details to the DB
+        SimEmployees.insert(employee)  # add employee's details to the DB
 
 
 def simulation_export_employees_to_file(output_file):
@@ -59,7 +59,7 @@ def simulation_export_employees_to_file(output_file):
                          simulation_get_schedule_of_employee(employee["id"]) + "\n")
 
 def simulation_get_schedule_of_employee(id):
-    employee = find_employee(id)
+    employee = simulation_find_employee(id)
     schedule = employee["schedule"]
     employee_schedule = ""
     for date_time, tuple in schedule.items():
@@ -67,6 +67,48 @@ def simulation_get_schedule_of_employee(id):
     return employee_schedule
 
 
+def simulation_add_a_friend_for_employee(employee_id, friend_id):
+    """
+    adds a friend to employees' friend list (and vice versa)
+    :param employee_id: id of employee
+    :param friend_id: id of employees' friend
+    :return: side effect: employee and his friends are now in each others' friends' list
+    """
+    employee = simulation_find_employee(employee_id)
+    friend = simulation_find_employee(friend_id)
+    if employee is None or friend is None:
+        return
+    simulation_add_friend_aux(employee, friend_id)
+    simulation_add_friend_aux(friend, employee_id)
 
+
+def simulation_add_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: the employee who adds the friend
+    :param friend_id: the id of the friend
+    """
+    employee_friends = employee["friends"]
+    employee_friends.append(friend_id)
+    SimEmployees.update_one({'id': employee["id"]},
+                         {'$set': {
+                             'friends': employee_friends}})
+
+
+def simulation_get_access_permission_of_employee_by_id(id):
+    employee = SimEmployees.find_one({"id": str(id)})
+    return int(employee["permission"])
+
+
+def simulation_check_id_of_employee(id):
+    employee = SimEmployees.find_one({"id": str(id)})
+    if employee is None:
+        return False
+    return True
+
+
+def simulation_find_employee(id):
+    if check_id_of_employee(id):
+        return SimEmployees.find_one({"id": str(id)})
 
 
