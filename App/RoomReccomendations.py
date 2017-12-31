@@ -49,6 +49,15 @@ def room_with_my_friends(employee_dict, friends):
     return sorted_rooms[-1]
 
 
+def reccomendationToEmployeeByRoom(employee, date_time=datetime.now().strftime("%d/%m/%y %H"), occupancy=1):
+    reccomendedList = []
+    for room in Rooms.find({'permission': {'$gte': employee.access_permission}}):
+        room = initialize_room_from_dict(room)
+        if room.free_place(occupancy, date_time):
+            reccomendedList.append(room.id)
+    return reccomendedList
+
+
 def initialize_employee_from_dict(dict_employee):
     """
 
