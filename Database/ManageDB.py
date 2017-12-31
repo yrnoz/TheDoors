@@ -371,6 +371,12 @@ def get_average_friends_of_employee():
     return int(num_friends/num_employees)
 
 
+def get_minimum_permission_in_factory():
+    '''
+    A function that returns the minimum permission of an employee in the factory
+    :return: the minimum permission.
+    '''
+    return reduce(lambda x,y: x if (x<y) else y, map(lambda x: int(x["permission"]), Employees.find()))
 
 
 ####################################################################################################
