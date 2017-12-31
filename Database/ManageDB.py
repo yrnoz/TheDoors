@@ -9,7 +9,7 @@ Employees = db["Employees"]  # create new table that called Employees
 
 ##################################################################################
 
-#import and export from files functions
+# import and export from files functions
 
 def import_employees_from_file(input_file):
     """
@@ -28,15 +28,26 @@ def import_employees_from_file(input_file):
 
 
 def export_employees_to_file(output_file):
+    """
+    exports employee collection in csv format
+    :param output_file: the name of file employees' collection will be exported to
+    """
     global Employees
     with open(output_file, 'w') as output:
         for employee in Employees.find():
-            output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                         + str(employee["permission"]) + "\n")
-
+            if not employee["friends"]:
+                output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+                             + str(employee["permission"]) + "\n")
+            else:
+                output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+                             + str(employee["permission"]) + "," + ",".join(employee["friends"]) + "\n")
 
 
 def export_rooms_to_file(output_file):
+    """
+    exports room collection in csv format
+    :param output_file: the name of file rooms' collection will be exported to
+    """
     global Rooms
     with open(output_file, 'w') as output:
         for room in Rooms.find():
@@ -53,11 +64,12 @@ def import_room_details_from_file(input_file):
     """
     global Rooms
     with open(input_file) as details:  # open the file
-        for line in filter(lambda x: x.translate(None,'\n'), details.readlines()):
+        for line in filter(lambda x: x.translate(None, '\n'), details.readlines()):
             id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
-            Rooms.insert_one(room)  # add room's details to the DB
+            Rooms.insert_one(room)  # add employee's details to the DB
+
 
 #######################################################################################
 
@@ -78,7 +90,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     capacity = room["capacity"]
     schedule = room["schedule"]
     schedule_employee = employee["schedule"]
-    if check_ligal_permission(employee, room) ==False:
+    if check_legal_permission(employee, room) == False:
         anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], date_time))
         return
     try:
@@ -90,16 +102,20 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        anouncments_list.append("Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],date_time))
+        anouncments_list.append(
+            "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
+                                                                                          date_time))
     else:
         if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_employee):
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        anouncments_list.append("Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
-                                                                                    date_time))
+        anouncments_list.append(
+            "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
+                                                                                          date_time))
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
+
 
 def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee):
     """
@@ -109,7 +125,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
     :param num_hours:
     """
 
-    #employee_permission = get_access_permission_of_employee_by_id(id)
+    # employee_permission = get_access_permission_of_employee_by_id(id)
     anouncments_list = []
     num_rooms = Rooms.find().count()  # size of the DB of Rooms
     previous_room = Rooms.find()[0]
@@ -119,21 +135,25 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
         if check_employee_already_ordered(employee, updated_time):
             continue
 
-        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee, anouncments_list)
-        #print anouncments_list
+        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee,
+                                                                anouncments_list)
+        # print anouncments_list
         if not is_asigned_previous:
             for j in range(0, num_rooms):
                 room = Rooms.find()[j]
                 if room["id"] == previous_room["id"]:
                     continue
-                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee, anouncments_list)
+                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee,
+                                                               anouncments_list)
                 if is_asigned:
                     previous_room = room
                     break
                 if not is_asigned:
-                    anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
+                    anouncments_list.append(
+                        "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
     print anouncments_list
     return anouncments_list
+
 
 def add_weekly_schedule(employee_id, room_order_items=None):
     if room_order_items is None:
@@ -159,9 +179,39 @@ def check_employee_already_ordered(employee, date_time):
         return True
     return False
 
+
+def delete_assign_employees_from_room(date_time, num_employees, num_hours, employee):
+    for i in range(0, num_hours):
+        updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
+        updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
+        if not check_room_ordered_by_employee(employee, updated_time):
+            print "error delete"
+            continue
+        room = get_room_ordered_by_employee(employee, updated_time)
+        schedule = room["schedule"]
+        schedule[date_time] = (schedule[date_time][0] - num_employees, None)
+        schedule_employee = employee["schedule"]
+        schedule_employee[date_time] = (0, None)
+
+
+def check_room_ordered_by_employee(employee, updated_time):
+    schedule_employee = employee["schedule"]
+    if id in schedule_employee:
+        return False
+    return True
+
+
+def get_room_ordered_by_employee(employee, updated_time):
+    schedule_employee = employee["schedule"]
+    if id in schedule_employee:
+        id_room = schedule_employee[updated_time][1]
+        room = find_room(id_room)
+    return room
+
+
 #######################################################################################
 
-#aux functions for the DB
+# aux functions for the DB
 
 def add_employee(employee):
     """
@@ -218,14 +268,14 @@ def update_room(id, floor, max_capacity, access_permission, schedule):
                                       'access_permission': access_permission, "schedule": schedule}}).matched_count:
         print
         'No such room'
-# input: id. output: the permission of the employee with this id
+
+
 def get_access_permission_of_employee_by_id(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
     return int(employee["permission"])
 
 
-# input: id. output: True if there is employee with this id, other False
 def check_id_of_employee(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
@@ -233,14 +283,13 @@ def check_id_of_employee(id):
         return False
     return True
 
-# input: id. output: the employee with this id
+
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.find_one({"id": str(id)})
-    return None
 
 
-def check_ligal_permission(employee, room):
+def check_legal_permission(employee, room):
     employee_permission = int(employee["permission"])
     room_permission = room["permission"]
     if employee_permission <= room_permission:
@@ -248,5 +297,64 @@ def check_ligal_permission(employee, room):
     return False
 
 
+def find_room(id):
+    return Rooms.find_one({"id": str(id)})
 
+
+def add_a_friend_for_employee(employee_id, friend_id):
+    """
+    adds a friend to employees' friend list (and vice versa)
+    :param employee_id: id of employee
+    :param friend_id: id of employees' friend
+    :return: side effect: employee and his friends are now in each others' friends' list
+    """
+    employee = find_employee(employee_id)
+    friend = find_employee(friend_id)
+    if employee is None or friend is None:
+        return
+    add_friend_aux(employee, friend_id)
+    add_friend_aux(friend, employee_id)
+
+
+def add_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: the employee who adds the friend
+    :param friend_id: the id of the friend
+    """
+    employee_friends = employee["friends"]
+    employee_friends.append(friend_id)
+    Employees.update_one({'id': employee["id"]},
+                         {'$set': {
+                             'friends': employee_friends}})
+
+
+def delete_a_friend_from_employee(employee_id, friend_id):
+    """
+    deletes a friend from employee's list
+    :param employee_id: the employee that wants to delete a friend
+    :param friend_id: the id of the friend to be deleted
+    :return: side effect, given employee and friend won't be friends any longer
+    """
+    employee = find_employee(employee_id)
+    friend = find_employee(friend_id)
+    if employee is None or friend is None:
+        return
+    delete_a_friend_aux(employee, friend_id)
+    delete_a_friend_aux(friend, employee_id)
+
+
+def delete_a_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: employee that wants to remove given id from his list
+    :param friend_id: id of the friend to be removed
+    """
+    employee_friends = employee["friends"]
+    employee_friends.remove(friend_id)
+
+    stam = Employees.update_one({'id': employee["id"]},
+                         {'$set': {
+                             'friends': employee_friends}}).matched_count
+    print "stam: " + str(stam)
 ####################################################################################################
