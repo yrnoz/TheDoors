@@ -12,8 +12,8 @@ def add_weekly_schedule_for_employee(id, input_file):
             if line.count(',') > 2:
                 date, duration_hours, employees, str_id_employee = line.split(',')
                 num_employees = int(employees)
-                words = str_id_employee.split()
-                if len(words)!=num_employees:
+                id_employee_list = str_id_employee.split()
+                if len(id_employee_list)!=num_employees:
                     print "problem in entering data"
             if line.count(',') == 1:
                 date, duration_hours = line.split(',')
