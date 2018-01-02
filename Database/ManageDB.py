@@ -90,6 +90,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
+        update_schedule_employees(date_time, room["id"], id_employee_list, num_employees)
         anouncments_list.append(
             "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
                                                                                           date_time))
@@ -98,11 +99,17 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
+        update_schedule_employees(date_time, room["id"], id_employee_list, num_employees)
         anouncments_list.append(
             "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
                                                                                           date_time))
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
+
+def update_schedule_employees(date_time, room, id_employee_list, num_employees):
+    for id in id_employee_list:
+        schedule_employee = find_employee(id)["schedule"]
+        schedule_employee[date_time] = (num_employees, room["id"])
 
 
 def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee, id_employee_list):
