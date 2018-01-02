@@ -62,7 +62,7 @@ def import_room_details_from_file(input_file):
 #######################################################################################
 
 
-def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, anouncments_list):
+def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, id_employee_list, anouncments_list):
     """
     this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees,
     and number of employees to assign, if possible - they would be assigned to the room.
@@ -78,7 +78,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     capacity = room["capacity"]
     schedule = room["schedule"]
     schedule_employee = employee["schedule"]
-    if check_ligal_permission(employee, room) == False:
+    if check_ligal_permission(employee, room, id_employee_list) == False:
         anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], date_time))
         return
     try:
@@ -105,7 +105,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     return True
 
 
-def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee):
+def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee, id_employee_list):
     """
     :param employee:
     :param date_time:
@@ -123,7 +123,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
         if check_employee_already_ordered(employee, updated_time):
             continue
 
-        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee,
+        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee, id_employee_list,
                                                                 anouncments_list)
         # print anouncments_list
         if not is_asigned_previous:
@@ -131,7 +131,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
                 room = Rooms.find()[j]
                 if room["id"] == previous_room["id"]:
                     continue
-                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee,
+                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee, id_employee_list,
                                                                anouncments_list)
                 if is_asigned:
                     previous_room = room
@@ -277,10 +277,16 @@ def find_employee(id):
         return Employees.find_one({"id": str(id)})
 
 
-def check_ligal_permission(employee, room):
+def check_ligal_permission(employee, room, id_employee_list):
+    max_permission = 5 ##I assume it is the max
+    for id in id_employee_list:
+        permission_employee = int(find_employee(id)["permission"])
+        if permission_employee > max_permission:
+            max_permission = permission_employee
     employee_permission = int(employee["permission"])
+    max_permission_all = max(employee_permission, max_permission)
     room_permission = room["permission"]
-    if employee_permission <= room_permission:
+    if max_permission_all <= room_permission:
         return True
     return False
 

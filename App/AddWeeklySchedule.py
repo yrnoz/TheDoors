@@ -18,7 +18,7 @@ def add_weekly_schedule_for_employee(id, input_file):
             if line.count(',') == 1:
                 date, duration_hours = line.split(',')
                 num_employees = 1
-            anouncments_list = assign_employees_to_room_to_X_hours(date, num_employees, int(duration_hours), employee)
+            anouncments_list = assign_employees_to_room_to_X_hours(date, num_employees, int(duration_hours), employee, id_employee_list)
             anouncments_string = ""
             for announce in anouncments_list:
                 anouncments_string += announce
