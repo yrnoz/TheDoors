@@ -21,8 +21,8 @@ def import_employees_from_file(input_file):
     global Employees
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
-            id, name, role, permission = line[:-1].split(",")  # get the parameters we need from the line
-            employee = {"id": id, "name": name, "role": role, "permission": int(permission), "friends": [],
+            id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
+            employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password, "friends": [],
                         "schedule": {}}
             Employees.insert(employee)  # add employee's details to the DB
 
@@ -32,7 +32,7 @@ def export_employees_to_file(output_file):
     with open(output_file, 'w') as output:
         for employee in Employees.find():
             output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                         + str(employee["permission"]) + "\n")
+                         + str(employee["permission"] + "," + employee["password"]) + "\n")
 
 
 def export_rooms_to_file(output_file):
@@ -217,7 +217,7 @@ def add_employee(employee):
     """
     global Employees
     employee_json = {"id": employee.id, "name": employee.name, "role": employee.role,
-                     "permission": int(employee.access_permission), "friends": employee.friends,
+                     "permission": int(employee.access_permission), "password": employee.password, "friends": employee.friends,
                      "schedule": {}}
     Employees.insert(employee_json)
 
@@ -228,10 +228,10 @@ def remove_employee(id):
         print 'No such employee'
 
 
-def update_employee(id, name, role, permission, friends, schedules):
+def update_employee(id, name, role, permission, password, friends, schedules):
     global Employees
     if not Employees.update_one({'id': id},
-                                {'$set': {'name': name, 'role': role, 'permission': permission,
+                                {'$set': {'name': name, 'role': role, 'permission': permission, 'password': password,
                                           'friends': friends, "schedule": schedules}}).matched_count:
         print "No such employee"
 
@@ -270,6 +270,10 @@ def get_access_permission_of_employee_by_id(id):
     employee = Employees.find_one({"id": str(id)})
     return int(employee["permission"])
 
+def get_password_of_employee_by_id(id):
+    global Employees
+    employee = Employees.find_one({"id": str(id)})
+    return int(employee["password"])
 
 def check_id_of_employee(id):
     global Employees
@@ -278,6 +282,12 @@ def check_id_of_employee(id):
         return False
     return True
 
+def check_password_of_employee(id, password):
+    global Employees
+    employee = Employees.find_one({"id": str(id)})
+    if employee.password!=password:
+        return False
+    return True
 
 def find_employee(id):
     if check_id_of_employee(id):

@@ -2,11 +2,12 @@ from Database.ManageDB import update_employee
 
 
 class Employee:
-    def __init__(self, id, name, role, access_permission):
+    def __init__(self, id, name, role, access_permission, password):
         self.id = id
         self.name = name
         self.role = role
         self.access_permission = access_permission
+        self.password = password
         self.friends = []
         self.schedule = {}
         self.location = None
@@ -39,7 +40,7 @@ class Employee:
 
     def add_friends(self, friends):
         self.friends += friends
-        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
+        update_employee(self.id, self.name, self.role, self.access_permission, self.password, self.friends, self.schedule)
 
     def remove_friends(self, friends):
         """
@@ -48,7 +49,7 @@ class Employee:
         """
         for friend in friends:
             self.friends.remove(friend)
-        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
+        update_employee(self.id, self.name, self.role, self.access_permission, self.password, self.friends, self.schedule)
 
     def add_schedules(self, schedules):
         """
@@ -56,12 +57,16 @@ class Employee:
         :param schedules: assume it is a dictionary {k: date_time v: (num_employee, room_id )}
         """
         self.schedule.update(schedules)
-        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
+        update_employee(self.id, self.name, self.role, self.access_permission, self.password, self.friends, self.schedule)
 
     def change_permission(self, permission):
         self.access_permission = permission
-        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
+        update_employee(self.id, self.name, self.role, self.access_permission, self.password, self.friends, self.schedule)
+
+    def change_password(self, password):
+        self.password = password
+        update_employee(self.id, self.name, self.role, self.access_permission, self.password, self.friends, self.schedule)
 
     def change_role(self, role):
         self.role = role
-        update_employee(self.id, self.name, self.role, self.access_permission, self.friends, self.schedule)
+        update_employee(self.id, self.name, self.role, self.access_permission, self.password, self.friends, self.schedule)

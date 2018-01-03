@@ -52,7 +52,7 @@ def initialize_employee_from_dict(dict_employee):
     :param dict_employee: dictionary of the values that needs to init employee
     :return: Employee object
     """
-    employee = Employee(dict_employee["id"], dict_employee["name"], dict_employee["role"], dict_employee["permission"])
+    employee = Employee(dict_employee["id"], dict_employee["name"], dict_employee["role"], dict_employee["permission"], dict_employee["password"])
     employee.friends = list(dict_employee["friends"])
     employee.schedule = dict(dict_employee["schedule"])
     return employee
