@@ -29,6 +29,30 @@ def delete_content(pfile):
     pfile.truncate()
 
 
+def test_weekly_schedule_worker():
+    Rooms.drop()
+    Employees.drop()
+
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
+
+    employees.write("234,Koby,Engineer,2\n")
+    employees.write("498,Elyasaf,Engineer,2\n")
+    # entering a room with permission 1.
+    rooms.write("taub 4,40,2,1\n")
+    employees.seek(0)
+    rooms.seek(0)
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
+    import_room_details_from_file(rooms.name)
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+    schedule_file.write("24/07/17 12, 2, 2, 498 234 \n")  # need to succeed
+    schedule_file.seek(0)
+    add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+
+
+
+
+
 def test_add_weekly_schedule_succeed():
     Rooms.drop()
     Employees.drop()
@@ -293,9 +317,10 @@ def test_recommend_by_friends():
 
 
 if __name__ == '__main__':
-    test_add_weekly_schedule()
-    test_add_weekly_schedule_succeed()
-    test_add_weekly_schedule_some_hours_fails()
+    test_weekly_schedule_worker()
+    #test_add_weekly_schedule()
+    #test_add_weekly_schedule_succeed()
+    #test_add_weekly_schedule_some_hours_fails()
     test_roomRecommendation_two_rooms()
     test_roomRecommendation_no_permission()
     test_roomRecommendation_no_place_in_rooms()
