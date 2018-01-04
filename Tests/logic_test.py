@@ -197,7 +197,7 @@ def test_room_with_my_friends():
 def print_employees_db():
     for employee in Employees.find():
         print "id: " + str(employee["id"]) + " name: " + employee["name"] + " role: " + \
-              employee["role"] + " permossion: " + str(employee["permission"]) + "\n"
+              employee["role"] + " permossion: " + str(employee["permission"]) + "password: " + str(employee["password"])+ "\n"
 
 
 def print_rooms_db():
