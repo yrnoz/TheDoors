@@ -8,6 +8,6 @@
   "Tests/DB_test.py::test_export_rooms_without_change_shouldnt_change": true, 
   "Tests/DB_test.py::test_import_rooms_succeeds": true, 
   "Tests/DB_test.py::test_remove_friend": true, 
-  "Tests/logic_test.py": true, 
+  "Tests/logic_test.py::test_emptyRooms": true, 
   "Tests/logic_test.py::test_roomRecommendation": true
 }
