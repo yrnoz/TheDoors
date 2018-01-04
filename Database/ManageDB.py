@@ -320,4 +320,21 @@ def check_ligal_permission(employee, room, id_employee_list):
 def find_room(id):
     return Rooms.find_one({"id": str(id)})
 
+def get_average_friends_in_factory():
+    '''
+        A function that calculate the average friends per employee
+        :return: the average friends per employee
+    '''
+    num_employees = len(Employees.find())
+    num_friends = reduce(lambda x,y: x+y, map(lambda x: len(x["friends"]), Employees.find()))
+    return int(num_friends/num_employees)
+
+def get_minimum_permission_in_factory():
+     '''
+     A function that returns the minimum permission of an employee in the factory
+     :return: the minimum permission.
+     '''
+     return max(map(lambda x: int(x["permission"]), Employees.find()))
+
+
 ####################################################################################################
