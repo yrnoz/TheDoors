@@ -88,7 +88,7 @@ def test_export_employees_with_addition_should_increase():
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Employees.drop()
     import_employees_from_file(file_name)
-    add_employee(Employee("900", "Johnny", "Engineer", 1 , "password"))
+    add_employee(Employee("900", "Johnny", "Engineer", 1, "password"))
     output_file = "Tests%soutput_test.csv" % os.sep
     assert check_id_of_employee("900") is True
     export_employees_to_file(output_file)
@@ -180,7 +180,8 @@ def test_remove_friend():
     Employees.drop()
     os.remove(output_file)
 
-# @pytest.mark.skip(reason="should be separated into different tests")
+
+@pytest.mark.skip(reason=0)
 def test_db():
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()

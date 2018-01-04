@@ -29,14 +29,27 @@ def import_employees_from_file(input_file):
 
 
 def export_employees_to_file(output_file):
+    """
+        exports employee collection in csv format
+        :param output_file: the name of file employees' collection will be exported to
+    """
     global Employees
     with open(output_file, 'w') as output:
         for employee in Employees.find():
-            output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                         + str(employee["permission"]) + "," + employee["password"] + "\n")
+            if not employee["friends"]:
+                output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+                             + str(employee["permission"]) + "," + employee["password"] + "\n")
+            else:
+                output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+                             + str(employee["permission"]) + "," + employee["password"] + "," + ",".join(
+                    employee["friends"]) + "\n")
 
 
 def export_rooms_to_file(output_file):
+    """
+    exports room collection in csv format
+    :param output_file: the name of file rooms' collection will be exported to
+    """
     global Rooms
     with open(output_file, 'w') as output:
         for room in Rooms.find():
@@ -112,6 +125,7 @@ def update_schedule_employees(date_time, room, id_employee_list, num_employees):
     for id in id_employee_list:
         schedule_employee = find_employee(id)["schedule"]
         schedule_employee[date_time] = (num_employees, room["id"])
+
 
 
 def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee, id_employee_list):
@@ -275,13 +289,15 @@ def get_access_permission_of_employee_by_id(id):
     employee = Employees.find_one({"id": str(id)})
     return int(employee["permission"])
 
-#input: id output: password of this employee
+
+# input: id output: password of this employee
 def get_password_of_employee_by_id(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
     return int(employee["password"])
 
-#input: id output: True - if there is employee with this id False other wise
+
+# input: id output: True - if there is employee with this id False other wise
 def check_id_of_employee(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
@@ -289,7 +305,8 @@ def check_id_of_employee(id):
         return False
     return True
 
-#input: id, password output: True if the password match the employee False other wise
+
+# input: id, password output: True if the password match the employee False other wise
 def check_password_of_employee(id, password):
     global Employees
     employee = Employees.find_one({"id": str(id)})
@@ -297,14 +314,15 @@ def check_password_of_employee(id, password):
         return False
     return True
 
-#input: id output: the employee with this id
+
+# input: id output: the employee with this id
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.find_one({"id": str(id)})
 
 
 def check_ligal_permission(employee, room, id_employee_list):
-    max_permission = get_minimum_permission_in_factory()  #I assume it is the max
+    max_permission = get_minimum_permission_in_factory()  # I assume it is the max
     for id in id_employee_list:
         permission_employee = int(find_employee(id)["permission"])
         if permission_employee > max_permission:
@@ -316,9 +334,11 @@ def check_ligal_permission(employee, room, id_employee_list):
         return True
     return False
 
-#input: id output: the room with this id
+
+# input: id output: the room with this id
 def find_room(id):
     return Rooms.find_one({"id": str(id)})
+
 
 def get_average_friends_in_factory():
     '''
@@ -326,15 +346,71 @@ def get_average_friends_in_factory():
         :return: the average friends per employee
     '''
     num_employees = len(Employees.find())
-    num_friends = reduce(lambda x,y: x+y, map(lambda x: len(x["friends"]), Employees.find()))
-    return int(num_friends/num_employees)
+    num_friends = reduce(lambda x, y: x + y, map(lambda x: len(x["friends"]), Employees.find()))
+    return int(num_friends / num_employees)
+
 
 def get_minimum_permission_in_factory():
-     '''
-     A function that returns the minimum permission of an employee in the factory
-     :return: the minimum permission.
-     '''
-     return max(map(lambda x: int(x["permission"]), Employees.find()))
+    '''
+    A function that returns the minimum permission of an employee in the factory
+    :return: the minimum permission.
+    '''
+    return max(map(lambda x: int(x["permission"]), Employees.find()))
 
+def add_a_friend_for_employee(employee_id, friend_id):
+    """
+    adds a friend to employees' friend list (and vice versa)
+    :param employee_id: id of employee
+    :param friend_id: id of employees' friend
+    :return: side effect: employee and his friends are now in each others' friends' list
+    """
+    employee = find_employee(employee_id)
+    friend = find_employee(friend_id)
+    if employee is None or friend is None:
+        return
+    add_friend_aux(employee, friend_id)
+    add_friend_aux(friend, employee_id)
+
+
+def add_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: the employee who adds the friend
+    :param friend_id: the id of the friend
+    """
+    employee_friends = employee["friends"]
+    employee_friends.append(friend_id)
+    Employees.update_one({'id': employee["id"]},
+                         {'$set': {
+                             'friends': employee_friends}})
+
+
+def delete_a_friend_from_employee(employee_id, friend_id):
+    """
+    deletes a friend from employee's list
+    :param employee_id: the employee that wants to delete a friend
+    :param friend_id: the id of the friend to be deleted
+    :return: side effect, given employee and friend won't be friends any longer
+    """
+    employee = find_employee(employee_id)
+    friend = find_employee(friend_id)
+    if employee is None or friend is None:
+        return
+    delete_a_friend_aux(employee, friend_id)
+    delete_a_friend_aux(friend, employee_id)
+
+
+def delete_a_friend_aux(employee, friend_id):
+    """
+    An auxiliary function for the above, it does the actual changes to the DB (wrote it to avoiding code duplication)
+    :param employee: employee that wants to remove given id from his list
+    :param friend_id: id of the friend to be removed
+    """
+    employee_friends = employee["friends"]
+    employee_friends.remove(friend_id)
+
+    stam = Employees.update_one({'id': employee["id"]},
+                         {'$set': {
+                             'friends': employee_friends}}).matched_count
 
 ####################################################################################################

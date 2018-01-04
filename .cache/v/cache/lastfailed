@@ -1,7 +1,3 @@
 {
-  "Tests/DB_test.py::test_add_friend": true, 
-  "Tests/DB_test.py::test_db": true, 
-  "Tests/DB_test.py::test_remove_friend": true, 
-  "Tests/logic_test.py::test_emptyRooms": true, 
   "Tests/logic_test.py::test_roomRecommendation": true
 }
