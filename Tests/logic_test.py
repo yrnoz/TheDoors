@@ -2,20 +2,9 @@ import os
 import subprocess
 import pytest
 
-
-
-
-
-
-
-
-
-
-
-
 from App.AddWeeklySchedule import add_weekly_schedule_for_employee
 from App.Room import Room
-from App.RoomReccomendations import initialize_employee_from_dict,  \
+from App.RoomReccomendations import initialize_employee_from_dict, \
     emptyRooms, recommend_by_friends
 from Database.ManageDB import *
 from App.Employee import *
@@ -39,6 +28,7 @@ def delete_content(pfile):
     pfile.seek(0)
     pfile.truncate()
 
+
 @pytest.mark.skip
 def test_weekly_schedule_worker():
     Rooms.drop()
@@ -59,8 +49,6 @@ def test_weekly_schedule_worker():
     schedule_file.write("24/07/17 12, 2, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-
-
 
 
 @pytest.mark.skip
@@ -91,6 +79,7 @@ def test_add_weekly_schedule_succeed():
     assert add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep) \
            == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. " \
               "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 13. "
+
 
 @pytest.mark.skip
 def test_add_weekly_schedule_some_hours_fails():
@@ -163,9 +152,6 @@ def test_add_weekly_schedule():
     p.terminate()
 
 
-
-
-
 #########################################################################################################
 
 
@@ -185,8 +171,8 @@ def test_emptyRooms():
     Employees.drop()
     employees = open("Tests%semployees.csv" % os.sep, "w+")
     rooms = open("Tests%srooms.csv" % os.sep, "w+")
-    employees.write("234,Koby,Engineer,2\n")
-    employees.write("498,Elyasaf,Engineer,2\n")
+    employees.write("234,Koby,Engineer,2,pass2\n")
+    employees.write("498,Elyasaf,Engineer,2,pass1 \n")
     rooms.write("taub 4,40,2,1\n")
     employees.seek(0)
     rooms.seek(0)
@@ -196,7 +182,7 @@ def test_emptyRooms():
     schedule_file.write("24/07/17 12, 2, 35 \n")
     schedule_file.seek(0)
     add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-    koby = Employee(234, 'Koby', 'Engineer', 2)
+    koby = Employee(234, 'Koby', 'Engineer', 2, "password")
     x = emptyRooms(koby, "24/07/17 12")
     assert emptyRooms(koby, "24/07/17 12") == {"taub 4": 5}
 
@@ -209,7 +195,8 @@ def test_room_with_my_friends():
 def print_employees_db():
     for employee in Employees.find():
         print "id: " + str(employee["id"]) + " name: " + employee["name"] + " role: " + \
-              employee["role"] + " permossion: " + str(employee["permission"]) + "password: " + str(employee["password"])+ "\n"
+              employee["role"] + " permossion: " + str(employee["permission"]) + "password: " + str(
+            employee["password"]) + "\n"
 
 
 def print_rooms_db():

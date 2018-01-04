@@ -22,7 +22,8 @@ def import_employees_from_file(input_file):
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
             id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
-            employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password, "friends": [],
+            employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password,
+                        "friends": [],
                         "schedule": {}}
             Employees.insert(employee)  # add employee's details to the DB
 
@@ -32,7 +33,7 @@ def export_employees_to_file(output_file):
     with open(output_file, 'w') as output:
         for employee in Employees.find():
             output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                         + str(employee["permission"] + "," + employee["password"]) + "\n")
+                         + str(employee["permission"]) + "," + employee["password"] + "\n")
 
 
 def export_rooms_to_file(output_file):
@@ -106,6 +107,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     Rooms.replace_one({'_id': room['_id']}, room)
     return True
 
+
 def update_schedule_employees(date_time, room, id_employee_list, num_employees):
     for id in id_employee_list:
         schedule_employee = find_employee(id)["schedule"]
@@ -130,7 +132,8 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
         if check_employee_already_ordered(employee, updated_time):
             continue
 
-        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee, id_employee_list,
+        is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee,
+                                                                id_employee_list,
                                                                 anouncments_list)
         # print anouncments_list
         if not is_asigned_previous:
@@ -138,7 +141,8 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
                 room = Rooms.find()[j]
                 if room["id"] == previous_room["id"]:
                     continue
-                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee, id_employee_list,
+                is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee,
+                                                               id_employee_list,
                                                                anouncments_list)
                 if is_asigned:
                     previous_room = room
@@ -217,7 +221,8 @@ def add_employee(employee):
     """
     global Employees
     employee_json = {"id": employee.id, "name": employee.name, "role": employee.role,
-                     "permission": int(employee.access_permission), "password": employee.password, "friends": employee.friends,
+                     "permission": int(employee.access_permission), "password": employee.password,
+                     "friends": employee.friends,
                      "schedule": {}}
     Employees.insert(employee_json)
 
@@ -270,10 +275,12 @@ def get_access_permission_of_employee_by_id(id):
     employee = Employees.find_one({"id": str(id)})
     return int(employee["permission"])
 
+
 def get_password_of_employee_by_id(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
     return int(employee["password"])
+
 
 def check_id_of_employee(id):
     global Employees
@@ -282,12 +289,14 @@ def check_id_of_employee(id):
         return False
     return True
 
+
 def check_password_of_employee(id, password):
     global Employees
     employee = Employees.find_one({"id": str(id)})
-    if employee.password!=password:
+    if employee.password != password:
         return False
     return True
+
 
 def find_employee(id):
     if check_id_of_employee(id):
@@ -295,7 +304,7 @@ def find_employee(id):
 
 
 def check_ligal_permission(employee, room, id_employee_list):
-    max_permission = 5 ##I assume it is the max
+    max_permission = 5  ##I assume it is the max
     for id in id_employee_list:
         permission_employee = int(find_employee(id)["permission"])
         if permission_employee > max_permission:
