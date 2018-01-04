@@ -5,7 +5,7 @@ import pytest
 from App.AddWeeklySchedule import add_weekly_schedule_for_employee
 from App.Room import Room
 from App.RoomReccomendations import initialize_employee_from_dict,  \
-    reccomendationToEmployeeByRoom, emptyRooms, recommend_by_friends
+    emptyRooms, recommend_by_friends
 from Database.ManageDB import *
 from App.Employee import *
 
@@ -207,91 +207,91 @@ def print_rooms_db():
             room["permission"]) + " floor: " + str(room["floor"]) + "\n"
 
 
-def test_roomRecommendation_two_rooms():
-    Rooms.drop()
-    Employees.drop()
-    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
-    # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
-    koby = Employee(234, 'Koby', 'Engineer', 2)
-    with open("Tests%srooms_test2.csv" % os.sep, 'w') as test:
-        test.write("taub 1,40,3,1\n")
-    import_room_details_from_file("Tests%srooms_test2.csv" % os.sep)
-    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-    assert len(recommended) == 1
-    assert recommended[0] == "taub 1"
-    recommended = reccomendationToEmployeeByRoom(koby)
-    assert len(recommended) == 1
-    assert recommended[0] == "taub 1"
-    Rooms.drop()
-    with open("Tests%srooms_test2.csv" % os.sep, 'a') as test:
-        test.write("taub 2,30,3,1")
-    import_room_details_from_file("Tests%srooms_test2.csv" % os.sep)
-    recommended = reccomendationToEmployeeByRoom(koby, "03/02/19 11")
-    assert len(recommended) == 2
-    Rooms.drop()
-    Employees.drop()
+# def test_roomRecommendation_two_rooms():
+#     Rooms.drop()
+#     Employees.drop()
+#     import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+#     # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+#     koby = Employee(234, 'Koby', 'Engineer', 2)
+#     with open("Tests%srooms_test2.csv" % os.sep, 'w') as test:
+#         test.write("taub 1,40,3,1\n")
+#     import_room_details_from_file("Tests%srooms_test2.csv" % os.sep)
+#     #recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+#     assert len(recommended) == 1
+#     assert recommended[0] == "taub 1"
+#     recommended = reccomendationToEmployeeByRoom(koby)
+#     assert len(recommended) == 1
+#     assert recommended[0] == "taub 1"
+#     Rooms.drop()
+#     with open("Tests%srooms_test2.csv" % os.sep, 'a') as test:
+#         test.write("taub 2,30,3,1")
+#     import_room_details_from_file("Tests%srooms_test2.csv" % os.sep)
+#     recommended = reccomendationToEmployeeByRoom(koby, "03/02/19 11")
+#     assert len(recommended) == 2
+#     Rooms.drop()
+#     Employees.drop()
 
 
-def test_roomRecommendation_no_permission():
-    Rooms.drop()
-    Employees.drop()
-    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
-    # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
-    koby = Employee(234, 'Koby', 'Engineer', 2)
-    with open("Tests%srooms_test2.csv" % os.sep, 'w') as test:
-        test.write("taub 1,40,1,1")
-    import_room_details_from_file("Tests%srooms_test2.csv" % os.sep)
-    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-    assert len(recommended) == 0
-    Rooms.drop()
-    with open("Tests%srooms_test2.csv" % os.sep, 'w') as test:
-        test.write("taub 2,30,3,1")
-    import_room_details_from_file("Tests%srooms_test2.csv" % os.sep)
-    recommended = reccomendationToEmployeeByRoom(koby, "03/02/19 11")
-    assert len(recommended) == 1
-    Rooms.drop()
-    Employees.drop()
+# def test_roomRecommendation_no_permission():
+#     Rooms.drop()
+#     Employees.drop()
+#     import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+#     # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+#     koby = Employee(234, 'Koby', 'Engineer', 2)
+#     with open("Tests%srooms_test2.csv" % os.sep, 'w') as test:
+#         test.write("taub 1,40,1,1")
+#     import_room_details_from_file("Tests%srooms_test2.csv" % os.sep)
+#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+#     assert len(recommended) == 0
+#     Rooms.drop()
+#     with open("Tests%srooms_test2.csv" % os.sep, 'w') as test:
+#         test.write("taub 2,30,3,1")
+#     import_room_details_from_file("Tests%srooms_test2.csv" % os.sep)
+#     recommended = reccomendationToEmployeeByRoom(koby, "03/02/19 11")
+#     assert len(recommended) == 1
+#     Rooms.drop()
+#     Employees.drop()
 
 
-def test_roomRecommendation_no_place_in_rooms():
-    Rooms.drop()
-    Employees.drop()
-    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
-    # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
-    koby = Employee(234, 'Koby', 'Engineer', 2)
-    room1 = Room("taub 1", 0, 0, 3)
-    room2 = Room("taub 2", 0, 0, 3)
-    room3 = Room("taub 3", 0, 30, 4)
-    add_room(room1)
-    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-    assert len(recommended) == 0
-    add_room(room2)
-    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-    assert len(recommended) == 0
-    add_room(room3)
-    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-    assert len(recommended) == 1
-    assert recommended == [room3.id]
-    Rooms.drop()
-    Employees.drop()
+# def test_roomRecommendation_no_place_in_rooms():
+#     Rooms.drop()
+#     Employees.drop()
+#     import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+#     # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+#     koby = Employee(234, 'Koby', 'Engineer', 2)
+#     room1 = Room("taub 1", 0, 0, 3)
+#     room2 = Room("taub 2", 0, 0, 3)
+#     room3 = Room("taub 3", 0, 30, 4)
+#     add_room(room1)
+#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+#     assert len(recommended) == 0
+#     add_room(room2)
+#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+#     assert len(recommended) == 0
+#     add_room(room3)
+#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+#     assert len(recommended) == 1
+#     assert recommended == [room3.id]
+#     Rooms.drop()
+#     Employees.drop()
 
 
-def test_roomRecommendation_many_rooms():
-    Rooms.drop()
-    Employees.drop()
-    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
-    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
-    koby = Employee(234, 'Koby', 'Engineer', 1)
-    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-    assert len(recommended) == 11
-    Rooms.drop()
-    for i in range(500):
-        room = Room(randomword(7), 0, 30, 2)
-        add_room(room)
-    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-    assert len(recommended) == 500
-    Rooms.drop()
-    Employees.drop()
+# def test_roomRecommendation_many_rooms():
+#     Rooms.drop()
+#     Employees.drop()
+#     import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+#     import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+#     koby = Employee(234, 'Koby', 'Engineer', 1)
+#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+#     assert len(recommended) == 11
+#     Rooms.drop()
+#     for i in range(500):
+#         room = Room(randomword(7), 0, 30, 2)
+#         add_room(room)
+#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+#     assert len(recommended) == 500
+#     Rooms.drop()
+#     Employees.drop()
 
 
 def create_friend_relationship():
@@ -315,14 +315,3 @@ def test_recommend_by_friends():
         employee = initialize_employee_from_dict(employee)
         res = recommend_by_friends(employee)
         assert res == ["taub 4"]
-
-
-if __name__ == '__main__':
-    test_weekly_schedule_worker()
-    #test_add_weekly_schedule()
-    #test_add_weekly_schedule_succeed()
-    #test_add_weekly_schedule_some_hours_fails()
-    test_roomRecommendation_two_rooms()
-    test_roomRecommendation_no_permission()
-    test_roomRecommendation_no_place_in_rooms()
-    test_roomRecommendation_many_rooms()
