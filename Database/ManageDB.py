@@ -275,13 +275,13 @@ def get_access_permission_of_employee_by_id(id):
     employee = Employees.find_one({"id": str(id)})
     return int(employee["permission"])
 
-
+#input: id output: password of this employee
 def get_password_of_employee_by_id(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
     return int(employee["password"])
 
-
+#input: id output: True - if there is employee with this id False other wise
 def check_id_of_employee(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
@@ -289,7 +289,7 @@ def check_id_of_employee(id):
         return False
     return True
 
-
+#input: id, password output: True if the password match the employee False other wise
 def check_password_of_employee(id, password):
     global Employees
     employee = Employees.find_one({"id": str(id)})
@@ -297,14 +297,14 @@ def check_password_of_employee(id, password):
         return False
     return True
 
-
+#input: id output: the employee with this id
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.find_one({"id": str(id)})
 
 
 def check_ligal_permission(employee, room, id_employee_list):
-    max_permission = 5  ##I assume it is the max
+    max_permission = get_minimum_permission_in_factory()  #I assume it is the max
     for id in id_employee_list:
         permission_employee = int(find_employee(id)["permission"])
         if permission_employee > max_permission:
@@ -316,7 +316,7 @@ def check_ligal_permission(employee, room, id_employee_list):
         return True
     return False
 
-
+#input: id output: the room with this id
 def find_room(id):
     return Rooms.find_one({"id": str(id)})
 
