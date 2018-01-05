@@ -182,6 +182,35 @@ def test_remove_friend():
 
 
 @pytest.mark.skip(reason="redundant")
+def test_check_password_of_employee():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    assert check_password_of_employee("123", "1234") is True
+    assert check_password_of_employee("0123", "1235") is True
+    assert check_password_of_employee("134", "1239") is True
+    assert check_password_of_employee("742", "1221") is True
+    assert check_password_of_employee("965", "1222") is True
+    assert check_password_of_employee("840", "1323") is True
+    Employees.drop()
+
+
+def test_get_password_of_employee_by_id():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    assert get_password_of_employee_by_id("123") == "1234"
+    assert get_password_of_employee_by_id("0123") == "1235"
+    assert get_password_of_employee_by_id("134") == "1239"
+    assert get_password_of_employee_by_id("742")== "1221"
+    assert get_password_of_employee_by_id("965") == "1222"
+    assert get_password_of_employee_by_id("840") == "1323"
+    Employees.drop()
+
+
+@pytest.mark.skip(reason=0)
 def test_db():
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()

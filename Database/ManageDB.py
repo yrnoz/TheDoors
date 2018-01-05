@@ -294,7 +294,7 @@ def get_access_permission_of_employee_by_id(id):
 def get_password_of_employee_by_id(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
-    return int(employee["password"])
+    return str(employee["password"])
 
 
 # input: id output: True - if there is employee with this id False other wise
@@ -306,11 +306,12 @@ def check_id_of_employee(id):
     return True
 
 
-# input: id, password output: True if the password match the employee False other wise
+# input: id, password output: True if the password match the employee False otherwise
 def check_password_of_employee(id, password):
     global Employees
     employee = Employees.find_one({"id": str(id)})
-    if employee.password != password:
+    #print employee["password"]
+    if employee["password"] != password:
         return False
     return True
 
