@@ -3,6 +3,8 @@ from pymongo import MongoClient
 
 client = MongoClient()  # making the connection with the DB
 db = client['test-database']  # create a new DB
+# client = MongoClient('mongodb://testuser:123123@ds135029.mlab.com:35029/testing')
+# db = client['testing']  # create a new DB
 Rooms = db["Rooms"]  # create new table that called Rooms
 Employees = db["Employees"]  # create new table that called Employees
 
@@ -92,7 +94,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     capacity = room["capacity"]
     schedule = room["schedule"]
     schedule_employee = employee["schedule"]
-    if check_ligal_permission(employee, room, id_employee_list) == False:
+    if not check_ligal_permission(employee, room, id_employee_list):
         anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], date_time))
         return
     try:
@@ -125,7 +127,6 @@ def update_schedule_employees(date_time, room, id_employee_list, num_employees):
     for id in id_employee_list:
         schedule_employee = find_employee(id)["schedule"]
         schedule_employee[date_time] = (num_employees, room["id"])
-
 
 
 def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee, id_employee_list):
@@ -310,7 +311,7 @@ def check_id_of_employee(id):
 def check_password_of_employee(id, password):
     global Employees
     employee = Employees.find_one({"id": str(id)})
-    #print employee["password"]
+    # print employee["password"]
     if employee["password"] != password:
         return False
     return True
@@ -357,6 +358,7 @@ def get_minimum_permission_in_factory():
     :return: the minimum permission.
     '''
     return max(map(lambda x: int(x["permission"]), Employees.find()))
+
 
 def add_a_friend_for_employee(employee_id, friend_id):
     """
@@ -409,9 +411,29 @@ def delete_a_friend_aux(employee, friend_id):
     """
     employee_friends = employee["friends"]
     employee_friends.remove(friend_id)
-
-    stam = Employees.update_one({'id': employee["id"]},
+    Employees.update_one({'id': employee["id"]},
                          {'$set': {
                              'friends': employee_friends}}).matched_count
+
+
+def set_location_of_employee(employee_id, room_id, room_floor):
+    """
+    Updates employee's location in the DB when he enters into a room
+    :param employee_id: id of employee entering a room
+    :param room_id: id of the room the employee's entering into
+    :param room_floor: the floor of the id
+    :return: side effect: employee is marked as being in the room in the DB
+    """
+    # TODO: room floor might be redundant, need to reconsider it
+    if not (check_id_of_employee(employee_id) or find_room(room_id)):
+        return
+    global Employees
+    global Rooms
+    Employees.update_one({'id': employee_id},
+                         {'$set': {'current_room': {'room_id': room_id, 'room_floor': room_floor}}})
+
+
+def handle_employee_exiting_a_room(employee_id):
+    pass
 
 ####################################################################################################

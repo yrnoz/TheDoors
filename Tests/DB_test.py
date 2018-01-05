@@ -9,6 +9,10 @@ from App.RoomOrder import RoomOrder
 from Database.ManageDB import *
 
 
+def test_dummy():
+    pass
+
+
 @pytest.fixture(autouse=True)
 def p():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
@@ -181,7 +185,6 @@ def test_remove_friend():
     os.remove(output_file)
 
 
-@pytest.mark.skip(reason="redundant")
 def test_check_password_of_employee():
     file_name = "Tests%semployees_test.csv" % os.sep
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
@@ -204,10 +207,46 @@ def test_get_password_of_employee_by_id():
     assert get_password_of_employee_by_id("123") == "1234"
     assert get_password_of_employee_by_id("0123") == "1235"
     assert get_password_of_employee_by_id("134") == "1239"
-    assert get_password_of_employee_by_id("742")== "1221"
+    assert get_password_of_employee_by_id("742") == "1221"
     assert get_password_of_employee_by_id("965") == "1222"
     assert get_password_of_employee_by_id("840") == "1323"
     Employees.drop()
+
+
+def test_share_location_entering_a_room_invalid_employee_id():
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    assert not check_id_of_employee("187")
+    assert find_room("taub 1") is not None
+    set_location_of_employee("187", "taub 1", 3)
+    Employees.drop()
+    Rooms.drop()
+
+
+def test_share_location_entering_a_room_valid_details():
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    assert check_id_of_employee("123")
+    assert find_room("taub 1") is not None
+    set_location_of_employee("123", "taub 1", 3)
+    Employees.drop()
+    Rooms.drop()
+
+
+def test_share_location_entering_then_exiting_a_room():
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    assert check_id_of_employee("123")
+    assert find_room("taub 1") is not None
+    set_location_of_employee("123", "taub 1", 3)
+    Employees.drop()
+    Rooms.drop()
 
 
 @pytest.mark.skip(reason=0)
