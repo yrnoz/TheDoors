@@ -3,8 +3,6 @@ from pymongo import MongoClient
 
 client = MongoClient()  # making the connection with the DB
 db = client['test-database']  # create a new DB
-# client = MongoClient('mongodb://testuser:123123@ds135029.mlab.com:35029/testing')
-# db = client['testing']  # create a new DB
 Rooms = db["Rooms"]  # create new table that called Rooms
 Employees = db["Employees"]  # create new table that called Employees
 
