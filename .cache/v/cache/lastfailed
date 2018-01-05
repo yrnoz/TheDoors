@@ -1,3 +1,9 @@
 {
-  "Tests/logic_test.py::test_roomRecommendation": true
+  "Tests/logic_test.py::test_add_weekly_schedule": true, 
+  "Tests/logic_test.py::test_add_weekly_schedule_some_hours_fails": true, 
+  "Tests/logic_test.py::test_add_weekly_schedule_succeed": true, 
+  "Tests/logic_test.py::test_emptyRooms": true, 
+  "Tests/logic_test.py::test_recommend_by_friends": true, 
+  "Tests/logic_test.py::test_roomRecommendation": true, 
+  "Tests/logic_test.py::test_weekly_schedule_worker": true
 }

@@ -181,7 +181,7 @@ def test_remove_friend():
     os.remove(output_file)
 
 
-@pytest.mark.skip(reason=0)
+@pytest.mark.skip(reason="redundant")
 def test_db():
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
