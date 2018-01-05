@@ -233,6 +233,9 @@ def test_share_location_entering_a_room_valid_details():
     assert check_id_of_employee("123")
     assert find_room("taub 1") is not None
     set_location_of_employee("123", "taub 1", 3)
+    employee = find_employee("123")
+    assert employee['current_room'] is not None
+    assert employee['current_room']['room_id'] == 'taub 1' and employee['current_room']['room_floor'] == 3
     Employees.drop()
     Rooms.drop()
 
@@ -245,6 +248,8 @@ def test_share_location_entering_then_exiting_a_room():
     assert check_id_of_employee("123")
     assert find_room("taub 1") is not None
     set_location_of_employee("123", "taub 1", 3)
+    handle_employee_exiting_a_room("123")
+    assert Employees.find({'current_room': {'$exists': True}}).count() == 0
     Employees.drop()
     Rooms.drop()
 

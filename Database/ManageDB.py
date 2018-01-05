@@ -432,6 +432,14 @@ def set_location_of_employee(employee_id, room_id, room_floor):
 
 
 def handle_employee_exiting_a_room(employee_id):
-    pass
+    """
+    handles employee exiting a room by unsetting the location field in the DB
+    :param employee_id: id of employee that exits a room
+    """
+    if not check_id_of_employee(employee_id):
+        return
+    Employees.update_one({'id': employee_id},
+                         {'$unset': {'current_room': {}}})
+
 
 ####################################################################################################

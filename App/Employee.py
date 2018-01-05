@@ -1,4 +1,4 @@
-from Database.ManageDB import update_employee
+from Database.ManageDB import *
 
 
 class Employee:
@@ -14,9 +14,11 @@ class Employee:
 
     def entrance_room(self, room):
         self.location = room
+        set_location_of_employee(self.id, room.id, room.floor)
 
     def exit_room(self):
         self.location = None
+        handle_employee_exiting_a_room(self.id)
 
     def recommendation_by_friends(self):
         """"return sorted list of rooms 'sorted_room' sorted by friends location"""
