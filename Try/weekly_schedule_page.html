@@ -152,12 +152,15 @@
             height: 300px;
         }
 
-        .login h1 {
+        .container h2 {
             color: #fff;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             letter-spacing: 1px;
             text-align: center;
         }
+        .spacer_button{height:30px;}
+        .spacer_schedule{height:150px;}
+
 
         input {
             width: 100%;
@@ -191,14 +194,25 @@
 
 <body>
 
-<div class="weekly_schedule">-
-    <h1>Add Weekly Schedule</h1>
-    <form method="post">
-        <input type="text" name="u" placeholder="Username"/>
-        <input type="password" name="p" placeholder="Password" required="required"/>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Let me in.</button>
-    </form>
+<div class="container">
+    <h2>Add Weekly Schedule</h2>
 </div>
+
+
+
+<div class="spacer_button"></div>
+<div class="col-xs-2 text-right">
+    <label class="btn btn-primary" for="my-file-selector">
+        <input id="my-file-selector" type="file" style="display:none"
+        onchange="$('#upload-file-info').html(this.files[0].name)">Choose CSV file</label>
+</div>
+<span class='label label-info' id="upload-file-info"></span>
+<div class="spacer_schedule"></div>
+<div class="col-xs-6 text-right">
+    <button type="button" class="btn btn-primary">Schedule</button>
+  </div>
+
+
 
 
 <script src="js/index.js"></script>
