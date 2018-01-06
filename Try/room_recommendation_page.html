@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
     <!--</head>-->
 
 
@@ -183,7 +187,35 @@
             box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
+
     </style>
+
+  <script type ="text/javascript">
+          $(function (){
+              $("#datepicker").datepicker({
+                      autoclose: true,
+              }).datepicker('update', new Date())
+          });
+   </script>
+   <style>
+    .inner-addon
+    {
+      position: relative;
+    }
+    .inner-addon .glyphicon
+    {
+      position: absolute;
+      padding: 10px;
+    }
+    .right-addon .glyphicon{
+      right: 0px;
+    }
+    .right-addon input{
+      padding-right: 30px;
+    }
+  </style>
+
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
@@ -193,7 +225,12 @@
 
 <div class="container">
   <h2>Room Recommendation</h2>
-  <form class="form-horizontal">
+    <hr/>
+     <div id="datepicker" class="input-group date" date-date-formate="dd-mm-yy">
+       <input class="form-control" type="text" name="">
+       <span class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </span>
+     </div>
+
     <div class="form-group">
       <label class="text-muted">Begin:</label>
       <select class="form-control">
@@ -249,11 +286,11 @@
         <option>23</option>
       </select>
     </div>
-  </form>
 </div>
 <div class="container">
     <button type="button" class="btn btn-primary btn-lg">Recommend</button>
 </div>
+
 
 
 
