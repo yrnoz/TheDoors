@@ -159,7 +159,30 @@
             text-align: center;
         }
         .spacer_button{height:30px;}
-        .spacer_schedule{height:150px;}
+        .spacer_schedule{height:10px;}
+        .spacer_result { height:150px; }
+
+        #customFile .custom-file-control:lang(en)::after {
+          content: "Select file...";
+        }
+
+        #customFile .custom-file-control:lang(en)::before {
+          content: "Click me";
+        }
+
+        /*when a value is selected, this class removes the content */
+        .custom-file-control.selected:lang(en)::after {
+          content: "" !important;
+        }
+
+        .custom-file {
+          overflow: hidden;
+        }
+        .custom-file-control {
+          white-space: nowrap;
+        }
+
+
 
 
         input {
@@ -190,6 +213,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
+
 </head>
 
 <body>
@@ -201,21 +225,34 @@
 
 
 <div class="spacer_button"></div>
-<div class="col-xs-2 text-right">
-    <label class="btn btn-primary" for="my-file-selector">
-        <input id="my-file-selector" type="file" style="display:none"
-        onchange="$('#upload-file-info').html(this.files[0].name)">Choose CSV file</label>
+
+<div class="file-loading">
+    <input id="input-20" type="file">
 </div>
+
 <span class='label label-info' id="upload-file-info"></span>
 <div class="spacer_schedule"></div>
 <div class="col-xs-6 text-right">
     <button type="button" class="btn btn-primary">Schedule</button>
-  </div>
+</div>
 
+
+<div class="spacer_result"></div>
+<div class="well">The recommendation will be showed here.</div>
+</div>
 
 
 
 <script src="js/index.js"></script>
+
+
+
+
+
+
+
+
+
 
 
 </body>
