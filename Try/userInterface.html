@@ -51,7 +51,7 @@
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
             cursor: pointer;
             *margin-left: .3em;
-            width: 15em;
+            width: 20em;
             height: 5em;
         }
 
@@ -104,27 +104,6 @@
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        .btn-primary-sim {
-            <!--background-color: #4a77d4;-->
-            <!--background-image: -moz-linear-gradient(top, #ff1b0a, #d40500);-->
-            <!--background-image: -ms-linear-gradient(top, #ff1b0a, #d40500);-->
-            <!--background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ff1b0a), to(#d40500));-->
-            <!--background-image: -webkit-linear-gradient(top, #ff1b0a, #d40500);-->
-            <!--background-image: -o-linear-gradient(top, #ff1b0a, #d40500);-->
-            <!--background-image: linear-gradient(top, #ff1b0a, #d40500);-->
-            <!--background-repeat: repeat-x;-->
-            filter: progid:dximagetransform.microsoft.gradient(startColorstr=#4a77d4, endColorstr=#4a77d4, GradientType=0);
-            border: 1px solid #4a77d4;
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 1.4);
-            font-size: 20px;
-            border-radius: 12px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-            left: 10%;
-            background-image: url("simulation_picture.png");
-            margin-left: 670px;
-            margin-top: 1px;
-        }
-
         .btn-primary-logout {
             background-color: #4a77d4;
             background-image: -moz-linear-gradient(top, #27e9ff, #008b8b);
@@ -139,15 +118,10 @@
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
             margin-left: 1200px;
-            margin-top: 20px;
+            margin-top: 110px;
         }
 
         .btn-primary:hover, .btn-primary:active, .btn-primary.disabled, .btn-primary[disabled] {
-            filter: none;
-            background-color: #4a77d4;
-        }
-
-        .btn-primary-sim:hover, .btn-primary-sim:active, .btn-primary-sim.disabled, .btn-primary-sim[disabled] {
             filter: none;
             background-color: #4a77d4;
         }
@@ -194,7 +168,7 @@
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
         }
 
-        .managerInterface {
+        .userInterface {
             color: #fff;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             letter-spacing: 1px;
@@ -219,9 +193,9 @@
             letter-spacing: 1px;
             position: absolute;
             top: 45%;
-            left: 52%;
+            left: 47.5%;
             margin: -150px 0 0 -150px;
-            width: 220px;
+            width: 280px;
             height: 300px;
         }
 
@@ -242,8 +216,8 @@
 </head>
 <body>
 
-<div class="managerInterface">
-    <h2>Manager Interface</h2>
+<div class="userInterface">
+    <h2>User Interface</h2>
 </div>
 
 <p id="greeting"></p>
@@ -271,12 +245,11 @@ document.getElementById("greeting").innerHTML = result;
 
     <form method="post">
         <div class="buttons" >
-            <button type="submit" class="btn btn-primary btn-block btn-large">Import Employees Details</button>
-            <button type="submit" class="btn btn-primary btn-block btn-large">Import Rooms Details</button>
-            <button type="submit" class="btn btn-primary btn-block btn-large">Edit Database</button>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Request Room Reccomendation</button>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Add Weekly Schedule</button>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Edit Details/Friends</button>
         </div>
          <div class="buttons2" >
-            <button type="submit" class="btn btn-primary-sim btn-block btn-large">Simulation</button>
              <button onclick='logout_message();' type="submit" class="btn btn-primary-logout btn-block btn-large">Logout</button>
          </div>
     </form>
