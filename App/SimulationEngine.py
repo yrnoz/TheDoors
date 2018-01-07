@@ -1,5 +1,7 @@
 from Database.ManageDB import *
 import random
+import time
+
 
 SimRooms = db["Rooms"]  # create new table that called SimRooms just for the Simulation
 
@@ -75,6 +77,23 @@ def simulation_copy_employees_from_DB():
     global SimEmployees
     for employee in Employees.find():
         SimEmployees.insert(employee)
+
+#the function assign employees with random people to rooms for now
+def simulation_assign_employees():
+    now = time.strftime("%d/%m/%Y %H")
+    rooms = SimRooms.find()
+    employees = SimEmployees.find()
+    count = 0
+    for employee in employees:
+        count += 1
+        i = random.randint(0, len(rooms))
+        num_employees = random.randint(0, int(len(employees)/4))
+        while simulation_assign_employees_to_room_one_hour(now, rooms[i], num_employees, employee):
+            i = random.randint(0, len(rooms))
+        if count >= int(employees/2):
+            break
+
+
 
 def simulation_assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
     """
