@@ -30,7 +30,7 @@
             color: #333333;
             text-align: center;
             text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-            vertical-align: middle;
+            <!--vertical-align: middle;-->
             background-color: #f5f5f5;
             background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
             background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
@@ -52,7 +52,7 @@
             cursor: pointer;
             *margin-left: .3em;
             width: 15em;
-            height: 4em;
+            height: 5em;
         }
 
         .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] {
@@ -117,7 +117,11 @@
             border: 1px solid #ff1b0a;
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-            width: 20em;  height: 2em;
+            left: 10%;
+
+            margin-left: 680px;
+            margin-top: 1px;
+
         }
 
         .btn-primary-logout {
@@ -133,6 +137,9 @@
             border: 1px solid #27e9ff;
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
+
+            margin-left: 1000px;
+            margin-top: 10px;
         }
 
         .btn-primary:hover, .btn-primary:active, .btn-primary.disabled, .btn-primary[disabled] {
@@ -188,19 +195,15 @@
         }
 
         .managerInterface {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
             position: absolute;
-            top: 50%;
+            top: 30%;
             left: 50%;
             margin: -150px 0 0 -150px;
             width: 300px;
             height: 300px;
-        }
-
-        .managerInterface h1 {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            letter-spacing: 1px;
-            text-align: center;
         }
 
         .container h2 {
@@ -208,6 +211,29 @@
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             letter-spacing: 1px;
             text-align: center;
+        }
+
+        .buttons {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            position: absolute;
+            top: 45%;
+            left: 53%;
+            margin: -150px 0 0 -150px;
+            width: 220px;
+            height: 300px;
+        }
+
+         .buttons2 {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            position: absolute;
+            top: 90%;
+            margin: -150px 0 0 -150px;
+            width: 180px;
+            height: 280px;
         }
 
         input {
@@ -243,22 +269,24 @@
 <body>
 
 <div class="managerInterface">
-    <h1>Manager Interface</h1>
-    <form method="post">
-        <button type="submit" class="btn btn-primary btn-block btn-large">Import Employees Details</button>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Import Rooms Details</button>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Edit Database</button>
-        <br />
-        <button type="submit" class="btn btn-primary-sim btn-block btn-large">Simulation</button>
-        <button type="submit" class="btn btn-primary-logout btn-block btn-large">Logout</button>
-
-    </form>
+    <h2>Manager Interface</h2>
+     <br />
+     <br />
 </div>
 
+    <form method="post">
+        <div class="buttons" >
+            <button type="submit" class="btn btn-primary btn-block btn-large">Import Employees Details</button>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Import Rooms Details</button>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Edit Database</button>
+            <br />
+        </div>
+         <div class="buttons2" >
+            <button type="submit" class="btn btn-primary-sim btn-block btn-large">Simulation</button>
+             <button type="submit" class="btn btn-primary-logout btn-block btn-large">Logout</button>
+         </div>
+    </form>
 
 <script src="js/index.js"></script>
-
-
 </body>
-
 </html>
