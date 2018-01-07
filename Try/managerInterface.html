@@ -123,7 +123,6 @@
             background-image: url("simulation_picture.png");
             margin-left: 680px;
             margin-top: 1px;
-
         }
 
         .btn-primary-logout {
@@ -139,9 +138,8 @@
             border: 1px solid #27e9ff;
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-
-            margin-left: 1000px;
-            margin-top: 10px;
+            margin-left: 1200px;
+            margin-top: 20px;
         }
 
         .btn-primary:hover, .btn-primary:active, .btn-primary.disabled, .btn-primary[disabled] {
@@ -232,7 +230,7 @@
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             letter-spacing: 1px;
             position: absolute;
-            top: 90%;
+            top: 85%;
             margin: -150px 0 0 -150px;
             width: 180px;
             height: 280px;
@@ -265,9 +263,7 @@
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-
 </head>
-
 <body>
 
 <div class="managerInterface">
@@ -275,6 +271,29 @@
      <br />
      <br />
 </div>
+
+<p id="greeting"></p>
+<script language="JavaScript">
+var myDate = new Date();
+var greeting = "Hello World!";
+/* hour is before noon */
+if ( myDate.getHours() < 12 )
+{
+    greeting="Good Morning!";
+}
+else  /* Hour is from noon to 5pm (actually to 5:59 pm) */
+if ( myDate.getHours() >= 12 && myDate.getHours() <=17 )
+{
+    greeting="Good Afternoon!";
+}
+else  /* the hour is after 5pm, so it is between 6pm and midnight */
+if ( myDate.getHours() > 17 && myDate.getHours() <= 24 )
+{
+    greeting="Good Evening!"
+}
+var result = greeting.fontsize(5).fontcolor("white");
+document.getElementById("greeting").innerHTML = result;
+</script>
 
     <form method="post">
         <div class="buttons" >
@@ -285,9 +304,22 @@
         </div>
          <div class="buttons2" >
             <button type="submit" class="btn btn-primary-sim btn-block btn-large">Simulation</button>
-             <button type="submit" class="btn btn-primary-logout btn-block btn-large">Logout</button>
+             <button onclick='logout_message();' type="submit" class="btn btn-primary-logout btn-block btn-large">Logout</button>
          </div>
     </form>
+
+
+
+<!--<script>-->
+    <!--function logout_message(){-->
+        <!--window.onbeforeunload = function() {-->
+            <!--return "Are you sure you want to logout?";-->
+        <!--}-->
+        <!--$('form').submit(function() {-->
+            <!--window.onbeforeunload = null;-->
+         <!--});-->
+     <!--}-->
+<!--</script>-->
 
 <script src="js/index.js"></script>
 </body>
