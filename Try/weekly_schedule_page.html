@@ -136,20 +136,21 @@
             font-family: 'Open Sans', sans-serif;
             background: #092756;
             background: -moz-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -moz-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -moz-linear-gradient(-45deg, #670d10 0%, #092756 100%);
-            background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);*/
-            background: -o-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -o-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -o-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+            background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+            */ background: -o-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -o-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -o-linear-gradient(-45deg, #670d10 0%, #092756 100%);
             background: -ms-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -ms-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -ms-linear-gradient(-45deg, #670d10 0%, #092756 100%);
             background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), linear-gradient(to bottom, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), linear-gradient(135deg, #670d10 0%, #092756 100%);
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
         }
 
-        .login {
+        .container {
             position: absolute;
-            top: 50%;
+            top: 30%;
             left: 50%;
             margin: -150px 0 0 -150px;
             width: 300px;
             height: 300px;
+            white-space: nowrap;
         }
 
         .container h2 {
@@ -158,38 +159,48 @@
             letter-spacing: 1px;
             text-align: center;
         }
-        .spacer_button{height:30px;}
-        .spacer_schedule{height:10px;}
-        .spacer_result { height:150px; }
+
+        .spacer_button {
+            height: 30px;
+        }
+
+        .spacer_schedule {
+            height: 10px;
+        }
+
+        .spacer_result {
+            height: 150px;
+        }
 
         #customFile .custom-file-control:lang(en)::after {
-          content: "Select file...";
+            content: "Select file...";
         }
 
         #customFile .custom-file-control:lang(en)::before {
-          content: "Click me";
+            content: "Click me";
         }
 
         /*when a value is selected, this class removes the content */
         .custom-file-control.selected:lang(en)::after {
-          content: "" !important;
+            content: "" !important;
         }
 
         .custom-file {
-          overflow: hidden;
+            overflow: hidden;
         }
+
         .custom-file-control {
-          white-space: nowrap;
+            white-space: nowrap;
         }
 
-
-        .btn-schedule{
+        .btn-schedule {
             background: #a9b3f1;
             color: #030302;
             padding: 14px 24px;
         }
-
-
+        .well-wider{
+            height: 200px;
+        }
         input {
             width: 100%;
             margin-bottom: 10px;
@@ -225,64 +236,57 @@
 
 <p id="greeting"></p>
 <script language="JavaScript">
-var myDate = new Date();
-var greeting = "Hello World!";
-/* hour is before noon */
-if ( myDate.getHours() < 12 )
-{
-    greeting="Good Morning!";
-}
-else  /* Hour is from noon to 5pm (actually to 5:59 pm) */
-if ( myDate.getHours() >= 12 && myDate.getHours() <= 17 )
-{
-    greeting="Good Afternoon!";
-}
-else  /* the hour is after 5pm, so it is between 6pm and midnight */
-if ( myDate.getHours() > 17 && myDate.getHours() <= 24 )
-{
-    greeting="Good Evening!"
-}
-var result = greeting.fontsize(5).fontcolor("white");
-document.getElementById("greeting").innerHTML = result;
+    var myDate = new Date();
+    var greeting = "Hello World!";
+    /* hour is before noon */
+    if (myDate.getHours() < 12) {
+        greeting = "Good Morning!";
+    }
+    else  /* Hour is from noon to 5pm (actually to 5:59 pm) */
+    if (myDate.getHours() >= 12 && myDate.getHours() <= 17) {
+        greeting = "Good Afternoon!";
+    }
+    else  /* the hour is after 5pm, so it is between 6pm and midnight */
+    if (myDate.getHours() > 17 && myDate.getHours() <= 24) {
+        greeting = "Good Evening!"
+    }
+    var result = greeting.fontsize(5).fontcolor("white");
+    document.getElementById("greeting").innerHTML = result;
 </script>
 
 <div class="container">
     <h2>Add Weekly Schedule</h2>
+
+    <!--<div class="spacer_button"></div>-->
+    <form method="post">
+        <!--<div class="file-loading">-->
+        <input id="input-20" type="file">
+        <!--</div>-->
+
+        <!--<span class='label label-info' id="upload-file-info"></span>-->
+        <!--<div class="spacer_schedule"></div>-->
+        <!--<div class="col-xs-6 text-right">-->
+        <!--<button type="button" class="btn btn-schedule">Schedule</button>-->
+        <button type="submit" class="btn btn-primary btn-block btn-large">Schedule</button>
+        <!--</div>-->
+    </form>
+    </br>
+
+    <!--<div class="spacer_result"></div>-->
+
+    <div class="well-wider well">The recommendation will </br> showed here.</div>
+    <br/>
+    <br/>
+    <br/>
+    <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
 </div>
-
-
-<div class="container">
-<div class="spacer_button"></div>
-
-<div class="file-loading">
-    <input id="input-20" type="file">
-</div>
-
-<span class='label label-info' id="upload-file-info"></span>
-<div class="spacer_schedule"></div>
-<div class="col-xs-6 text-right">
-    <button type="button" class="btn btn-schedule">Schedule</button>
-</div>
-
-
-<div class="spacer_result"></div>
-<div class="well">The recommendation will be showed here.</div>
-</div>
-</div>
+<!--</div>-->
 
 
 <script src="js/index.js"></script>
 
 
-
-
-
-
-
-
-
-
-
 </body>
 
 </html>
+
