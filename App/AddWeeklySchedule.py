@@ -33,7 +33,7 @@ def delete_weekly_schedule(id, input_file):
     employee = find_employee(id)
     with open(input_file) as schedule:
         for line in schedule.readlines():
-            if line.count(',') == 2:
+            if line.count(',') > 2:
                 date, duration_hours, employees, str_id_employee = line.split(',')
                 num_employees = int(employees)
                 id_employee_list = str_id_employee.split()

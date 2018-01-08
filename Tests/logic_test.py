@@ -181,6 +181,33 @@ def test_weekly_schedule6():
     p.terminate()
 
 
+#What happens if we do the schedular twice. NOT-PASSSING. Need to understand how to write this test properly
+@pytest.mark.skip
+def test_weekly_schedule7():
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Rooms.drop()
+    Employees.drop()
+
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
+
+    employees.write("234,Koby,Engineer,2, 1234\n")
+    employees.write("498,Elyasaf,Engineer,2, 5678\n")
+    rooms.write("taub 4,40,2,1\n")
+    employees.seek(0)
+    rooms.seek(0)
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
+    import_room_details_from_file(rooms.name)
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.seek(0)
+    assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+            == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
+
+    assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry.")
+    p.terminate()
+
 @pytest.mark.skip
 def test_weekly_schedule_delete():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
@@ -375,4 +402,4 @@ def test_recommend_by_friends():
 
 
 if __name__ == '__main__':
-    test_weekly_schedule_delete()
+    test_weekly_schedule7()
