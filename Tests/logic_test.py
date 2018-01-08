@@ -32,7 +32,7 @@ def delete_content(pfile):
 
 
 
-def test_weekly_schedule_worker():
+def test_weekly_schedule1():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
@@ -40,8 +40,8 @@ def test_weekly_schedule_worker():
     employees = open("Tests%semployees.csv" % os.sep, "w+")
     rooms = open("Tests%srooms.csv" % os.sep, "w+")
 
-    employees.write("234,Koby,Engineer,2\n")
-    employees.write("498,Elyasaf,Engineer,2\n")
+    employees.write("234,Koby,Engineer,2, 1234\n")
+    employees.write("498,Elyasaf,Engineer,2, 5678\n")
     # entering a room with permission 1.
     rooms.write("taub 4,40,2,1\n")
     employees.seek(0)
@@ -49,9 +49,10 @@ def test_weekly_schedule_worker():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 2, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
-    add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+    assert(add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+           == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
 
 
 @pytest.mark.skip
@@ -318,5 +319,5 @@ def test_recommend_by_friends():
         assert res == ["taub 4"]
 
 if __name__ == '__main__':
-    test_weekly_schedule_worker()
+    test_weekly_schedule1()
 
