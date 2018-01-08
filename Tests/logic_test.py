@@ -3,6 +3,7 @@ import subprocess
 import pytest
 
 from App.AddWeeklySchedule import add_weekly_schedule_for_employee
+from App.AddWeeklySchedule import delete_weekly_schedule
 from App.Room import Room
 from App.RoomReccomendations import initialize_employee_from_dict, \
     emptyRooms, recommend_by_friends
@@ -29,8 +30,10 @@ def delete_content(pfile):
     pfile.truncate()
 
 
-@pytest.mark.skip
+
+
 def test_weekly_schedule_worker():
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
 
@@ -313,3 +316,7 @@ def test_recommend_by_friends():
         employee = initialize_employee_from_dict(employee)
         res = recommend_by_friends(employee)
         assert res == ["taub 4"]
+
+if __name__ == '__main__':
+    test_weekly_schedule_worker()
+
