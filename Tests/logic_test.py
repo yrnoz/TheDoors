@@ -52,6 +52,7 @@ def test_weekly_schedule1():
     schedule_file.seek(0)
     assert(add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
            == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
+    p.terminate()
 
 
 # entering a room with permission 2, but Koby is the director and has permission 3. need to fail.
@@ -76,6 +77,7 @@ def test_weekly_schedule2():
 
     assert add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep) \
            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry."
+    p.terminate()
 
 
 # entering a room with permission 2, but one of the employees has permission 3. Need to fail (Maybe in the feutare we
@@ -100,6 +102,7 @@ def test_weekly_schedule3():
     schedule_file.seek(0)
     assert(add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry.")
+    p.terminate()
 
 #There is only one room with only not enoght place. need to fail
 def test_weekly_schedule4():
@@ -122,77 +125,55 @@ def test_weekly_schedule4():
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
             == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry." )
+    p.terminate()
 
-
-
-@pytest.mark.skip
-def test_add_weekly_schedule_some_hours_fails():
+#check some hours
+def test_weekly_schedule5():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
-    # employees = open("employees.csv", "w+")
-    # rooms = open("rooms.csv", "w+")
 
     employees = open("Tests%semployees.csv" % os.sep, "w+")
     rooms = open("Tests%srooms.csv" % os.sep, "w+")
 
-    # entering two employees with permissions 2.
-    employees.write("234,Koby,Engineer,2\n")
-    employees.write("498,Elyasaf,Engineer,2\n")
-    # entering a room with permission 1.
-    rooms.write("taub 4,40,1,1\n")
+    employees.write("234,Koby,Engineer,2, 1234\n")
+    employees.write("498,Elyasaf,Engineer,2, 5678\n")
+    rooms.write("taub 4,1,2,1\n")
     employees.seek(0)
     rooms.seek(0)
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-
-    # import_employees_from_file("employees.csv")
-    # import_room_details_from_file(rooms.name)
-    # schedule_file = open("schedule_file.csv", "w+")
-
-    schedule_file.write("24/07/17 12, 2, 170 \n")
+    schedule_file.write("24/07/17 12, 2, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
+    assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry." \
+           "Dear Koby! There is no free room the 24/07/17 13 ! Sorry." )
+    p.terminate()
 
-    assert add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep) == \
-           "Dear Koby! There is no free room the 24/07/17 12 ! Sorry." \
-           "Dear Koby! There is no free room the 24/07/17 13 ! Sorry."
 
-
-# @pytest.mark.skip(reason="not working as of now, remove this when you're working on it")
-@pytest.mark.skip
-def test_add_weekly_schedule():
+#chcek that the employee exist in the system. I'm not checking that the rest of the employees exist. I assume that everything is alright.
+#Maybe we will check it to the next sprint.
+def test_weekly_schedule6():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
     Employees.drop()
-    # employees = open("employees.csv", "w+")
-    # rooms = open("rooms.csv", "w+")
+
     employees = open("Tests%semployees.csv" % os.sep, "w+")
     rooms = open("Tests%srooms.csv" % os.sep, "w+")
 
-    # entering two employees with permissions 2.
-    employees.write("234,Koby,Engineer,2\n")
-    employees.write("498,Elyasaf,Engineer,2\n")
-    # entering a room with permission 1.
-    rooms.write("taub 4,40,1,1\n")
+    employees.write("234,Koby,Engineer,2, 1234\n")
+    employees.write("498,Elyasaf,Engineer,2, 5678\n")
+    rooms.write("taub 4,40,2,1\n")
     employees.seek(0)
     rooms.seek(0)
-    # import_employees_from_file("employees.csv")
-    # import_room_details_from_file(rooms.name)
-    # schedule_file = open("schedule_file.csv", "w+")
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-
-    schedule_file.write("24/07/17 12, 1, 17 \n")
+    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
-    # checking the validity of the id of the employee.
-    assert add_weekly_schedule_for_employee("000",
-                                            "Tests%sschedule_file.csv" % os.sep) == "Employee doesn't exist in the system"
-
-    # checking the permissions of the employee and the permissions of the room.
-    assert add_weekly_schedule_for_employee("234",
-                                            "Tests%sschedule_file.csv" % os.sep) == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry."
+    assert(add_weekly_schedule_for_employee("000", "Tests%sschedule_file.csv" % os.sep)
+           == "Employee doesn't exist in the system")
     p.terminate()
 
 
