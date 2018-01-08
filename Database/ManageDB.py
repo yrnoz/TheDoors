@@ -194,7 +194,7 @@ def check_employee_already_ordered(employee, date_time):
     return False
 
 
-def delete_assign_employees_from_room(date_time, num_employees, num_hours, employee):
+def delete_assign_employees_from_room(date_time, num_employees, num_hours, employee ,id_employee_list):
     for i in range(0, num_hours):
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
@@ -206,6 +206,10 @@ def delete_assign_employees_from_room(date_time, num_employees, num_hours, emplo
         schedule[date_time] = (schedule[date_time][0] - num_employees, None)
         schedule_employee = employee["schedule"]
         schedule_employee[date_time] = (0, None)
+        for id in id_employee_list:
+            employee_friend = find_employee(id)
+            schedule_employee = employee_friend["schedule"]
+            schedule_employee[date_time] = (0, None)
 
 
 def check_room_ordered_by_employee(employee, updated_time):

@@ -26,16 +26,20 @@ def add_weekly_schedule_for_employee(id, input_file):
         return anouncments_string
 
 
-# delete all the scheduled orders that there are in the input_file
+# delete all the scheduled orders that there are in the input_file. Assume that only a director can delete the schedule.
+#Notice that if the schedule is deleted, you need to update it to all the employees participating
 #Ilana
 def delete_weekly_schedule(id, input_file):
     employee = find_employee(id)
     with open(input_file) as schedule:
         for line in schedule.readlines():
             if line.count(',') == 2:
-                date, duration_hours, employees = line.split(',')
+                date, duration_hours, employees, str_id_employee = line.split(',')
                 num_employees = int(employees)
+                id_employee_list = str_id_employee.split()
+                if len(id_employee_list) != num_employees:
+                    print "problem in entering data"
             if line.count(',') == 1:
                 date, duration_hours = line.split(',')
                 num_employees = 1
-            delete_assign_employees_from_room(date, num_employees, int(duration_hours), employee)
+            delete_assign_employees_from_room(date, num_employees, int(duration_hours), employee , id_employee_list)
