@@ -31,7 +31,9 @@ def delete_content(pfile):
 
 
 
- # entering a room with permission 2, need to succeed.
+    # entering a room with permission 2, need to succeed.
+
+
 def test_weekly_schedule1():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -50,8 +52,8 @@ def test_weekly_schedule1():
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
     schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
-    assert(add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-           == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
+    assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+            == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
     p.terminate()
 
 
@@ -81,7 +83,7 @@ def test_weekly_schedule2():
 
 
 # entering a room with permission 2, but one of the employees has permission 3. Need to fail (Maybe in the feutare we
-#will change it. Now, we are going on the basic.
+# will change it. Now, we are going on the basic.
 def test_weekly_schedule3():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -100,11 +102,12 @@ def test_weekly_schedule3():
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
     schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
-    assert(add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-           == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry.")
+    assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry.")
     p.terminate()
 
-#There is only one room with only not enoght place. need to fail
+
+# There is only one room with only not enoght place. need to fail
 def test_weekly_schedule4():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -124,10 +127,11 @@ def test_weekly_schedule4():
     schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry." )
+            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry.")
     p.terminate()
 
-#check some hours
+
+# check some hours
 def test_weekly_schedule5():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -148,12 +152,12 @@ def test_weekly_schedule5():
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
             == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry." \
-           "Dear Koby! There is no free room the 24/07/17 13 ! Sorry." )
+               "Dear Koby! There is no free room the 24/07/17 13 ! Sorry.")
     p.terminate()
 
 
-#chcek that the employee exist in the system. I'm not checking that the rest of the employees exist. I assume that everything is alright.
-#Maybe we will check it to the next sprint.
+# Chcek that the employee exist in the system. I'm not checking that the rest of the employees exist. I assume that
+# everything is alright. Maybe we will check it to the next sprint.
 def test_weekly_schedule6():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -172,9 +176,10 @@ def test_weekly_schedule6():
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
     schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
-    assert(add_weekly_schedule_for_employee("000", "Tests%sschedule_file.csv" % os.sep)
-           == "Employee doesn't exist in the system")
+    assert (add_weekly_schedule_for_employee("000", "Tests%sschedule_file.csv" % os.sep)
+            == "Employee doesn't exist in the system")
     p.terminate()
+
 
 @pytest.mark.skip
 def test_weekly_schedule_delete():
@@ -216,6 +221,7 @@ def print_friends():
 @pytest.mark.skip(reason="not relevant for now")
 def test_reccomendationToEmployeeByRoom():
     pass
+
 
 @pytest.mark.skip(reason="fix it")
 def test_emptyRooms():
@@ -367,6 +373,6 @@ def test_recommend_by_friends():
         res = recommend_by_friends(employee)
         assert res == ["taub 4"]
 
+
 if __name__ == '__main__':
     test_weekly_schedule_delete()
-
