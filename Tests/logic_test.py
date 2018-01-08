@@ -78,9 +78,8 @@ def test_weekly_schedule2():
            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry."
 
 
-# entering a room with permission 2, but one of the employees has permission 3. Need to succeed because the manager has
-#suitable permission. Neet to give suitable annoucment. Need not to schedule Elyasaf. [Output now written yet]
-@pytest.mark.skip
+# entering a room with permission 2, but one of the employees has permission 3. Need to fail (Maybe in the feutare we
+#will change it. Now, we are going on the basic.
 def test_weekly_schedule3():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -100,7 +99,31 @@ def test_weekly_schedule3():
     schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert(add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-           == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
+           == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry.")
+
+#There is only one room with only not enoght place. need to fail
+def test_weekly_schedule4():
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Rooms.drop()
+    Employees.drop()
+
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
+
+    employees.write("234,Koby,Engineer,2, 1234\n")
+    employees.write("498,Elyasaf,Engineer,2, 5678\n")
+    rooms.write("taub 4,1,2,1\n")
+    employees.seek(0)
+    rooms.seek(0)
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
+    import_room_details_from_file(rooms.name)
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.seek(0)
+    assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+            == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry." )
+
+
 
 @pytest.mark.skip
 def test_add_weekly_schedule_some_hours_fails():
@@ -336,5 +359,5 @@ def test_recommend_by_friends():
         assert res == ["taub 4"]
 
 if __name__ == '__main__':
-    test_weekly_schedule2()
+    test_weekly_schedule4()
 

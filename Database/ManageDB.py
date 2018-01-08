@@ -101,6 +101,8 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
         return False
     if not (date_time in schedule):
         if num_employees > capacity or (date_time in schedule_employee):
+            anouncments_list.append(
+                "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], date_time))
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
