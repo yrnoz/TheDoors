@@ -182,7 +182,6 @@ def test_weekly_schedule6():
 
 
 #What happens if we do the schedular twice. NOT-PASSSING. Need to understand how to write this test properly
-@pytest.mark.skip
 def test_weekly_schedule7():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -205,10 +204,11 @@ def test_weekly_schedule7():
             == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
 
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-            == "Dear Koby! There is no free room the 24/07/17 13 ! Sorry.")
+            == "Dear Koby! You have already ordered room for: 24/07/17 12 ! Sorry.")
     p.terminate()
 
-@pytest.mark.skip
+
+#try to schedule file (need to succeed). than try to delete it and after that schedule again.
 def test_weekly_schedule_delete():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -234,6 +234,8 @@ def test_weekly_schedule_delete():
     schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     delete_weekly_schedule("234", "Tests%sschedule_file_delete.csv" % os.sep)
+    assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+            == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
     p.terminate()
 
 
@@ -402,4 +404,4 @@ def test_recommend_by_friends():
 
 
 if __name__ == '__main__':
-    test_weekly_schedule7()
+    test_weekly_schedule_delete()
