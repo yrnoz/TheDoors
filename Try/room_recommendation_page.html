@@ -11,8 +11,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
     <!--</head>-->
 
 
@@ -140,16 +142,16 @@
             font-family: 'Open Sans', sans-serif;
             background: #092756;
             background: -moz-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -moz-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -moz-linear-gradient(-45deg, #670d10 0%, #092756 100%);
-            background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);*/
-            background: -o-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -o-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -o-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+            background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+            */ background: -o-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -o-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -o-linear-gradient(-45deg, #670d10 0%, #092756 100%);
             background: -ms-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -ms-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -ms-linear-gradient(-45deg, #670d10 0%, #092756 100%);
             background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), linear-gradient(to bottom, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), linear-gradient(135deg, #670d10 0%, #092756 100%);
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
         }
 
-        .login {
+        .container {
             position: absolute;
-            top: 50%;
+            top: 30%;
             left: 50%;
             margin: -150px 0 0 -150px;
             width: 300px;
@@ -162,8 +164,16 @@
             letter-spacing: 1px;
             text-align: center;
         }
-        .spacer { margin:0; padding:0; height:100px; }
-        .spacer_button{height:30px;}
+
+        .spacer {
+            margin: 0;
+            padding: 0;
+            height: 100px;
+        }
+
+        .spacer_button {
+            height: 30px;
+        }
 
         input {
             width: 100%;
@@ -192,31 +202,31 @@
 
     </style>
 
-  <script type ="text/javascript">
-          $(function (){
-              $("#datepicker").datepicker({
-                      autoclose: true,
-              }).datepicker('update', new Date())
-          });
-   </script>
-   <style>
-    .inner-addon
-    {
-      position: relative;
-    }
-    .inner-addon .glyphicon
-    {
-      position: absolute;
-      padding: 10px;
-    }
-    .right-addon .glyphicon{
-      right: 0px;
-    }
-    .right-addon input{
-      padding-right: 30px;
-    }
-  </style>
+    <script type="text/javascript">
+        $(function () {
+            $("#datepicker").datepicker({
+                autoclose: true,
+            }).datepicker('update', new Date())
+        });
+    </script>
+    <style>
+        .inner-addon {
+            position: relative;
+        }
 
+        .inner-addon .glyphicon {
+            position: absolute;
+            padding: 10px;
+        }
+
+        .right-addon .glyphicon {
+            right: 0px;
+        }
+
+        .right-addon input {
+            padding-right: 30px;
+        }
+    </style>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
@@ -224,106 +234,89 @@
 </head>
 
 <body>
-
 <p id="greeting"></p>
-<script language="JavaScript">
-var myDate = new Date();
-var greeting = "Hello World!";
-/* hour is before noon */
-if ( myDate.getHours() < 12 )
-{
-    greeting="Good Morning!";
-}
-else  /* Hour is from noon to 5pm (actually to 5:59 pm) */
-if ( myDate.getHours() >= 12 && myDate.getHours() <= 17 )
-{
-    greeting="Good Afternoon!";
-}
-else  /* the hour is after 5pm, so it is between 6pm and midnight */
-if ( myDate.getHours() > 17 && myDate.getHours() <= 24 )
-{
-    greeting="Good Evening!"
-}
-var result = greeting.fontsize(5).fontcolor("white");
-document.getElementById("greeting").innerHTML = result;
-</script>
+<script src="greeting.js"></script>
+
 
 <div class="container">
-  <h2>Room Recommendation</h2>
-    <hr/>
-     <div id="datepicker" class="input-group date" date-date-formate="dd-mm-yy">
-       <input class="form-control" type="text" name="">
-       <span class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </span>
-     </div>
+    <h2>Room Recommendation</h2>
+    <br/>
+    <form method="post">
+        <div id="datepicker" class="input-group date" date-date-formate="dd-mm-yy">
+            <input class="form-control" type="text" name="">
+            <span class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </span>
+        </div>
 
-    <div class="form-group">
-      <label class="text-muted">Begin time:</label>
-      <select class="form-control">
-        <option>0</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-        <option>6</option>
-        <option>7</option>
-        <option>8</option>
-        <option>9</option>
-        <option>10</option>
-        <option>11</option>
-        <option>12</option>
-        <option>13</option>
-        <option>14</option>
-        <option>15</option>
-        <option>16</option>
-        <option>17</option>
-        <option>18</option>
-        <option>19</option>
-        <option>20</option>
-        <option>21</option>
-        <option>22</option>
-        <option>23</option>
-      </select>
-      <br>
-      <label class="text-muted">End time:</label>
-        <select class="form-control">
-        <option>0</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-        <option>6</option>
-        <option>7</option>
-        <option>8</option>
-        <option>9</option>
-        <option>10</option>
-        <option>11</option>
-        <option>12</option>
-        <option>13</option>
-        <option>14</option>
-        <option>15</option>
-        <option>16</option>
-        <option>17</option>
-        <option>18</option>
-        <option>19</option>
-        <option>20</option>
-        <option>21</option>
-        <option>22</option>
-        <option>23</option>
-      </select>
-    </div>
+        <div class="form-group">
+            <label class="text-muted">Begin time:</label>
+            <select class="form-control">
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
+                <option>15</option>
+                <option>16</option>
+                <option>17</option>
+                <option>18</option>
+                <option>19</option>
+                <option>20</option>
+                <option>21</option>
+                <option>22</option>
+                <option>23</option>
+            </select>
+            <br>
+            <label class="text-muted">End time:</label>
+            <select class="form-control">
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
+                <option>15</option>
+                <option>16</option>
+                <option>17</option>
+                <option>18</option>
+                <option>19</option>
+                <option>20</option>
+                <option>21</option>
+                <option>22</option>
+                <option>23</option>
+            </select>
+
+        </div>
+        <button type="button" class="btn btn-primary btn-block btn-large">Recommend</button>
+
+    </form>
+    <div class="spacer_button"></div>
+
+
+    <!--<button type="button" class="btn btn-primary btn-large">Recommend</button>-->
+
+
+    <!--<div class="spacer"></div>-->
+    <div class="well">The recommendation will be showed here.</div>
+    <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
+
 </div>
-<div class="spacer_button"></div>
-<div class="container">
-  <div class="col-xs-6 text-right">
-    <button type="button" class="btn btn-primary btn-large">Recommend</button>
-  </div>
-</div>
-<div class="spacer"></div>
-<div class="well">The recommendation will be showed here.</div>
-</div>
-
-
-
 
 
 <script src="js/index.js"></script>
