@@ -1,4 +1,5 @@
 {
   "Tests/logic_test.py::test_roomRecommendation": true, 
+  "Tests/logic_test.py::test_weekly_schedule7": true, 
   "Tests/logic_test.py::test_weekly_schedule_worker": true
 }

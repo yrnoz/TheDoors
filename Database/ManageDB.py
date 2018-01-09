@@ -106,7 +106,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        update_schedule_employees(date_time, room, id_employee_list, num_employees)
+        #update_schedule_employees(date_time, room, id_employee_list, num_employees)
         anouncments_list.append(
             "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
                                                                                           date_time))
@@ -120,11 +120,18 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
             "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
                                                                                           date_time))
     Rooms.replace_one({'_id': room['_id']}, room)
+    Employees.replace_one({'_id': employee['_id']}, employee)
     return True
 
 
 def update_schedule_employees(date_time, room, id_employee_list, num_employees):
+    global Rooms
+    global Employees
+    room1=Rooms.find()[0]
+    employee1 = Employees.find()[0]
+    employee2 = Employees.find()[1]
     for id in id_employee_list:
+        employee = find_employee(id)
         schedule_employee = find_employee(id)["schedule"]
         schedule_employee[date_time] = (num_employees, room["id"])
 
