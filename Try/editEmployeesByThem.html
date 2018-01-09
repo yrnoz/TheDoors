@@ -10,7 +10,7 @@
 </head>
 
 <meta charset="UTF-8">
-<title>ManagerInterface Form</title>
+<title>Login Form</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 
@@ -30,7 +30,7 @@
         color: #333333;
         text-align: center;
         text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-    <!-- vertical-align: middle;-->
+        vertical-align: middle;
         background-color: #f5f5f5;
         background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
         background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
@@ -51,8 +51,6 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
         cursor: pointer;
         *margin-left: .3em;
-        width: 20em;
-        height: 5em;
     }
 
     .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] {
@@ -104,36 +102,9 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
     }
 
-    .btn-primary-logout {
-        background-color: #4a77d4;
-        background-image: -moz-linear-gradient(top, #27e9ff, #008b8b);
-        background-image: -ms-linear-gradient(top, #27e9ff, #008b8b);
-        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#27e9ff), to(#008b8b));
-        background-image: -webkit-linear-gradient(top, #27e9ff, #008b8b);
-        background-image: -o-linear-gradient(top, #27e9ff, #008b8b);
-        background-image: linear-gradient(top, #27e9ff, #008b8b);
-        background-repeat: repeat-x;
-        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#27e9ff, endColorstr=#008b8b, GradientType=0);
-        border: 1px solid #27e9ff;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-        margin-left: 1200px;
-        margin-top: 110px;
-    }
-
-    .btn-primary:hover, .btn-primary:active, .btn-primary.disabled, .btn-primary[disabled] {
+    .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
         filter: none;
         background-color: #4a77d4;
-    }
-
-    .btn-primary-logout:hover, .btn-primary-logout.disabled, .btn-primary-logout[disabled] {
-        filter: none;
-        background-color: #008b8b;
-    }
-
-    .btn-primary-logout:active {
-        filter: none;
-        background-color: #008b8b;
     }
 
     .btn-block {
@@ -168,10 +139,7 @@
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
     }
 
-    .userInterface {
-        color: #fff;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
+    .editDetails {
         position: absolute;
         top: 30%;
         left: 50%;
@@ -180,85 +148,71 @@
         height: 300px;
     }
 
-    .container h2 {
+    .editDetails h1 {
         color: #fff;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
         text-align: center;
     }
 
-    .buttons {
+    input {
+        width: 100%;
+        margin-bottom: 10px;
+        background: rgba(0, 0, 0, 0.3);
+        border: none;
+        outline: none;
+        padding: 10px;
+        font-size: 13px;
         color: #fff;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
-        position: absolute;
-        top: 45%;
-        left: 47.5%;
-        margin: -150px 0 0 -150px;
-        width: 280px;
-        height: 300px;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+        box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.2), 0 1px 1px rgba(255, 255, 255, 0.2);
+        -webkit-transition: box-shadow .5s ease;
+        -moz-transition: box-shadow .5s ease;
+        -o-transition: box-shadow .5s ease;
+        -ms-transition: box-shadow .5s ease;
+        transition: box-shadow .5s ease;
     }
 
-    .buttons2 {
-        color: #fff;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
-        position: absolute;
-        top: 85%;
-        margin: -150px 0 0 -150px;
-        width: 180px;
-        height: 280px;
+    input:focus {
+        box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 
 </style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-</head>
-<body>
-
-<div class="userInterface">
-    <h2>User Interface</h2>
-</div>
-
 <p id="greeting"></p>
 <script src="greeting.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
-<form method="post">
-    <div class="buttons">
-        <a href="room_recommendation_page.html">
-            <button type="button" class="btn btn-primary btn-block btn-large">Request Room Reccomendation</button>
-        </a>
-        </br>
-        <a href="weekly_schedule_page.html">
-            <button type="button" class="btn btn-primary btn-block btn-large">Add Weekly Schedule</button>
-        </a>
-        </br>
-        <a href="editEmployeesByThem.html">
-            <button type="button" class="btn btn-primary btn-block btn-large">Edit Details/Friends</button>
-        </a>
-        </br>
+</head>
 
-    </div>
-    <div class="buttons2">
-        <a href="index.html">
-            <button onclick='logout_message();' type="button" class="btn btn-primary-logout btn-block btn-large">Logout
-            </button>
-        </a>
-    </div>
-</form>
+<body>
 
-<!--<script>-->
-<!--function logout_message(){-->
-<!--window.onbeforeunload = function() {-->
-<!--return "Are you sure you want to logout?";-->
-<!--}-->
-<!--$('form').submit(function() {-->
-<!--window.onbeforeunload = null;-->
-<!--});-->
-<!--}-->
-<!--</script>-->
+<div class="editDetails">
+    <h1>Edit Details</h1>
+    <form method="post">
+            <br/>
+            <a href="">
+                <button type="button" class="btn btn-primary btn-block btn-large">Change password</button>
+            </a>
+            <br/>
+            <a href="">
+                <button type="button" class="btn btn-primary btn-block btn-large">Edit friends list</button>
+            </a>
+    </form>
+    <br/>
+    <br/>
+    <br/>
+    <a href="userInterface.html">
+        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
+    </a>
+</div>
+
 
 <script src="js/index.js"></script>
+
+
 </body>
+
 </html>
