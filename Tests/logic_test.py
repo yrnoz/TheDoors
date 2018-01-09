@@ -50,7 +50,7 @@ def test_weekly_schedule1():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 100, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
             == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
@@ -74,7 +74,7 @@ def test_weekly_schedule2():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 100, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
 
     assert add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep) \
@@ -100,7 +100,7 @@ def test_weekly_schedule3():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 100, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
             == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry.")
@@ -124,7 +124,7 @@ def test_weekly_schedule4():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 100, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
             == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry.")
@@ -148,7 +148,7 @@ def test_weekly_schedule5():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 2, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 2, 100, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
             == "Dear Koby! There is no free room the 24/07/17 12 ! Sorry." \
@@ -174,14 +174,14 @@ def test_weekly_schedule6():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 100, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("000", "Tests%sschedule_file.csv" % os.sep)
             == "Employee doesn't exist in the system")
     p.terminate()
 
 
-#What happens if we do the schedular twice. NOT-PASSSING. Need to understand how to write this test properly
+#What happens if we do the schedular twice.
 def test_weekly_schedule7():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -198,7 +198,7 @@ def test_weekly_schedule7():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 100 ,2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
             == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
@@ -207,8 +207,38 @@ def test_weekly_schedule7():
             == "Dear Koby! You have already ordered room for: 24/07/17 12 ! Sorry.")
     p.terminate()
 
+#check for different constraints.
+def test_weekly_schedule8():
+    p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Rooms.drop()
+    Employees.drop()
+
+    employees = open("Tests%semployees.csv" % os.sep, "w+")
+    rooms = open("Tests%srooms.csv" % os.sep, "w+")
+
+    employees.write("234,Koby,Engineer,2, 1234\n")
+    employees.write("498,Elyasaf,Engineer,2, 5678\n")
+    employees.write("365, Ilana, Engineer, 2, 4567\n")
+    rooms.write("taub 4,10,2,1\n")
+    employees.seek(0)
+    rooms.seek(0)
+    import_employees_from_file("Tests%semployees.csv" % os.sep)
+    import_room_details_from_file(rooms.name)
+    schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
+    schedule_file.write("24/07/17 12, 1, 100 ,2, 498 234 \n")  # need to succeed
+    schedule_file.seek(0)
+    assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
+            == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
+
+    schedule_file2 = open("Tests%sschedule_file2.csv" % os.sep, "w+")
+    schedule_file2.write("24/07/17 12, 1, 10 ,2, 365 498 \n")  # need to succeed
+    schedule_file2.seek(0)
+    assert (add_weekly_schedule_for_employee("365", "Tests%sschedule_file2.csv" % os.sep) == "Dear  Ilana! There is no free room the 24/07/17 12 ! Sorry.")
+
+
 
 #try to schedule file (need to succeed). than try to delete it and after that schedule again.
+@pytest.mark.skip
 def test_weekly_schedule_delete():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -225,13 +255,13 @@ def test_weekly_schedule_delete():
     import_employees_from_file("Tests%semployees.csv" % os.sep)
     import_room_details_from_file(rooms.name)
     schedule_file = open("Tests%sschedule_file.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 100, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
             == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
 
     schedule_file = open("Tests%sschedule_file_delete.csv" % os.sep, "w+")
-    schedule_file.write("24/07/17 12, 1, 2, 498 234 \n")  # need to succeed
+    schedule_file.write("24/07/17 12, 1, 100, 2, 498 234 \n")  # need to succeed
     schedule_file.seek(0)
     delete_weekly_schedule("234", "Tests%sschedule_file_delete.csv" % os.sep)
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
@@ -404,4 +434,4 @@ def test_recommend_by_friends():
 
 
 if __name__ == '__main__':
-    test_weekly_schedule_delete()
+    test_weekly_schedule2()

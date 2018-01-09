@@ -1,6 +1,7 @@
 from Database.ManageDB import *
 
-
+#format of input_file: date, duration_time, max_percent_capacity, num_employees, str_id_employee
+#max_percent_capacity is double between 0 to 100. Value of 100 means that you accept maximus capacity in the room
 def add_weekly_schedule_for_employee(id, input_file):
     if not check_id_of_employee(id):
         return "Employee doesn't exist in the system"
@@ -9,16 +10,16 @@ def add_weekly_schedule_for_employee(id, input_file):
     with open(input_file) as schedule:
         for line in schedule.readlines():
             count = line.count(',')
-            if line.count(',') > 2:
-                date, duration_hours, employees, str_id_employee = line.split(',')
+            if line.count(',') > 3:
+                date, duration_hours, max_capacity, employees, str_id_employee = line.split(',')
                 num_employees = int(employees)
                 id_employee_list = str_id_employee.split()
                 if len(id_employee_list)!=num_employees:
                     print "problem in entering data"
-            if line.count(',') == 1:
-                date, duration_hours = line.split(',')
+            if line.count(',') == 2:
+                date, duration_hours, max_capacity = line.split(',')
                 num_employees = 1
-            anouncments_list = assign_employees_to_room_to_X_hours(date, num_employees, int(duration_hours), employee, id_employee_list)
+            anouncments_list = assign_employees_to_room_to_X_hours(date, num_employees, int(duration_hours), employee, id_employee_list, max_capacity)
             anouncments_string = ""
             for announce in anouncments_list:
                 anouncments_string += announce
