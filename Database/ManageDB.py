@@ -205,6 +205,8 @@ def check_employee_already_ordered(employee, date_time):
 
 
 def delete_assign_employees_from_room(date_time, num_employees, num_hours, employee ,id_employee_list):
+    global Employees
+    global Rooms
     for i in range(0, num_hours):
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
@@ -215,11 +217,14 @@ def delete_assign_employees_from_room(date_time, num_employees, num_hours, emplo
         schedule = room["schedule"]
         schedule[date_time] = (schedule[date_time][0] - num_employees, None)
         schedule_employee = employee["schedule"]
-        schedule_employee[date_time] = (0, None)
+        del schedule_employee[date_time]
+        Rooms.replace_one({'_id': room['_id']}, room)
+
         for id in id_employee_list:
             employee_friend = find_employee(id)
             schedule_employee = employee_friend["schedule"]
-            schedule_employee[date_time] = (0, None)
+            del schedule_employee[date_time]
+            Employees.replace_one({'_id': employee_friend['_id']}, employee_friend)
 
 
 def check_room_ordered_by_employee(employee, updated_time):
@@ -230,10 +235,11 @@ def check_room_ordered_by_employee(employee, updated_time):
 
 
 def get_room_ordered_by_employee(employee, updated_time):
+    room =None
     schedule_employee = employee["schedule"]
-    if id in schedule_employee:
-        id_room = schedule_employee[updated_time][1]
-        room = find_room(id_room)
+    #if id in schedule_employee:
+    id_room = schedule_employee[updated_time][1]
+    room = find_room(id_room)
     return room
 
 
