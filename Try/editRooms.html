@@ -10,7 +10,7 @@
 </head>
 
 <meta charset="UTF-8">
-<title>ManagerInterface Form</title>
+<title>Login Form</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 
@@ -30,8 +30,8 @@
         color: #333333;
         text-align: center;
         text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-    <!-- vertical-align: middle;
-    --> background-color: #f5f5f5;
+        vertical-align: middle;
+        background-color: #f5f5f5;
         background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
         background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
         background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
@@ -51,8 +51,6 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
         cursor: pointer;
         *margin-left: .3em;
-        width: 15em;
-        height: 5em;
     }
 
     .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] {
@@ -104,62 +102,29 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
     }
 
-    .btn-primary-sim {
-    <!-- background-color: #4a77d4;
-    --> <!-- background-image: -moz-linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-image: -ms-linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-image: -webkit-gradient(linear, 0 0, 0 100 %, from(#ff1b0a), to(#d40500));
-    --> <!-- background-image: -webkit-linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-image: -o-linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-image: linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-repeat: repeat-x;
-    --> filter: progid:dximagetransform.microsoft.gradient(startColorstr=#4a77d4, endColorstr=#4a77d4, GradientType=0);
-        border: 1px solid #4a77d4;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 1.4);
-        font-size: 20px;
-        border-radius: 12px;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-        left: 10%;
-        background-image: url("simulation_picture.png");
-        margin-left: 670px;
-        margin-top: 1px;
-    }
-
-    .btn-primary-logout {
-        background-color: #4a77d4;
-        background-image: -moz-linear-gradient(top, #27e9ff, #008b8b);
-        background-image: -ms-linear-gradient(top, #27e9ff, #008b8b);
-        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#27e9ff), to(#008b8b));
-        background-image: -webkit-linear-gradient(top, #27e9ff, #008b8b);
-        background-image: -o-linear-gradient(top, #27e9ff, #008b8b);
-        background-image: linear-gradient(top, #27e9ff, #008b8b);
+    .btn-primary-red {
+        background-color: #d40d00;
+        background-image: -moz-linear-gradient(top, #de3729, #d40d00);
+        background-image: -ms-linear-gradient(top, #de3729, #d40d00);
+        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#de3729), to(#d40d00));
+        background-image: -webkit-linear-gradient(top, #de3729, #d40d00);
+        background-image: -o-linear-gradient(top, #de3729, #d40d00);
+        background-image: linear-gradient(top, #de3729, #d40d00);
         background-repeat: repeat-x;
-        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#27e9ff, endColorstr=#008b8b, GradientType=0);
-        border: 1px solid #27e9ff;
+        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#de3729, endColorstr=#d40d00, GradientType=0);
+        border: 1px solid #ff0900;
         text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-        margin-left: 1200px;
-        margin-top: 20px;
     }
 
-    .btn-primary:hover, .btn-primary:active, .btn-primary.disabled, .btn-primary[disabled] {
+    .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
         filter: none;
         background-color: #4a77d4;
     }
 
-    .btn-primary-sim:hover, .btn-primary-sim:active, .btn-primary-sim.disabled, .btn-primary-sim[disabled] {
+    .btn-primary-red:hover, .btn-primary-red:active, .btn-primary-red.active, .btn-primary-red.disabled, .btn-primary-red[disabled] {
         filter: none;
-        background-color: #4a77d4;
-    }
-
-    .btn-primary-logout:hover, .btn-primary-logout.disabled, .btn-primary-logout[disabled] {
-        filter: none;
-        background-color: #008b8b;
-    }
-
-    .btn-primary-logout:active {
-        filter: none;
-        background-color: #008b8b;
+        background-color: #ff0900;
     }
 
     .btn-block {
@@ -194,10 +159,7 @@
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
     }
 
-    .managerInterface {
-        color: #fff;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
+    .editRooms {
         position: absolute;
         top: 30%;
         left: 50%;
@@ -206,87 +168,83 @@
         height: 300px;
     }
 
-    .container h2 {
+    .editRooms h1 {
         color: #fff;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
         text-align: center;
     }
 
-    .buttons {
-        color: #fff;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
-        position: absolute;
-        top: 45%;
-        left: 52%;
-        margin: -150px 0 0 -150px;
-        width: 220px;
-        height: 300px;
+    .white-text {
+        color: #ffffff;
     }
 
-    .buttons2 {
+    .black-text {
+        color: #000000;
+    }
+
+    input {
+        width: 100%;
+        margin-bottom: 10px;
+        background: rgba(0, 0, 0, 0.3);
+        border: none;
+        outline: none;
+        padding: 10px;
+        font-size: 13px;
         color: #fff;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
-        position: absolute;
-        top: 87%;
-        margin: -150px 0 0 -150px;
-        width: 180px;
-        height: 280px;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+        box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.2), 0 1px 1px rgba(255, 255, 255, 0.2);
+        -webkit-transition: box-shadow .5s ease;
+        -moz-transition: box-shadow .5s ease;
+        -o-transition: box-shadow .5s ease;
+        -ms-transition: box-shadow .5s ease;
+        transition: box-shadow .5s ease;
+    }
+
+    input:focus {
+        box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 
 </style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-</head>
-<body>
-
-<div class="managerInterface">
-    <h2>Manager Interface</h2>
-</div>
-
 <p id="greeting"></p>
 <script src="greeting.js"></script>
 
 
-<form method="post">
-    <div class="buttons">
-        <a href="import_employees.html">
-            <button type="button" class="btn btn-primary btn-block btn-large">Import Employees Details</button>
-        </a>
-        </br>
-        <a href="import_rooms.html">
-            <button type="button" class="btn btn-primary btn-block btn-large">Import Rooms Details</button>
-        </a>
-        </br>
-        <a href="editDB.html">
-            <button type="button" class="btn btn-primary btn-block btn-large">Edit Database</button>
-        </a>
-        </br>
-    </div>
-    <div class="buttons2">
-        <a href="">
-            <button type="button" class="btn btn-primary-sim btn-block btn-large">Simulation</button>
-        </a>
-        <a href="index.html">
-            <button onclick='logout_message();' type="button" class="btn btn-primary-logout btn-block btn-large">Logout
-            </button>
-        </a>
-    </div>
-</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
-<!--<script>-->
-<!--function logout_message(){-->
-<!--window.onbeforeunload = function() {-->
-<!--return "Are you sure you want to logout?";-->
-<!--}-->
-<!--$('form').submit(function() {-->
-<!--window.onbeforeunload = null;-->
-<!--});-->
-<!--}-->
-<!--</script>-->
+</head>
+
+<body>
+
+<div class="editRooms">
+    <h1>Edit Rooms</h1>
+    <form method="post">
+        <input type="search" name="u" placeholder="Search id " required="required"/>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
+        <div class="white-text">
+            ID:<input/>
+            Floor:<input/>
+            Capacity:<input/>
+            Required Permission:<input/>
+        </div>
+        <button type="button" class="btn btn-primary btn-block btn-large ">Edit</button>
+        <button type="button" class="btn btn-primary-red btn-block btn-large black-text">Delete</button>
+
+    </form>
+    <br/>
+    <br/>
+    <br/>
+    <a href="editDB.html">
+        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
+    </a>
+</div>
+
 
 <script src="js/index.js"></script>
+
+
 </body>
+
 </html>
