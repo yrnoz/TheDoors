@@ -182,7 +182,6 @@ def test_weekly_schedule6():
 
 
 #What happens if we do the schedular twice. NOT-PASSSING. Need to understand how to write this test properly
-@pytest.mark.skip
 def test_weekly_schedule7():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()
@@ -205,7 +204,7 @@ def test_weekly_schedule7():
             == "Dear Koby! The room that was chosen for you is: taub 4. For the time: 24/07/17 12. ")
 
     assert (add_weekly_schedule_for_employee("234", "Tests%sschedule_file.csv" % os.sep)
-            == "Dear Koby! There is no free room the 24/07/17 13 ! Sorry.")
+            == "Dear Koby! You have already ordered room for: 24/07/17 12 ! Sorry.")
     p.terminate()
 
 @pytest.mark.skip

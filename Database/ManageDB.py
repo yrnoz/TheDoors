@@ -106,7 +106,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
-        #update_schedule_employees(date_time, room, id_employee_list, num_employees)
+        update_schedule_employees(date_time, room, id_employee_list, num_employees)
         anouncments_list.append(
             "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
                                                                                           date_time))
@@ -121,6 +121,7 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
                                                                                           date_time))
     Rooms.replace_one({'_id': room['_id']}, room)
     Employees.replace_one({'_id': employee['_id']}, employee)
+
     return True
 
 
@@ -132,8 +133,9 @@ def update_schedule_employees(date_time, room, id_employee_list, num_employees):
     employee2 = Employees.find()[1]
     for id in id_employee_list:
         employee = find_employee(id)
-        schedule_employee = find_employee(id)["schedule"]
+        schedule_employee = employee["schedule"]
         schedule_employee[date_time] = (num_employees, room["id"])
+        Employees.replace_one({'_id': employee['_id']}, employee)
 
 
 def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee, id_employee_list):
@@ -152,6 +154,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
         if check_employee_already_ordered(employee, updated_time):
+            anouncments_list.append("Dear {}! You have already ordered room for: {} ! Sorry.".format(employee['name'], updated_time))
             continue
 
         is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee,
