@@ -230,7 +230,7 @@
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
         position: absolute;
-        top: 85%;
+        top: 87%;
         margin: -150px 0 0 -150px;
         width: 180px;
         height: 280px;
@@ -252,14 +252,27 @@
 
 <form method="post">
     <div class="buttons">
-        <button type="submit" class="btn btn-primary btn-block btn-large">Import Employees Details</button>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Import Rooms Details</button>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Edit Database</button>
+        <a href="import_employees.html">
+            <button type="button" class="btn btn-primary btn-block btn-large">Import Employees Details</button>
+        </a>
+        </br>
+        <a href="import_rooms.html">
+            <button type="button" class="btn btn-primary btn-block btn-large">Import Rooms Details</button>
+        </a>
+        </br>
+        <a href="">
+            <button type="button" class="btn btn-primary btn-block btn-large">Edit Database</button>
+        </a>
+        </br>
     </div>
     <div class="buttons2">
-        <button type="submit" class="btn btn-primary-sim btn-block btn-large">Simulation</button>
-        <button onclick='logout_message();' type="submit" class="btn btn-primary-logout btn-block btn-large">Logout
-        </button>
+        <a href="">
+            <button type="button" class="btn btn-primary-sim btn-block btn-large">Simulation</button>
+        </a>
+        <a href="index.html">
+            <button onclick='logout_message();' type="button" class="btn btn-primary-logout btn-block btn-large">Logout
+            </button>
+        </a>
     </div>
 </form>
 
