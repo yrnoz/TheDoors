@@ -76,7 +76,8 @@ def import_room_details_from_file(input_file):
 #######################################################################################
 
 
-def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, id_employee_list, max_capacity, anouncments_list):
+def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, id_employee_list, max_capacity,
+                                      anouncments_list):
     """
     this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees,
     and number of employees to assign, if possible - they would be assigned to the room.
@@ -151,7 +152,8 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
         if check_employee_already_ordered(employee, updated_time):
-            anouncments_list.append("Dear {}! You have already ordered room for: {} ! Sorry.".format(employee['name'], updated_time))
+            anouncments_list.append(
+                "Dear {}! You have already ordered room for: {} ! Sorry.".format(employee['name'], updated_time))
             continue
 
         is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee,
@@ -161,7 +163,7 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
         if not is_asigned_previous:
             for j in range(0, num_rooms):
                 room = Rooms.find()[j]
-                if num_rooms==1:
+                if num_rooms == 1:
                     anouncments_list.append(
                         "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
                     continue
@@ -206,7 +208,7 @@ def check_employee_already_ordered(employee, date_time):
     return False
 
 
-def delete_assign_employees_from_room(date_time, num_employees, num_hours, employee ,id_employee_list):
+def delete_assign_employees_from_room(date_time, num_employees, num_hours, employee, id_employee_list):
     global Employees
     global Rooms
     for i in range(0, num_hours):
@@ -237,9 +239,9 @@ def check_room_ordered_by_employee(employee, updated_time):
 
 
 def get_room_ordered_by_employee(employee, updated_time):
-    room =None
+    room = None
     schedule_employee = employee["schedule"]
-    #if id in schedule_employee:
+    # if id in schedule_employee:
     id_room = schedule_employee[updated_time][1]
     room = find_room(id_room)
     return room
@@ -465,5 +467,24 @@ def handle_employee_exiting_a_room(employee_id):
     Employees.update_one({'id': employee_id},
                          {'$unset': {'current_room': {}}})
 
+
+def check_if_theres_an_employee_friend_in_room(employee_id, room_id):
+    """
+    Checks if there's a friend of given employee in the specified room
+    :param employee_id: employee whose friends list we're querying for presence in the room
+    :param room_id: room where we look for friends in
+    :return: True - if there's a friend in specified room, False - otherwise
+    """
+    if not (check_id_of_employee(employee_id) or find_room(room_id)):
+        return False
+    friends_list = find_employee(employee_id)["friends"]
+    for friend_id in friends_list:
+        friend = Employees.find_one({"$and": [{"id": friend_id},
+                                     {"current_room": {"$exists": True}},
+                                     {"current_room.room_id": room_id}]})
+        if friend is not None:
+            return True
+    return False
+        # friends_in_room = friends_list.filter()
 
 ####################################################################################################

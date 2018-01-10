@@ -254,6 +254,21 @@ def test_share_location_entering_then_exiting_a_room():
     Rooms.drop()
 
 
+def test_check_if_theres_friend_in_room():
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    assert check_id_of_employee("123")
+    assert find_room("taub 1") is not None
+    set_location_of_employee("123", "taub 1", 3)
+    add_a_friend_for_employee("498", "123")
+    assert check_if_theres_an_employee_friend_in_room("498", "taub 1")
+    assert not check_if_theres_an_employee_friend_in_room("498", "taub 3")
+    Employees.drop()
+    Rooms.drop()
+
+
 @pytest.mark.skip(reason=0)
 def test_db():
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
