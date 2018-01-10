@@ -72,3 +72,7 @@ class Employee:
     def change_role(self, role):
         self.role = role
         update_employee(self.id, self.name, self.role, self.access_permission, self.password, self.friends, self.schedule)
+
+    def check_if_there_are_friends_in_room(self, room_id):
+        return check_if_theres_an_employee_friend_in_room(self.id, room_id)
+
