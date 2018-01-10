@@ -72,15 +72,21 @@ def simulation_get_schedule_of_employee(id):
         employee_schedule += date_time + ": " + tuple[1] + "; "
     return employee_schedule
 
-#the function copy all employees un the DB to the simulation DB
+#the function copy all employees from the DB to the simulation DB
 def simulation_copy_employees_from_DB():
     global SimEmployees
     for employee in Employees.find():
         SimEmployees.insert(employee)
 
-#the function assign employees with random people to rooms for now
-def simulation_assign_employees():
-    now = time.strftime("%d/%m/%Y %H")
+# the function copy all rooms from the DB to the simulation DB
+def simulation_copy_rooms_from_DB():
+    global SimRooms
+    for room in Rooms.find():
+        SimRooms.insert(room)
+
+#the function assign employees with random people to rooms
+def simulation_assign_employees(date_time):
+    #now = time.strftime("%d/%m/%Y %H")
     rooms = SimRooms.find()
     employees = SimEmployees.find()
     count = 0
@@ -88,7 +94,7 @@ def simulation_assign_employees():
         count += 1
         i = random.randint(0, len(rooms))
         num_employees = random.randint(0, int(len(employees)/4))
-        while simulation_assign_employees_to_room_one_hour(now, rooms[i], num_employees, employee):
+        while simulation_assign_employees_to_room_one_hour(date_time, rooms[i], num_employees, employee):
             i = random.randint(0, len(rooms))
         if count >= int(employees/2):
             break
@@ -132,3 +138,37 @@ def simulation_assign_employees_to_room_one_hour(date_time, room, num_employees,
 def simulation_update_schedule_employees(date_time, room_id, employee_id, num_employees):
     schedule_employee = find_employee(employee_id)["schedule"]
     schedule_employee[date_time] = (num_employees, room_id)
+
+
+#
+#THIS IS THE MAIN FUNCTION OF THE SIMULATION
+#
+def simulation_day_in_factory(start_time, finish_time, new_rooms_details = None):
+    simulation_copy_employees_from_DB()
+    simulation_copy_rooms_from_DB()
+    if not (new_rooms_details is None):
+        simulation_import_room_details_from_file(new_rooms_details)
+    date_now = time.strftime("%d/%m/%y")
+    for hour in range(start_time, finish_time, 1):
+        date_now += " " + str(hour)
+        simulation_assign_employees(date_now)
+    simulation_hist = dict()
+    rooms = SimRooms.find()
+    for hour in range(start_time, finish_time, 1):
+        date_now += " " + str(hour)
+        simulation_hist[date_now] = dict()
+        for room in rooms:
+            schedule = room["schedule"][date_now]
+            simulation_hist[date_now].update({room["id"] : schedule[0]})
+
+
+
+
+
+
+
+
+
+
+
+
