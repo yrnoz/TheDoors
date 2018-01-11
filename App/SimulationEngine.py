@@ -1,4 +1,5 @@
 from Database.ManageDB import *
+from openpyxl import Workbook
 import random
 import time
 
@@ -76,16 +77,18 @@ def simulation_get_schedule_of_employee(id):
 def simulation_copy_employees_from_DB():
     global SimEmployees
     for employee in Employees.find():
+        employee["schedule"] = {}
         SimEmployees.insert(employee)
 
 # the function copy all rooms from the DB to the simulation DB
 def simulation_copy_rooms_from_DB():
     global SimRooms
     for room in Rooms.find():
+        room["schedule"] = {}
         SimRooms.insert(room)
 
 #the function assign employees with random people to rooms
-def simulation_assign_employees(date_time):
+def simulation_assign_employees(date_time, percent_employees):
     #now = time.strftime("%d/%m/%Y %H")
     rooms = SimRooms.find()
     employees = SimEmployees.find()
@@ -96,7 +99,7 @@ def simulation_assign_employees(date_time):
         num_employees = random.randint(0, int(len(employees)/4))
         while simulation_assign_employees_to_room_one_hour(date_time, rooms[i], num_employees, employee):
             i = random.randint(0, len(rooms))
-        if count >= int(employees/2):
+        if count >= int((percent_employees*employees)/100):
             break
 
 
@@ -143,24 +146,30 @@ def simulation_update_schedule_employees(date_time, room_id, employee_id, num_em
 #
 #THIS IS THE MAIN FUNCTION OF THE SIMULATION
 #
-def simulation_day_in_factory(start_time, finish_time, new_rooms_details = None):
+def simulation_day_in_factory(start_time, finish_time, percent_employees, new_rooms_details = None):
     simulation_copy_employees_from_DB()
     simulation_copy_rooms_from_DB()
+    wb = Workbook()
+    ws = wb.active()
     if not (new_rooms_details is None):
         simulation_import_room_details_from_file(new_rooms_details)
     date_now = time.strftime("%d/%m/%y")
     for hour in range(start_time, finish_time, 1):
         date_now += " " + str(hour)
-        simulation_assign_employees(date_now)
+        simulation_assign_employees(date_now, percent_employees)
     simulation_hist = dict()
     rooms = SimRooms.find()
     for hour in range(start_time, finish_time, 1):
         date_now += " " + str(hour)
         simulation_hist[date_now] = dict()
+        i = 0
         for room in rooms:
+            i+=1
             schedule = room["schedule"][date_now]
-            simulation_hist[date_now].update({room["id"] : schedule[0]})
-
+            simulation_hist[date_now].update({room["id"] : (schedule[0], room["capacity"])})
+            ws["A"+str(i)] = room["id"]
+            ws["B"+str(i)] = float(schedule[0])/int(room["capacity"])*100
+    wb.save('Simulation_Stats.xlsx')
 
 
 
