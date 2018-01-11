@@ -315,6 +315,15 @@ def get_access_permission_of_employee_by_id(id):
     return int(employee["permission"])
 
 
+def validate_password(password):
+    if len(password)<8:
+        print 'Password length must be at least 8'
+    if any(c.isalpha() for c in password) is False:
+        print 'Password must include a letter'
+    if any(c.isdigit() for c in password):
+        print 'Password must include a digit'
+
+
 # input: id output: password of this employee
 def get_password_of_employee_by_id(id):
     global Employees
