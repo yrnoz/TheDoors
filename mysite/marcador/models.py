@@ -25,8 +25,15 @@ class PublicBookmarkManager(models.Manager):
 
 
 @python_2_unicode_compatible
-class Bookmark(models.Model):
-    url = models.URLField()
+class Rooms(models.Model):
+    id = models.CharField('room id', max_length=255, unique=True)
+    floor = models.IntegerField('floor')
+    maxCapacity = models.IntegerField('max capacity')
+
+    access_permission = models.IntegerField('access permission')
+
+
+
     title = models.CharField('title', max_length=255)
     description = models.TextField('description', blank=True)
     is_public = models.BooleanField('public', default=True)
