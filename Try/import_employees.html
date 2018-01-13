@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 
 <meta charset="UTF-8">
@@ -192,8 +193,9 @@
 <div class="importEmployee">
     <h1>Import Employees</h1>
     <form method="post">
-        <input type="file" name="u" placeholder="Username" required="required"/>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Import</button>
+        <input type="file" id="employees_input" placeholder="Username" required="required" accept="text/csv"/>
+        <button type="submit" class="btn btn-primary btn-block btn-large" onclick="importEmployees();">Import</button>
+        <script src="js/importEmployees.js"></script>
     </form>
     <br/>
     <br/>
@@ -203,8 +205,6 @@
     </a>
 </div>
 
-
-<script src="js/index.js"></script>
 
 
 </body>
