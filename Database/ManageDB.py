@@ -23,7 +23,7 @@ def import_employees_from_file(input_file):
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
             id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
-            if check_id_of_employee(int(id)):
+            if check_id_str_of_employee(id):
                 continue
             if (int(permission) < 0) or (int(permission) <= man_permission and role != "Manager"):
                 continue
@@ -348,6 +348,13 @@ def check_id_of_employee(id):
         return False
     return True
 
+# input: id output: True - if there is employee with this id False other wise
+def check_id_str_of_employee(id):
+    global Employees
+    employee = Employees.find_one({"id": id})
+    if employee is None:
+        return False
+    return True
 
 # input: id, password output: True if the password match the employee False otherwise
 def check_password_of_employee(id, password):
