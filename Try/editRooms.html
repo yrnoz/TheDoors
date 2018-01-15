@@ -175,6 +175,42 @@
         text-align: center;
     }
 
+    .go_back {
+        color: #fff;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        letter-spacing: 1px;
+        position: absolute;
+        top: 85%;
+        margin: -150px 0 0 -150px;
+        width: 180px;
+        height: 280px;
+        }
+     .btn-primary-go_back {
+        background-color: #4a77d4;
+        background-image: -moz-linear-gradient(top, #27e9ff, #008b8b);
+        background-image: -ms-linear-gradient(top, #27e9ff, #008b8b);
+        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#27e9ff), to(#008b8b));
+        background-image: -webkit-linear-gradient(top, #27e9ff, #008b8b);
+        background-image: -o-linear-gradient(top, #27e9ff, #008b8b);
+        background-image: linear-gradient(top, #27e9ff, #008b8b);
+        background-repeat: repeat-x;
+        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#27e9ff, endColorstr=#008b8b, GradientType=0);
+        border: 1px solid #27e9ff;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
+        margin-left: 1200px;
+        margin-top: 110px;
+    }
+    .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
+        filter: none;
+        background-color: #008b8b;
+    }
+
+    .btn-primary-go_back:active {
+        filter: none;
+        background-color: #008b8b;
+    }
+
     .white-text {
         color: #ffffff;
     }
@@ -236,8 +272,10 @@
     <br/>
     <br/>
     <br/>
+</div>
+<div class="go_back">
     <a href="editDB.html">
-        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
+        <button type="button" class="btn btn-primary-go_back btn-large">Go Back</button>
     </a>
 </div>
 
