@@ -414,9 +414,9 @@ def get_permission_of_manager():
     for employee in employees:
         if employee["role"] != "Manager":
             employees.remove(employee)
-    if employees == []:
+    if employees == [] or employees is None:
         return -1
-    return min(map(lambda x: int(x["permission"]), Employees.find()))
+    return min(map(lambda x: int(x["permission"]),employees))
 
 
 def add_a_friend_for_employee(employee_id, friend_id):
