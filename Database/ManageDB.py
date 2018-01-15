@@ -389,10 +389,13 @@ def get_average_friends_in_factory():
         A function that calculate the average friends per employee
         :return: the average friends per employee
     '''
-    num_employees = len(Employees.find())
+    num_employees = Employees.find().count()
     if num_employees is 0:
         return -1
-    num_friends = reduce(lambda x, y: x + y, map(lambda x: len(x["friends"]), Employees.find()))
+    employees=[]
+    for employee in Employees.find():
+        employees.append(employee)
+    num_friends = reduce(lambda x, y: x + y, map(lambda x: len(x["friends"]), employees))
     return int(num_friends / num_employees)
 
 
@@ -401,22 +404,27 @@ def get_minimum_permission_in_factory():
     A function that returns the minimum permission of an employee in the factory
     :return: the minimum permission.
     '''
-    if Employees.find() == []:
+    if Employees.find().count() == 0:
         return -1
-    return max(map(lambda x: int(x["permission"]), Employees.find()))
+    permissions = []
+    for employee in Employees.find():
+        permissions.append(int(employee["permission"]))
+    return max(permissions)
 
 def get_permission_of_manager():
     '''
     A function that returns the permission of the manager in the factory
     :return: the permission of the manager.
     '''
-    employees = Employees.find()
-    for employee in employees:
-        if employee["role"] != "Manager":
-            employees.remove(employee)
-    if employees == [] or employees is None:
+    if Employees.find().count() == 0:
         return -1
-    return min(map(lambda x: int(x["permission"]),employees))
+    permissions = []
+    for employee in Employees.find():
+        if employee["role"] == "Manager":
+            permissions.append(employee["permission"])
+    if permissions == []:
+        return -1
+    return min(permissions)
 
 
 def add_a_friend_for_employee(employee_id, friend_id):
