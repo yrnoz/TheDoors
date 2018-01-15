@@ -19,9 +19,14 @@ def import_employees_from_file(input_file):
     output: side effect  - the details added to the DB
     """
     global Employees
+    man_permission = get_permission_of_manager()
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
             id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
+            if check_id_of_employee(int(id)):
+                continue
+            if (int(permission) < 0) or (int(permission) <= man_permission and role != "Manager"):
+                continue
             employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password,
                         "friends": [],
                         "schedule": {}}
@@ -68,6 +73,10 @@ def import_room_details_from_file(input_file):
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.translate(None, '\n'), details.readlines()):
             id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
+            if not (find_room(id) is None):
+                continue
+            if int(capacity) <= 0 or int(permission) < 0:
+                continue
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
             Rooms.insert_one(room)  # add employee's details to the DB
@@ -381,6 +390,8 @@ def get_average_friends_in_factory():
         :return: the average friends per employee
     '''
     num_employees = len(Employees.find())
+    if num_employees is 0:
+        return -1
     num_friends = reduce(lambda x, y: x + y, map(lambda x: len(x["friends"]), Employees.find()))
     return int(num_friends / num_employees)
 
@@ -390,7 +401,22 @@ def get_minimum_permission_in_factory():
     A function that returns the minimum permission of an employee in the factory
     :return: the minimum permission.
     '''
+    if Employees.find() == []:
+        return -1
     return max(map(lambda x: int(x["permission"]), Employees.find()))
+
+def get_permission_of_manager():
+    '''
+    A function that returns the permission of the manager in the factory
+    :return: the permission of the manager.
+    '''
+    employees = Employees.find()
+    for employee in employees:
+        if employee["role"] != "Manager":
+            employees.remove(employee)
+    if employees == []:
+        return -1
+    return min(map(lambda x: int(x["permission"]), Employees.find()))
 
 
 def add_a_friend_for_employee(employee_id, friend_id):
