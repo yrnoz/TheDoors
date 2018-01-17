@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 
 urlpatterns = [
-    url(r'^user/(?P<username>[-\w]+)/$', 'marcador.views.bookmark_user',
-        name='marcador_bookmark_user'),
-    url(r'^$', 'marcador.views.bookmark_list', name='marcador_bookmark_list'),
+    url(r'^user/(?P<username>[-\w]+)/$', 'marcador.views.doors_user',
+        name='marcador_doors_user'),
+    url(r'^$', 'marcador.views.friends_list', name='marcador_friends_list'),
 ]

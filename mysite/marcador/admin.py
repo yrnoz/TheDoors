@@ -1,15 +1,14 @@
 from django.contrib import admin
 
-from .models import Bookmark, Tag
+from .models import Employee, Friend, Schedule
 
 
-class BookmarkAdmin(admin.ModelAdmin):
-    list_display = ('url', 'title', 'owner', 'is_public', 'date_updated')
-    list_editable = ('is_public',)
-    list_filter = ('is_public', 'owner__username')
-    search_fields = ['url', 'title', 'description']
-    readonly_fields = ('date_created', 'date_updated')
+class DoorsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'role', 'access_permission', 'password')
+    list_filter = ('access_permission', 'role')
+    search_fields = ['id', 'role', 'name']
 
 
-admin.site.register(Bookmark, BookmarkAdmin)
-admin.site.register(Tag)
+admin.site.register(Employee, DoorsAdmin)
+admin.site.register(Friend)
+admin.site.register(Schedule)

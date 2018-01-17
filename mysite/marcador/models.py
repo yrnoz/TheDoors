@@ -6,49 +6,56 @@ from django.utils.timezone import now
 
 
 @python_2_unicode_compatible
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+class Schedule(models.Model):
+    room_id = models.CharField(max_length=50)
+    num_employee = models.IntegerField()
+    date_time = models.DateField()
 
     class Meta:
-        verbose_name = 'tag'
-        verbose_name_plural = 'tags'
+        verbose_name = 'schedule'
+        verbose_name_plural = 'schedules'
+        ordering = ['room_id']
+
+    def __str__(self):
+        return "date: %s room id: %s " % (self.date_time, self.room_id)
+
+
+@python_2_unicode_compatible
+class Friend(models.Model):
+    id = models.CharField(max_length=9, unique=True, primary_key=True)
+
+    class Meta:
+        verbose_name = 'friend'
+        verbose_name_plural = 'friends'
+        ordering = ['id']
+
+    def __str__(self):
+        return self.id
+
+
+class PublicEmployeeManager(models.Manager):
+    def get_queryset(self):
+        qs = super(PublicEmployeeManager, self).get_queryset()
+        return qs.filter()
+
+
+@python_2_unicode_compatible
+class Employee(models.Model):
+    id = models.CharField('user id', primary_key=True, max_length=9)
+    name = models.CharField('user name', max_length=255)
+    access_permission = models.IntegerField('access_permission')
+    role = models.CharField('role', max_length=255)
+    friends = models.ManyToManyField(Friend, blank=True , related_name='friends')
+    schedule = models.ManyToManyField(Schedule, blank=True)
+    password = models.CharField('password', max_length=255)
+
+    class Meta:
+        verbose_name = 'employee'
+        verbose_name_plural = 'employees'
         ordering = ['name']
 
     def __str__(self):
         return self.name
 
-
-class PublicBookmarkManager(models.Manager):
-    def get_queryset(self):
-        qs = super(PublicBookmarkManager, self).get_queryset()
-        return qs.filter(is_public=True)
-
-
-@python_2_unicode_compatible
-class Bookmark(models.Model):
-    url = models.URLField()
-    title = models.CharField('title', max_length=255)
-    description = models.TextField('description', blank=True)
-    is_public = models.BooleanField('public', default=True)
-    date_created = models.DateTimeField('date created')
-    date_updated = models.DateTimeField('date updated')
-    owner = models.ForeignKey(User, verbose_name='owner',
-        related_name='bookmarks')
-    tags = models.ManyToManyField(Tag, blank=True)
-
     objects = models.Manager()
-    public = PublicBookmarkManager()
-
-    class Meta:
-        verbose_name = 'bookmark'
-        verbose_name_plural = 'bookmarks'
-        ordering = ['-date_created']
-
-    def __str__(self):
-        return '%s (%s)' % (self.title, self.url)
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.date_created = now()
-        self.date_updated = now()
-        super(Bookmark, self).save(*args, **kwargs)
+    public = PublicEmployeeManager()

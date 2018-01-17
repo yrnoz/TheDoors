@@ -1,20 +1,22 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Bookmark
+from .models import Employee
 
 
-def bookmark_list(request):
-    bookmarks = Bookmark.public.all()
-    context = {'bookmarks': bookmarks}
-    return render(request, 'marcador/index.html', context)
+def friends_list(request):
+    friends = Employee.public.all()
+    context = {'friends': friends}
+    return render(request, 'templates/marcador/friends_list.html', context)
 
 
-def bookmark_user(request, username):
+def doors_user(request, username):
     user = get_object_or_404(User, username=username)
-    if request.user == user:
-        bookmarks = user.bookmarks.all()
-    else:
-        bookmarks = Bookmark.public.filter(owner__username=username)
-    context = {'bookmarks': bookmarks, 'owner': user}
-    return render(request, 'marcador/bookmark_user.html', context)
+    # if request.user == user:
+    #     friends = user.Employee.all()
+    # else:
+    #     friends = Employee.public.filter(owner__username=username)
+    friends = Employee.public.filter(name=username)
+
+    context = {'friends': friends, 'owner': user}
+    return render(request, 'templates/marcador/doors_user.html', context)
