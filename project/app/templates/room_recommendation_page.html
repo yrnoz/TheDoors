@@ -64,53 +64,67 @@
         }
 
         .btn-primary-go_back {
-        background-color: #555555;
-        background-image: -moz-linear-gradient(top, #555555, #555555);
-        background-image: -ms-linear-gradient(top, #555555, #555555);
-        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#555555));
-        background-image: -webkit-linear-gradient(top, #555555, #555555);
-        background-image: -o-linear-gradient(top, #555555, #555555);
-        background-image: linear-gradient(top, #555555, #555555);
-        background-repeat: repeat-x;
-        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#555555, endColorstr=#555555, GradientType=0);
-        border: 1px solid #f44336;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-        background-image: url({{ url_for('static' , filename='goback_picture.png') }});
+            background-color: #555555;
+            background-image: -moz-linear-gradient(top, #555555, #555555);
+            background-image: -ms-linear-gradient(top, #555555, #555555);
+            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#555555));
+            background-image: -webkit-linear-gradient(top, #555555, #555555);
+            background-image: -o-linear-gradient(top, #555555, #555555);
+            background-image: linear-gradient(top, #555555, #555555);
+            background-repeat: repeat-x;
+            filter: progid:dximagetransform.microsoft.gradient(startColorstr=#555555, endColorstr=#555555, GradientType=0);
+            border: 1px solid #f44336;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
+            background-image: url({{ url_for('static' , filename= 'goback_picture.png')
+        }
 
+        }
+        )
+        ;
 
-        margin-left: 200px;
-        margin-top: 110px;
-    }
-    .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
-        filter: none;
-        background-color: #f44336;
-        border: 5px solid #f44336;
-    }
+        margin-left:
 
-    .btn-primary-go_back:active {
-        filter: none;
-        background-color: #f44336;
-    }
+        200
+        px
 
-     .btn-large-goback {
-        padding: 25px 50px;
-        font-size: 15px;
-        line-height: normal;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-    }
+        ;
+        margin-top:
 
-    .go_back {
-        color: #fff;
-        <!--background-image: url("goback_picture.png");-->
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
-        position: absolute;
-        top: 85%;
-        margin: 100px 0 0 -450px;
-    }
+        110
+        px
+
+        ;
+        }
+        .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
+            filter: none;
+            background-color: #f44336;
+            border: 5px solid #f44336;
+        }
+
+        .btn-primary-go_back:active {
+            filter: none;
+            background-color: #f44336;
+        }
+
+        .btn-large-goback {
+            padding: 25px 50px;
+            font-size: 15px;
+            line-height: normal;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        .go_back {
+            color: #fff;
+        <!-- background-image: url("goback_picture.png");
+        --> text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            position: absolute;
+            top: 85%;
+            margin: 100px 0 0 -450px;
+        }
 
         .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] {
             background-color: #e6e6e6;
@@ -364,11 +378,26 @@
 
 
     <!--<div class="spacer"></div>-->
-    <div class="well">The recommendation will be showed here.</div>
+    <div class="well">
+        <table id="reccomendations table" style="width:100%">
+            <tr>
+                <th>Room</th>
+                <th>Floor</th>
+            </tr>
+            <tr>
+                <td>taub</td>
+                <td>Smith</td>
+            </tr>
+            <tr>
+                <td>Eve</td>
+                <td>Jackson</td>
+            </tr>
+        </table>
+    </div>
     <div class="go_back">
-    <a href="{{ url_for('userInterface') }}">
-        <button type="button" class=" btn-primary-go_back btn-large-goback"></button>
-    </a>
+        <a href="{{ url_for('userInterface') }}">
+            <button type="button" class=" btn-primary-go_back btn-large-goback"></button>
+        </a>
     </div>
 </div>
 
@@ -376,7 +405,7 @@
     <h1>Room Recommendation</h1>
     <form method="post" action="{{url_for('room_recommendation_page')}}">
         <p>
-            <div class="btn btn-primary btn-block btn-large">
+        <div class="btn btn-primary btn-block btn-large">
             {{ form_recommend.submit_button() }}
         </div>
         </p>

@@ -181,7 +181,7 @@ def form_room_update_case(form_search, form_update, form_delete):
     try:
         room = Room.objects.get(room_id=str(form_update.room_id.data))
         room.update(room_id=form_update.room_id.data, floor=form_update.floor.data, access_permission=form_update.permission.data,
-                    maxCapacoty=form_update.maxCapacity.data)
+                    maxCapacity=form_update.maxCapacity.data)
         room.save()
         room = Room.objects.get(room_id=form_update.room_id.data)
         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
@@ -297,5 +297,6 @@ def form_room_recommend(form_recommend):
                 schedule_date_time = schedule
                 break
         if 1 <= room.maxCapacity - schedule_date_time.occupancy:
-            reccomendedList.append(room)
+            reccomendedList.append(room.room_id)
+        recommendedList.
     return render_template('room_recommendation_page.html', output = )
