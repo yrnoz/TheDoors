@@ -61,7 +61,7 @@
 
     .btn-large {
         padding: 9px 14px;
-        font-size: 15px;
+        font-size: 17px;
         line-height: normal;
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;
@@ -229,13 +229,13 @@
         <a href="{{ url_for('room_recommendation_page') }}">
             <button type="button" class="btn btn-primary btn-block btn-large">
                <img src="{{ url_for('static', filename = 'picture_schedule_now.jpg')}}" class="img-rounded pull-left" width="50" height="50">
-                Request Room Reccomendation</button>
+                Request Room <br></br>Reccomendation</button>
         </a>
         </br>
         <a href="{{ url_for('weekly_schedule_page') }}">
             <button type="button" class="btn btn-primary btn-block btn-large">
                 <img src="{{ url_for('static', filename = 'picture_schedule.png')}}" class="img-rounded pull-left" width="50" height="50">
-                Add / Delete Weekly Schedule</button>
+                Add / Delete <br></br> Weekly Schedule</button>
         </a>
         </br>
         <a href="{{ url_for('editEmployeesByThem') }}">
