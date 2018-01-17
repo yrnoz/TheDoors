@@ -131,57 +131,6 @@
         width: 100%;
         display: block;
     }
-    .btn-primary-go_back {
-        background-color: #555555;
-        background-image: -moz-linear-gradient(top, #555555, #555555);
-        background-image: -ms-linear-gradient(top, #555555, #555555);
-        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#555555));
-        background-image: -webkit-linear-gradient(top, #555555, #555555);
-        background-image: -o-linear-gradient(top, #555555, #555555);
-        background-image: linear-gradient(top, #555555, #555555);
-        background-repeat: repeat-x;
-        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#555555, endColorstr=#555555, GradientType=0);
-        border: 1px solid #f44336;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-        background-image: url("goback_picture.png");
-        margin-left: 200px;
-        margin-top: 110px;
-    }
-    .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
-        filter: none;
-        background-color: #f44336;
-        border: 5px solid #f44336;
-    }
-
-    .btn-primary-go_back:active {
-        filter: none;
-        background-color: #f44336;
-    }
-
-     .btn-large-goback {
-        padding: 25px 50px;
-        font-size: 15px;
-        line-height: normal;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-    }
-
-    .go_back {
-        color: #fff;
-        <!--background-image: url("goback_picture.png");-->
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
-        position: absolute;
-        top: 85%;
-        margin: -150px 0 0 -150px;
-    }
-
-    .btn-primary-go_back:active {
-        filter: none;
-        background-color: #008b8b;
-    }
 
     * {
         -webkit-box-sizing: border-box;
@@ -258,8 +207,8 @@
         box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 </style>
-<p id="greeting"></p>
-<script src="greeting.js"></script>
+{% extends "base.html" %}
+{% block content %}
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
@@ -270,33 +219,64 @@
 
 <div class="editEmployees">
     <h1>Edit Employees</h1>
-    <form method="post">
-        <input type="search" name="u" placeholder="Search id or name" required="required"/>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
-        <div class="white-text">
-            ID:<input/>
-            Full Name:<input/>
-            Role:<input/>
-            Permission:<input/>
-        </div>
-        <button type="button" class="btn btn-primary btn-block btn-large ">Edit</button>
-        <button type="button" class="btn btn-primary-red btn-block btn-large black-text">Delete</button>
 
+    <form method="post" action="{{url_for('updateEmployees')}}">
+        {{ form_search.hidden_tag() }}
+        {{ form_search.csrf_token }}
+        <p class="white-text">
+            {{ form_search.search.label }}<br>
+            {{ form_search.search(size=32) }}<br>
+        </p>
+        <div class="btn btn-primary btn-block btn-large">
+            {{ form_search.submit_button_search() }}
+        </div>
+
+    </form>
+    <form method="post">
+        {{ form_update.hidden_tag() }}
+        {{ form_update.csrf_token }}
+        <div class="white-text">
+            {% if data %}
+            (current values)</br>
+            <p>ID ({{data.user_id}}):{{form_update.user_id}}</p>
+            <p>Full Name ({{data.username}}):{{form_update.username}}</p>
+            <p>Role ({{data.role}}):{{form_update.role}}</p>
+            <p>Permission ({{data.access_permission}}):{{form_update.permission}}</p>
+
+            {% endif %}
+            {% if not data %}
+
+            ID: <p class="white-text">
+            {{form_update.user_id}}
+        </p>
+            Full Name: <p class="white-text">
+            {{form_update.username}}
+        </p>
+            Role: <p class="white-text">
+            {{form_update.role}}
+        </p>
+            Permission: <p class="white-text">
+            {{form_update.permission}}
+        </p>
+        </div>
+
+        {% endif %}
+        <div class="btn btn-primary btn-block btn-large">
+            {{ form_update.submit_button_update() }}
+        </div >
+        <form action="{{url_for('deleteEmployee')}}">
+            <button type="button" class="btn btn-primary-red btn-block btn-large black-text">Delete</button>
+        </form>
     </form>
     <br/>
     <br/>
     <br/>
-</div>
-<div class="go_back">
-    <a href="editDB.html">
-        <button type="button" class="btn btn-primary-go_back btn-large-goback"></button>
+    <a href="{{url_for('editDB')}}">
+        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
     </a>
 </div>
 
 
-<script src="js/index.js"></script>
-
-
 </body>
-
+{% endblock %}
 </html>
