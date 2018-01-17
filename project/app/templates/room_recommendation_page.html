@@ -372,7 +372,21 @@
     </div>
 </div>
 
+<div class="roomRecommendation">
+    <h1>Room Recommendation</h1>
+    <form method="post" action="{{url_for('room_recommendation_page')}}">
+        <p>
+            <div class="btn btn-primary btn-block btn-large">
+            {{ form_recommend.submit_button() }}
+        </div>
+        </p>
 
+
+    </form>
+    <a href="{{ url_for('editDB') }}">
+        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
+    </a>
+</div>
 
 
 </body>

@@ -1,7 +1,7 @@
 import os
 
 # import client as client
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import login_user, logout_user, login_required
 from werkzeug.datastructures import FileStorage
 
@@ -277,3 +277,25 @@ def editEmployees():
     form_delete = EmployeeDelateForm()
     return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
                            form_update=form_update)
+
+@app.route('/room_recommendation_page',methods=['GET', 'POST'])
+@login_required
+def room_recommendation_page():
+    form_recommend = roomRecommendationPage()
+    if form_recommend.validate_on_submit():
+        return form_room_recommend(form_recommend)
+    return render_template('room_recommendation_page.html')
+
+def form_room_recommend(form_recommend):
+    recommendedList = []
+    for room in Rooms.objects.all():
+        if room.access_permission > find_employee(session['user_id']).access_permission:
+            continue
+        schedule_date_time = Schedule()
+        for schedule in room.schedules:
+            if schedule.date == form_recommend.date and schedule.time == form_recommend.start_time:
+                schedule_date_time = schedule
+                break
+        if 1 <= room.maxCapacity - schedule_date_time.occupancy:
+            reccomendedList.append(room)
+    return render_template('room_recommendation_page.html', output = )
