@@ -19,28 +19,35 @@ def import_employees_from_file(input_file):
     output: side effect  - the details added to the DB
     """
     global Employees
+    man_permission = get_permission_of_manager()
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
-            id, name, role, permission = line[:-1].split(",")  # get the parameters we need from the line
-            employee = {"id": id, "name": name, "role": role, "permission": int(permission), "friends": [],
+            id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
+            if check_id_str_of_employee(id):
+                continue
+            if (int(permission) < 0) or (int(permission) <= man_permission and role != "Manager"):
+                continue
+            employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password,
+                        "friends": [],
                         "schedule": {}}
             Employees.insert(employee)  # add employee's details to the DB
 
 
 def export_employees_to_file(output_file):
     """
-    exports employee collection in csv format
-    :param output_file: the name of file employees' collection will be exported to
+        exports employee collection in csv format
+        :param output_file: the name of file employees' collection will be exported to
     """
     global Employees
     with open(output_file, 'w') as output:
         for employee in Employees.find():
             if not employee["friends"]:
                 output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                             + str(employee["permission"]) + "\n")
+                             + str(employee["permission"]) + "," + employee["password"] + "\n")
             else:
                 output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                             + str(employee["permission"]) + "," + ",".join(employee["friends"]) + "\n")
+                             + str(employee["permission"]) + "," + employee["password"] + "," + ",".join(
+                    employee["friends"]) + "\n")
 
 
 def export_rooms_to_file(output_file):
@@ -66,6 +73,10 @@ def import_room_details_from_file(input_file):
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.translate(None, '\n'), details.readlines()):
             id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
+            if not (find_room(id) is None):
+                continue
+            if int(capacity) <= 0 or int(permission) < 0:
+                continue
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
             Rooms.insert_one(room)  # add employee's details to the DB
@@ -74,7 +85,8 @@ def import_room_details_from_file(input_file):
 #######################################################################################
 
 
-def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, anouncments_list):
+def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, id_employee_list, max_capacity,
+                                      anouncments_list):
     """
     this function gets date time in format "D/M/Y Hour", the room from the DB to assign employees,
     and number of employees to assign, if possible - they would be assigned to the room.
@@ -90,8 +102,8 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     capacity = room["capacity"]
     schedule = room["schedule"]
     schedule_employee = employee["schedule"]
-    if check_legal_permission(employee, room) == False:
-        anouncments_list.append("Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], date_time))
+
+    if not check_ligal_permission(employee, room, id_employee_list):
         return
     try:
         datetime.strptime(date_time, "%d/%m/%y %H")  # check the date_time format is correct
@@ -102,22 +114,38 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
             return False
         schedule[date_time] = (num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
+        update_schedule_employees(date_time, room, id_employee_list, num_employees)
         anouncments_list.append(
             "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
                                                                                           date_time))
     else:
-        if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_employee):
+        free_capacity_room = capacity - schedule[date_time][0]
+        capacity_edited = (free_capacity_room * int(max_capacity)) / 100
+        if schedule[date_time][0] + num_employees > capacity_edited | (date_time in schedule_employee):
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
+        update_schedule_employees(date_time, room, id_employee_list, num_employees)
         anouncments_list.append(
             "Dear {}! The room that was chosen for you is: {}. For the time: {}. ".format(employee['name'], room['id'],
                                                                                           date_time))
     Rooms.replace_one({'_id': room['_id']}, room)
+    Employees.replace_one({'_id': employee['_id']}, employee)
+
     return True
 
 
-def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee):
+def update_schedule_employees(date_time, room, id_employee_list, num_employees):
+    global Rooms
+    global Employees
+    for id in id_employee_list:
+        employee = find_employee(id)
+        schedule_employee = employee["schedule"]
+        schedule_employee[date_time] = (num_employees, room["id"])
+        Employees.replace_one({'_id': employee['_id']}, employee)
+
+
+def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee, id_employee_list, max_capacity):
     """
     :param employee:
     :param date_time:
@@ -133,17 +161,26 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
         if check_employee_already_ordered(employee, updated_time):
+            anouncments_list.append(
+                "Dear {}! You have already ordered room for: {} ! Sorry.".format(employee['name'], updated_time))
             continue
 
         is_asigned_previous = assign_employees_to_room_one_hour(updated_time, previous_room, num_employees, employee,
+                                                                id_employee_list, max_capacity,
                                                                 anouncments_list)
         # print anouncments_list
         if not is_asigned_previous:
             for j in range(0, num_rooms):
                 room = Rooms.find()[j]
+                if num_rooms == 1:
+                    anouncments_list.append(
+                        "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
+                    continue
+
                 if room["id"] == previous_room["id"]:
                     continue
                 is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee,
+                                                               id_employee_list, max_capacity,
                                                                anouncments_list)
                 if is_asigned:
                     previous_room = room
@@ -180,7 +217,9 @@ def check_employee_already_ordered(employee, date_time):
     return False
 
 
-def delete_assign_employees_from_room(date_time, num_employees, num_hours, employee):
+def delete_assign_employees_from_room(date_time, num_employees, num_hours, employee, id_employee_list):
+    global Employees
+    global Rooms
     for i in range(0, num_hours):
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
@@ -191,7 +230,14 @@ def delete_assign_employees_from_room(date_time, num_employees, num_hours, emplo
         schedule = room["schedule"]
         schedule[date_time] = (schedule[date_time][0] - num_employees, None)
         schedule_employee = employee["schedule"]
-        schedule_employee[date_time] = (0, None)
+        del schedule_employee[date_time]
+        Rooms.replace_one({'_id': room['_id']}, room)
+
+        for id in id_employee_list:
+            employee_friend = find_employee(id)
+            schedule_employee = employee_friend["schedule"]
+            del schedule_employee[date_time]
+            Employees.replace_one({'_id': employee_friend['_id']}, employee_friend)
 
 
 def check_room_ordered_by_employee(employee, updated_time):
@@ -202,10 +248,11 @@ def check_room_ordered_by_employee(employee, updated_time):
 
 
 def get_room_ordered_by_employee(employee, updated_time):
+    room = None
     schedule_employee = employee["schedule"]
-    if id in schedule_employee:
-        id_room = schedule_employee[updated_time][1]
-        room = find_room(id_room)
+    # if id in schedule_employee:
+    id_room = schedule_employee[updated_time][1]
+    room = find_room(id_room)
     return room
 
 
@@ -222,7 +269,8 @@ def add_employee(employee):
     """
     global Employees
     employee_json = {"id": employee.id, "name": employee.name, "role": employee.role,
-                     "permission": int(employee.access_permission), "friends": employee.friends,
+                     "permission": int(employee.access_permission), "password": employee.password,
+                     "friends": employee.friends,
                      "schedule": {}}
     Employees.insert(employee_json)
 
@@ -233,10 +281,10 @@ def remove_employee(id):
         print 'No such employee'
 
 
-def update_employee(id, name, role, permission, friends, schedules):
+def update_employee(id, name, role, permission, password, friends, schedules):
     global Employees
     if not Employees.update_one({'id': id},
-                                {'$set': {'name': name, 'role': role, 'permission': permission,
+                                {'$set': {'name': name, 'role': role, 'permission': permission, 'password': password,
                                           'friends': friends, "schedule": schedules}}).matched_count:
         print "No such employee"
 
@@ -269,15 +317,30 @@ def update_room(id, floor, max_capacity, access_permission, schedule):
         print
         'No such room'
 
-#input: id. output: the permission of the employee
+
 def get_access_permission_of_employee_by_id(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
-    if employee is None:
-        return -1
     return int(employee["permission"])
 
-#input: id of employee. output: true if the employee exists
+
+def validate_password(password):
+    if len(password)<8:
+        print 'Password length must be at least 8'
+    if any(c.isalpha() for c in password) is False:
+        print 'Password must include a letter'
+    if any(c.isdigit() for c in password):
+        print 'Password must include a digit'
+
+
+# input: id output: password of this employee
+def get_password_of_employee_by_id(id):
+    global Employees
+    employee = Employees.find_one({"id": str(id)})
+    return str(employee["password"])
+
+
+# input: id output: True - if there is employee with this id False other wise
 def check_id_of_employee(id):
     global Employees
     employee = Employees.find_one({"id": str(id)})
@@ -285,22 +348,90 @@ def check_id_of_employee(id):
         return False
     return True
 
-#input: id of employee. output: the employee with the id
+# input: id output: True - if there is employee with this id False other wise
+def check_id_str_of_employee(id):
+    global Employees
+    employee = Employees.find_one({"id": id})
+    if employee is None:
+        return False
+    return True
+
+# input: id, password output: True if the password match the employee False otherwise
+def check_password_of_employee(id, password):
+    global Employees
+    employee = Employees.find_one({"id": str(id)})
+    # print employee["password"]
+    if employee["password"] != password:
+        return False
+    return True
+
+
+# input: id output: the employee with this id
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.find_one({"id": str(id)})
 
 
-def check_legal_permission(employee, room):
+def check_ligal_permission(employee, room, id_employee_list):
+    max_permission = get_minimum_permission_in_factory()  # I assume it is the max
+    for id in id_employee_list:
+        permission_employee = int(find_employee(id)["permission"])
+        if permission_employee > max_permission:
+            max_permission = permission_employee
     employee_permission = int(employee["permission"])
+    max_permission_all = max(employee_permission, max_permission)
     room_permission = room["permission"]
-    if employee_permission <= room_permission:
+    if max_permission_all <= room_permission:
         return True
     return False
 
 
+# input: id output: the room with this id
 def find_room(id):
     return Rooms.find_one({"id": str(id)})
+
+
+def get_average_friends_in_factory():
+    '''
+        A function that calculate the average friends per employee
+        :return: the average friends per employee
+    '''
+    num_employees = Employees.find().count()
+    if num_employees is 0:
+        return -1
+    employees=[]
+    for employee in Employees.find():
+        employees.append(employee)
+    num_friends = reduce(lambda x, y: x + y, map(lambda x: len(x["friends"]), employees))
+    return int(num_friends / num_employees)
+
+
+def get_minimum_permission_in_factory():
+    '''
+    A function that returns the minimum permission of an employee in the factory
+    :return: the minimum permission.
+    '''
+    if Employees.find().count() == 0:
+        return -1
+    permissions = []
+    for employee in Employees.find():
+        permissions.append(int(employee["permission"]))
+    return max(permissions)
+
+def get_permission_of_manager():
+    '''
+    A function that returns the permission of the manager in the factory
+    :return: the permission of the manager.
+    '''
+    if Employees.find().count() == 0:
+        return -1
+    permissions = []
+    for employee in Employees.find():
+        if employee["role"] == "Manager":
+            permissions.append(employee["permission"])
+    if permissions == []:
+        return -1
+    return min(permissions)
 
 
 def add_a_friend_for_employee(employee_id, friend_id):
@@ -354,29 +485,56 @@ def delete_a_friend_aux(employee, friend_id):
     """
     employee_friends = employee["friends"]
     employee_friends.remove(friend_id)
-
-    stam = Employees.update_one({'id': employee["id"]},
+    Employees.update_one({'id': employee["id"]},
                          {'$set': {
                              'friends': employee_friends}}).matched_count
-    print "stam: " + str(stam)
-
-def get_average_friends_of_employee():
-    '''
-    A function that calculate the average friends per employee
-    :return: the average friends per employee
-    '''
-    employees = Employees.find()
-    num_employees = employees.count()
-    num_friends = reduce(lambda x,y: x+y, map(lambda x: x["friends"].count(), employees))
-    return int(num_friends/num_employees)
 
 
-def get_minimum_permission_in_factory():
-    '''
-    A function that returns the minimum permission of an employee in the factory
-    :return: the minimum permission.
-    '''
-    return reduce(lambda x,y: x if (x<y) else y, map(lambda x: int(x["permission"]), Employees.find()))
+def set_location_of_employee(employee_id, room_id, room_floor):
+    """
+    Updates employee's location in the DB when he enters into a room
+    :param employee_id: id of employee entering a room
+    :param room_id: id of the room the employee's entering into
+    :param room_floor: the floor of the id
+    :return: side effect: employee is marked as being in the room in the DB
+    """
+    # TODO: room floor might be redundant, need to reconsider it
+    if not (check_id_of_employee(employee_id) or find_room(room_id)):
+        return
+    global Employees
+    global Rooms
+    Employees.update_one({'id': employee_id},
+                         {'$set': {'current_room': {'room_id': room_id, 'room_floor': room_floor}}})
 
+
+def handle_employee_exiting_a_room(employee_id):
+    """
+    handles employee exiting a room by unsetting the location field in the DB
+    :param employee_id: id of employee that exits a room
+    """
+    if not check_id_of_employee(employee_id):
+        return
+    Employees.update_one({'id': employee_id},
+                         {'$unset': {'current_room': {}}})
+
+
+def check_if_theres_an_employee_friend_in_room(employee_id, room_id):
+    """
+    Checks if there's a friend of given employee in the specified room
+    :param employee_id: employee whose friends list we're querying for presence in the room
+    :param room_id: room where we look for friends in
+    :return: True - if there's a friend in specified room, False - otherwise
+    """
+    if not (check_id_of_employee(employee_id) or find_room(room_id)):
+        return False
+    friends_list = find_employee(employee_id)["friends"]
+    for friend_id in friends_list:
+        friend = Employees.find_one({"$and": [{"id": friend_id},
+                                     {"current_room": {"$exists": True}},
+                                     {"current_room.room_id": room_id}]})
+        if friend is not None:
+            return True
+    return False
+        # friends_in_room = friends_list.filter()
 
 ####################################################################################################

@@ -9,6 +9,10 @@ from App.RoomOrder import RoomOrder
 from Database.ManageDB import *
 
 
+def test_dummy():
+    pass
+
+
 @pytest.fixture(autouse=True)
 def p():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
@@ -88,7 +92,7 @@ def test_export_employees_with_addition_should_increase():
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Employees.drop()
     import_employees_from_file(file_name)
-    add_employee(Employee("900", "Johnny", "Engineer", 1))
+    add_employee(Employee("900", "Johnny", "Engineer", 1, "password"))
     output_file = "Tests%soutput_test.csv" % os.sep
     assert check_id_of_employee("900") is True
     export_employees_to_file(output_file)
@@ -180,7 +184,92 @@ def test_remove_friend():
     Employees.drop()
     os.remove(output_file)
 
-# @pytest.mark.skip(reason="should be separated into different tests")
+
+def test_check_password_of_employee():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    assert check_password_of_employee("123", "1234") is True
+    assert check_password_of_employee("0123", "1235") is True
+    assert check_password_of_employee("134", "1239") is True
+    assert check_password_of_employee("742", "1221") is True
+    assert check_password_of_employee("965", "1222") is True
+    assert check_password_of_employee("840", "1323") is True
+    Employees.drop()
+
+
+def test_get_password_of_employee_by_id():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    assert get_password_of_employee_by_id("123") == "1234"
+    assert get_password_of_employee_by_id("0123") == "1235"
+    assert get_password_of_employee_by_id("134") == "1239"
+    assert get_password_of_employee_by_id("742") == "1221"
+    assert get_password_of_employee_by_id("965") == "1222"
+    assert get_password_of_employee_by_id("840") == "1323"
+    Employees.drop()
+
+
+def test_share_location_entering_a_room_invalid_employee_id():
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    assert not check_id_of_employee("187")
+    assert find_room("taub 1") is not None
+    set_location_of_employee("187", "taub 1", 3)
+    Employees.drop()
+    Rooms.drop()
+
+
+def test_share_location_entering_a_room_valid_details():
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    assert check_id_of_employee("123")
+    assert find_room("taub 1") is not None
+    set_location_of_employee("123", "taub 1", 3)
+    employee = find_employee("123")
+    assert employee['current_room'] is not None
+    assert employee['current_room']['room_id'] == 'taub 1' and employee['current_room']['room_floor'] == 3
+    Employees.drop()
+    Rooms.drop()
+
+
+def test_share_location_entering_then_exiting_a_room():
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    assert check_id_of_employee("123")
+    assert find_room("taub 1") is not None
+    set_location_of_employee("123", "taub 1", 3)
+    handle_employee_exiting_a_room("123")
+    assert Employees.find({'current_room': {'$exists': True}}).count() == 0
+    Employees.drop()
+    Rooms.drop()
+
+
+def test_check_if_theres_friend_in_room():
+    Employees.drop()
+    Rooms.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    assert check_id_of_employee("123")
+    assert find_room("taub 1") is not None
+    set_location_of_employee("123", "taub 1", 3)
+    add_a_friend_for_employee("498", "123")
+    assert check_if_theres_an_employee_friend_in_room("498", "taub 1")
+    assert not check_if_theres_an_employee_friend_in_room("498", "taub 3")
+    Employees.drop()
+    Rooms.drop()
+
+
+@pytest.mark.skip(reason=0)
 def test_db():
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     Rooms.drop()

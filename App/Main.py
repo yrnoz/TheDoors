@@ -15,13 +15,13 @@ def enter_employees_csv(filename):
 
 
 def add_employee_aux(employee_str):
-    id, name, role, access_permission = employee_str.split()
-    add_employee(Employee(int(id), name, role, int(access_permission)))
+    id, name, role, access_permission, password = employee_str.split()
+    add_employee(Employee(int(id), name, role, int(access_permission), password))
 
 
 def add_room_aux(room_str):
-    id, floor, max_capacity, access_permission = room_str.split()
-    add_room(Room(id, int(floor), int(max_capacity), int(access_permission)))
+    id, floor, max_capacity, access_permission, password = room_str.split()
+    add_room(Room(id, int(floor), int(max_capacity), int(access_permission), password))
 
 
 def remove_employee_aux(id):
@@ -29,8 +29,8 @@ def remove_employee_aux(id):
 
 
 def update_employee_aux(employee_str):
-    id, name, role, access_permission = employee_str.split()
-    update_employee(int(id), name, role, int(access_permission))
+    id, name, role, access_permission, password = employee_str.split()
+    update_employee(int(id), name, role, int(access_permission), password)
 
 
 def update_room_aux(room_str):
