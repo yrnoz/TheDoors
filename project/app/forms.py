@@ -26,3 +26,20 @@ class EmployeeUpdateForm(FlaskForm):
 class EmployeeDelateForm(FlaskForm):#todo
     search = StringField('search id or name', validators=[DataRequired()])
     submit_button_delete = SubmitField('Delete')
+
+class RoomSearchForm(FlaskForm):
+    search = StringField('search id', validators=[DataRequired()])
+    submit_button_search = SubmitField('Search')
+
+
+class RoomUpdateForm(FlaskForm):
+    room_id = StringField('id', validators=[DataRequired()])
+    floor = IntegerField('Floor',validators=[DataRequired()])
+    maxCapacity = IntegerField('MaxCapacity', validators=[DataRequired()])
+    permission = IntegerField('Permission', validators=[DataRequired()])
+    submit_button_update = SubmitField('Update')
+
+
+class RoomDelateForm(FlaskForm):#todo
+    search = StringField('search id', validators=[DataRequired()])
+    submit_button_delete = SubmitField('Delete')
