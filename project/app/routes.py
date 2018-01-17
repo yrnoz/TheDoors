@@ -167,8 +167,6 @@ def editRooms():
 
 def form_room_search_case(form_search, form_update, form_delete):
     try:
-        print "asdasssssssss"
-        print "room counts: " + str(Room.objects.count())
         room = Room.objects.get(room_id=str(form_search.search.data))
         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
                                form_update=form_update, data=room)
@@ -182,7 +180,7 @@ def form_room_search_case(form_search, form_update, form_delete):
 def form_room_update_case(form_search, form_update, form_delete):
     try:
         room = Room.objects.get(room_id=str(form_update.room_id.data))
-        room.update(floor=form_update.floor.data, access_permission=form_update.permission.data,
+        room.update(room_id=form_update.room_id.data, floor=form_update.floor.data, access_permission=form_update.permission.data,
                     maxCapacoty=form_update.maxCapacity.data)
         room.save()
         room = Room.objects.get(room_id=form_update.room_id.data)
@@ -209,7 +207,6 @@ def updateRooms():
     if form_search.validate_on_submit():
         return form_room_search_case(form_search, form_update, form_delete)
     elif form_update.validate_on_submit():
-        print(form_update.user_id.data + "  " + form_update.username.data)
         return form_room_update_case(form_search, form_update, form_delete)
     elif form_delete.validate_on_submit():
         return form_room_delete_case(form_search, form_update, form_delete)
