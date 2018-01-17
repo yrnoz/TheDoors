@@ -87,8 +87,6 @@ def import_room_details_from_file(input_file):
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.translate(None, '\n'), details.readlines()):
             id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
-            if not (find_room(id) is None):
-                continue
             if int(capacity) <= 0 or int(permission) < 0:
                 continue
             room = Room(room_id=id,

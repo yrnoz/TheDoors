@@ -218,19 +218,6 @@
 
 <div class="editRooms">
     <h1>Edit Rooms</h1>
-    <form method="post">
-        <input type="search" name="u" placeholder="Search id " required="required"/>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
-        <div class="white-text">
-            ID:<input/>
-            Floor:<input/>
-            Capacity:<input/>
-            Required Permission:<input/>
-        </div>
-        <button type="button" class="btn btn-primary btn-block btn-large ">Edit</button>
-        <button type="button" class="btn btn-primary-red btn-block btn-large black-text">Delete</button>
-
-    </form>
     <form method="post" action="{{url_for('updateRooms')}}">
         {{ form_search.hidden_tag() }}
         {{ form_search.csrf_token }}
