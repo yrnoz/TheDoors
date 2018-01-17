@@ -105,15 +105,15 @@
     }
 
     .btn-primary-sim {
-    <!-- background-color: #4a77d4;
-    --> <!-- background-image: -moz-linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-image: -ms-linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-image: -webkit-gradient(linear, 0 0, 0 100 %, from(#ff1b0a), to(#d40500));
-    --> <!-- background-image: -webkit-linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-image: -o-linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-image: linear-gradient(top, #ff1b0a, #d40500);
-    --> <!-- background-repeat: repeat-x;
-    --> filter: progid:dximagetransform.microsoft.gradient(startColorstr=#4a77d4, endColorstr=#4a77d4, GradientType=0);
+        background-color: #4a77d4;
+        background-image: -moz-linear-gradient(top, #ff1b0a, #d40500);
+        background-image: -ms-linear-gradient(top, #ff1b0a, #d40500);
+        background-image: -webkit-gradient(linear, 0 0, 0 100 %, from(#ff1b0a), to(#d40500));
+        background-image: -webkit-linear-gradient(top, #ff1b0a, #d40500);
+        background-image: -o-linear-gradient(top, #ff1b0a, #d40500);
+        background-image: linear-gradient(top, #ff1b0a, #d40500);
+        background-repeat: repeat-x;
+        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#4a77d4, endColorstr=#4a77d4, GradientType=0);
         border: 1px solid #4a77d4;
         text-shadow: 1px 1px 1px rgba(0, 0, 0, 1.4);
         font-size: 20px;
@@ -266,7 +266,7 @@
     </div>
     <div class="buttons2">
         <a href="">
-            <button type="button" class="btn btn-primary-sim btn-block btn-large">Simulation</button>
+            <button type="button" class="btn btn-primary-sim btn-block btn-large" >Simulation</button>
         </a>
         <a href="{{ url_for('logout') }}">
             <button onclick='logout_message();' type="button" class="btn btn-primary-logout btn-block btn-large">
@@ -275,17 +275,6 @@
         </a>
     </div>
 </form>
-
-<!--<script>-->
-<!--function logout_message(){-->
-<!--window.onbeforeunload = function() {-->
-<!--return "Are you sure you want to logout?";-->
-<!--}-->
-<!--$('form').submit(function() {-->
-<!--window.onbeforeunload = null;-->
-<!--});-->
-<!--}-->
-<!--</script>-->
 
 <script src="js/index.js"></script>
 </body>
