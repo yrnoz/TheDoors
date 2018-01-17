@@ -193,20 +193,26 @@
     <form method="post">
         <br/>
         <a href="changePassword.html">
-            <button type="button" class="btn btn-primary btn-block btn-large">Change password</button>
+            <button type="button" class="btn btn-primary btn-block btn-large">
+                <img src="{{ url_for('static', filename = 'picture_password.png')}}" class="img-rounded pull-left" width="50" height="50">
+                Change password</button>
         </a>
         <br/>
         <a href="">
-            <button type="button" class="btn btn-primary btn-block btn-large">Edit friends list</button>
+            <button type="button" class="btn btn-primary btn-block btn-large">
+                <img src="{{ url_for('static', filename = 'picture_people2.png')}}" class="img-rounded pull-left" width="50" height="50">
+                Edit friends list</button>
         </a>
     </form>
     <br/>
     <br/>
     <br/>
+    <img src="{{ url_for('static', filename = 'picture_settings4.png')}}" class="img-rounded center-block" width="150" height="150">
     <a href="{{ url_for('userInterface') }}">
         <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
     </a>
 </div>
+
 
 
 </body>

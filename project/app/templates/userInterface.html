@@ -228,23 +228,29 @@
 
         <a href="{{ url_for('room_recommendation_page') }}">
             <button type="button" class="btn btn-primary btn-block btn-large">
-                <img src="{{ url_for('static', filename = 'picture_add.png')}}" width="20" height="25">
+               <img src="{{ url_for('static', filename = 'picture_schedule_now.jpg')}}" class="img-rounded pull-left" width="50" height="50">
                 Request Room Reccomendation</button>
         </a>
         </br>
         <a href="{{ url_for('weekly_schedule_page') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Add Weekly Schedule</button>
+            <button type="button" class="btn btn-primary btn-block btn-large">
+                <img src="{{ url_for('static', filename = 'picture_schedule.png')}}" class="img-rounded pull-left" width="50" height="50">
+                Add / Delete Weekly Schedule</button>
         </a>
         </br>
         <a href="{{ url_for('editEmployeesByThem') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Edit Details/Friends</button>
+            <button type="button" class="btn btn-primary btn-block btn-large">
+                <img src="{{ url_for('static', filename = 'picture_settings3.jpg')}}" class="img-rounded pull-left" width="50" height="50">
+                User Settings</button>
         </a>
         </br>
 
     </div>
     <div class="buttons2">
         <a href="{{ url_for('logout') }}">
-            <button onclick='logout_message();' type="button" class="btn btn-primary-logout btn-block btn-large">Logout
+            <button onclick='logout_message();' type="button" class="btn btn-primary-logout btn-block btn-large">
+                <span class="glyphicon glyphicon-log-out"></span>
+                Logout
             </button>
         </a>
     </div>
