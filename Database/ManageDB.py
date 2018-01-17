@@ -19,9 +19,14 @@ def import_employees_from_file(input_file):
     output: side effect  - the details added to the DB
     """
     global Employees
+    man_permission = get_permission_of_manager()
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
             id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
+            if check_id_str_of_employee(id):
+                continue
+            if (int(permission) < 0) or (int(permission) <= man_permission and role != "Manager"):
+                continue
             employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password,
                         "friends": [],
                         "schedule": {}}
@@ -68,6 +73,10 @@ def import_room_details_from_file(input_file):
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.translate(None, '\n'), details.readlines()):
             id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
+            if not (find_room(id) is None):
+                continue
+            if int(capacity) <= 0 or int(permission) < 0:
+                continue
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
             Rooms.insert_one(room)  # add employee's details to the DB
@@ -315,6 +324,15 @@ def get_access_permission_of_employee_by_id(id):
     return int(employee["permission"])
 
 
+def validate_password(password):
+    if len(password)<8:
+        print 'Password length must be at least 8'
+    if any(c.isalpha() for c in password) is False:
+        print 'Password must include a letter'
+    if any(c.isdigit() for c in password):
+        print 'Password must include a digit'
+
+
 # input: id output: password of this employee
 def get_password_of_employee_by_id(id):
     global Employees
@@ -330,6 +348,13 @@ def check_id_of_employee(id):
         return False
     return True
 
+# input: id output: True - if there is employee with this id False other wise
+def check_id_str_of_employee(id):
+    global Employees
+    employee = Employees.find_one({"id": id})
+    if employee is None:
+        return False
+    return True
 
 # input: id, password output: True if the password match the employee False otherwise
 def check_password_of_employee(id, password):
@@ -371,8 +396,13 @@ def get_average_friends_in_factory():
         A function that calculate the average friends per employee
         :return: the average friends per employee
     '''
-    num_employees = len(Employees.find())
-    num_friends = reduce(lambda x, y: x + y, map(lambda x: len(x["friends"]), Employees.find()))
+    num_employees = Employees.find().count()
+    if num_employees is 0:
+        return -1
+    employees=[]
+    for employee in Employees.find():
+        employees.append(employee)
+    num_friends = reduce(lambda x, y: x + y, map(lambda x: len(x["friends"]), employees))
     return int(num_friends / num_employees)
 
 
@@ -381,7 +411,27 @@ def get_minimum_permission_in_factory():
     A function that returns the minimum permission of an employee in the factory
     :return: the minimum permission.
     '''
-    return max(map(lambda x: int(x["permission"]), Employees.find()))
+    if Employees.find().count() == 0:
+        return -1
+    permissions = []
+    for employee in Employees.find():
+        permissions.append(int(employee["permission"]))
+    return max(permissions)
+
+def get_permission_of_manager():
+    '''
+    A function that returns the permission of the manager in the factory
+    :return: the permission of the manager.
+    '''
+    if Employees.find().count() == 0:
+        return -1
+    permissions = []
+    for employee in Employees.find():
+        if employee["role"] == "Manager":
+            permissions.append(employee["permission"])
+    if permissions == []:
+        return -1
+    return min(permissions)
 
 
 def add_a_friend_for_employee(employee_id, friend_id):

@@ -9,14 +9,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap-timepicker.min.js"></script>
-    <link type="text/css" href="css/bootstrap-timepicker.min.css" />
-
-
-    <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
     <!--</head>-->
 
 
@@ -113,95 +105,7 @@
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
         }
-
-        .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
-            filter: none;
-            background-color: #4a77d4;
-        }
-
-        .btn-block {
-            width: 100%;
-            display: block;
-        }
-
-        * {
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            -ms-box-sizing: border-box;
-            -o-box-sizing: border-box;
-            box-sizing: border-box;
-        }
-
-        html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Open Sans', sans-serif;
-            background: #092756;
-            background: -moz-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -moz-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -moz-linear-gradient(-45deg, #670d10 0%, #092756 100%);
-            background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);
-            */ background: -o-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -o-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -o-linear-gradient(-45deg, #670d10 0%, #092756 100%);
-            background: -ms-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -ms-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -ms-linear-gradient(-45deg, #670d10 0%, #092756 100%);
-            background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), linear-gradient(to bottom, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), linear-gradient(135deg, #670d10 0%, #092756 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
-        }
-
-        .container {
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            margin: -150px 0 0 -150px;
-            width: 300px;
-            height: 300px;
-        }
-
-        .container h2 {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        .spacer {
-            margin: 0;
-            padding: 0;
-            height: 100px;
-        }
-
-        .spacer_button {
-            height: 30px;
-        }
-
-        input {
-            width: 100%;
-            margin-bottom: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border: none;
-            outline: none;
-            padding: 10px;
-            font-size: 13px;
-            color: #fff;
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 0, 0, 0.3);
-            border-radius: 4px;
-            box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.2), 0 1px 1px rgba(255, 255, 255, 0.2);
-            -webkit-transition: box-shadow .5s ease;
-            -moz-transition: box-shadow .5s ease;
-            -o-transition: box-shadow .5s ease;
-            -ms-transition: box-shadow .5s ease;
-            transition: box-shadow .5s ease;
-        }
-
-    input:focus {
-        box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
-    }
-
-    .btn-primary-go_back {
+   .btn-primary-go_back {
         background-color: #555555;
         background-image: -moz-linear-gradient(top, #555555, #555555);
         background-image: -ms-linear-gradient(top, #555555, #555555);
@@ -248,131 +152,173 @@
         margin: -150px 0 0 -150px;
     }
 
-    </style>
-
-    <script type="text/javascript">
-        $(function () {
-            $("#datepicker").datepicker({
-                autoclose: true,
-            }).datepicker('update', new Date())
-        });
-    </script>
-    <style>
-        .inner-addon {
-            position: relative;
+        .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
+            filter: none;
+            background-color: #4a77d4;
         }
 
-        .inner-addon .glyphicon {
+        .btn-block {
+            width: 100%;
+            display: block;
+        }
+
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+            -o-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Open Sans', sans-serif;
+            background: #092756;
+            background: -moz-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -moz-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -moz-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+            background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+            */ background: -o-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -o-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -o-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+            background: -ms-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -ms-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -ms-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+            background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), linear-gradient(to bottom, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), linear-gradient(135deg, #670d10 0%, #092756 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
+        }
+
+        .container {
             position: absolute;
+            top: 30%;
+            left: 50%;
+            margin: -150px 0 0 -150px;
+            width: 300px;
+            height: 300px;
+            white-space: nowrap;
+        }
+
+        .container h2 {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .spacer_button {
+            height: 30px;
+        }
+
+        .spacer_schedule {
+            height: 10px;
+        }
+
+        .spacer_result {
+            height: 150px;
+        }
+
+        #customFile .custom-file-control:lang(en)::after {
+            content: "Select file...";
+        }
+
+        #customFile .custom-file-control:lang(en)::before {
+            content: "Click me";
+        }
+
+        /*when a value is selected, this class removes the content */
+        .custom-file-control.selected:lang(en)::after {
+            content: "" !important;
+        }
+
+        .custom-file {
+            overflow: hidden;
+        }
+
+        .custom-file-control {
+            white-space: nowrap;
+        }
+
+        .btn-schedule {
+            background: #a9b3f1;
+            color: #030302;
+            padding: 14px 24px;
+        }
+
+
+        .well-wider {
+            height: 200px;
+        }
+
+        input {
+            width: 100%;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            outline: none;
             padding: 10px;
+            font-size: 13px;
+            color: #fff;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.2), 0 1px 1px rgba(255, 255, 255, 0.2);
+            -webkit-transition: box-shadow .5s ease;
+            -moz-transition: box-shadow .5s ease;
+            -o-transition: box-shadow .5s ease;
+            -ms-transition: box-shadow .5s ease;
+            transition: box-shadow .5s ease;
         }
 
-        .right-addon .glyphicon {
-            right: 0px;
+        input:focus {
+            box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
-        .right-addon input {
-            padding-right: 30px;
-        }
     </style>
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
 
 </head>
 
 <body>
+
 <p id="greeting"></p>
 <script src="greeting.js"></script>
 
 
 <div class="container">
-    <h2>Room Recommendation</h2>
-    <br/>
+    <h2>Delete Weekly Schedule</h2>
+
+    <!--<div class="spacer_button"></div>-->
     <form method="post">
-        <div id="datepicker" class="input-group date" date-date-formate="dd-mm-yy">
-            <input class="form-control" type="text" name="">
-            <span class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </span>
-        </div>
+        <!--<div class="file-loading">-->
+        <input id="input-20" type="file">
+        <!--</div>-->
 
-        <div class="form-group">
-            <label class="text-muted">Begin time:</label>
-            <select class="form-control">
-                <option>0</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-                <option>13</option>
-                <option>14</option>
-                <option>15</option>
-                <option>16</option>
-                <option>17</option>
-                <option>18</option>
-                <option>19</option>
-                <option>20</option>
-                <option>21</option>
-                <option>22</option>
-                <option>23</option>
-            </select>
-            <br>
-            <label class="text-muted">End time:</label>
-            <select class="form-control">
-                <option>0</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-                <option>13</option>
-                <option>14</option>
-                <option>15</option>
-                <option>16</option>
-                <option>17</option>
-                <option>18</option>
-                <option>19</option>
-                <option>20</option>
-                <option>21</option>
-                <option>22</option>
-                <option>23</option>
-            </select>
-
-        </div>
-        <button type="button" class="btn btn-primary btn-block btn-large">Recommend</button>
-
+        <!--<span class='label label-info' id="upload-file-info"></span>-->
+        <!--<div class="spacer_schedule"></div>-->
+        <!--<div class="col-xs-6 text-right">-->
+        <!--<button type="button" class="btn btn-schedule">Schedule</button>-->
+        <button type="submit" class="btn btn-primary btn-block btn-large">Save Changes</button>
+        <!--</div>-->
     </form>
-    <div class="spacer_button"></div>
+    </br>
 
+    <!--<div class="spacer_result"></div>-->
 
-    <!--<button type="button" class="btn btn-primary btn-large">Recommend</button>-->
-
-
-    <!--<div class="spacer"></div>-->
-    <div class="well">The recommendation will be showed here.</div>
+    <br/>
+    <br/>
+    <br/>
+    <img src="picture_delete3.jpg" class="img-rounded center-block" alt="Cinque Terre" width="200" height="200">
 </div>
-<div class="go_back">
-    <a href="userInterface.html">
-        <button type="button" class=" btn-primary-go_back btn-large-goback"></button>
-    </a>
-</div>
+    <div class="go_back">
+        <a href="add_delete_weekly_schedule.html">
+            <button type="button" class="btn btn-primary-go_back btn-large-goback"></button>
+        </a>
+    </div>
 
-
-
-
-
+<!--</div>-->
 
 
 <script src="js/index.js"></script>
@@ -381,3 +327,4 @@
 </body>
 
 </html>
+
