@@ -214,7 +214,7 @@
 
 </head>
 
-<body>
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
 
 <div class="editRooms">
     <h1>Edit Rooms</h1>
@@ -236,13 +236,14 @@
         <div class="white-text">
             {% if data %}
             (current values)</br>
-            <p>ID ({{data.room_id}}):{{form_update.room_id}}</p>
+            <p>ID ({{data.room_id}}):{{form_update.room_id}} </p>
             <p>Floor ({{data.floor}}):{{form_update.floor}}</p>
             <p>MaxCapacity ({{data.maxCapacity}}):{{form_update.maxCapacity}}</p>
             <p>Permission ({{data.access_permission}}):{{form_update.permission}}</p>
 
             {% endif %}
             {% if not data %}
+
 
             ID: <p class="white-text">
             {{form_update.room_id}}
