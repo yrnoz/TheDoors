@@ -218,16 +218,50 @@
 
 <div class="editRooms">
     <h1>Edit Rooms</h1>
-    <form method="post">
-        <input type="search" name="u" placeholder="Search id " required="required"/>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
-        <div class="white-text">
-            ID:<input/>
-            Floor:<input/>
-            Capacity:<input/>
-            Required Permission:<input/>
+    <form method="post" action="{{url_for('updateRooms')}}">
+        {{ form_search.hidden_tag() }}
+        {{ form_search.csrf_token }}
+        <p class="white-text">
+            {{ form_search.search.label }}<br>
+            {{ form_search.search(size=32) }}<br>
+        </p>
+        <div class="btn btn-primary btn-block btn-large">
+            {{ form_search.submit_button_search() }}
         </div>
-        <button type="button" class="btn btn-primary btn-block btn-large ">Edit</button>
+
+    </form>
+    <form method="post">
+        {{ form_update.hidden_tag() }}
+        {{ form_update.csrf_token }}
+        <div class="white-text">
+            {% if data %}
+            (current values)</br>
+            <p>ID ({{data.room_id}}):{{form_update.room_id}}</p>
+            <p>Floor ({{data.floor}}):{{form_update.floor}}</p>
+            <p>MaxCapacity ({{data.maxCapacity}}):{{form_update.maxCapacity}}</p>
+            <p>Permission ({{data.access_permission}}):{{form_update.permission}}</p>
+
+            {% endif %}
+            {% if not data %}
+
+            ID: <p class="white-text">
+            {{form_update.room_id}}
+        </p>
+            Floor: <p class="white-text">
+            {{form_update.floor}}
+        </p>
+            MaxCapacity: <p class="white-text">
+            {{form_update.maxCapacity}}
+        </p>
+            Permission: <p class="white-text">
+            {{form_update.permission}}
+        </p>
+        </div>
+
+        {% endif %}
+        <div class="btn btn-primary btn-block btn-large">
+            {{ form_update.submit_button_update() }}
+        </div>
         <button type="button" class="btn btn-primary-red btn-block btn-large black-text">Delete</button>
 
     </form>

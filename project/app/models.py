@@ -16,7 +16,7 @@ class Schedule(Document):
 
 
 class Room(Document):
-    room_id = StringField(max_length=50)
+    room_id = StringField(max_length=50 ,primary_key=True)
     floor = IntField()
     maxCapacity = IntField()
     schedules = ListField(Schedule)

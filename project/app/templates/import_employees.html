@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 
 <meta charset="UTF-8">
@@ -107,6 +108,52 @@
         background-color: #4a77d4;
     }
 
+    .btn-primary-go_back {
+        background-color: #555555;
+        background-image: -moz-linear-gradient(top, #555555, #555555);
+        background-image: -ms-linear-gradient(top, #555555, #555555);
+        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#555555));
+        background-image: -webkit-linear-gradient(top, #555555, #555555);
+        background-image: -o-linear-gradient(top, #555555, #555555);
+        background-image: linear-gradient(top, #555555, #555555);
+        background-repeat: repeat-x;
+        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#555555, endColorstr=#555555, GradientType=0);
+        border: 1px solid #f44336;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
+        background-image: url("goback_picture.png");
+        margin-left: 10px;
+        margin-top: 110px;
+    }
+    .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
+        filter: none;
+        background-color: #f44336;
+        border: 5px solid #f44336;
+    }
+
+    .btn-primary-go_back:active {
+        filter: none;
+        background-color: #f44336;
+    }
+
+     .btn-large-goback {
+        padding: 25px 50px;
+        font-size: 15px;
+        line-height: normal;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+    }
+
+    .go_back {
+        color: #fff;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        letter-spacing: 1px;
+        position: absolute;
+        top: 85%;
+        margin: -150px 0 0 -150px;
+    }
+
     .btn-block {
         width: 100%;
         display: block;
@@ -200,9 +247,13 @@
     <br/>
     <br/>
     <br/>
+    <img src="{{ url_for('static', filename = 'picture_employee2.jpg')}}" class="img-circle center-block" width="170" height="170">
+    <br/>
+    <br/>
     <a href="{{ url_for('managerInterface') }}">
-        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
+        <button type="button" class=" btn-primary-go_back btn-large-goback"></button>
     </a>
+
 </div>
 
 
