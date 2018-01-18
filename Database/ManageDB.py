@@ -19,14 +19,9 @@ def import_employees_from_file(input_file):
     output: side effect  - the details added to the DB
     """
     global Employees
-    man_permission = get_permission_of_manager()
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
             id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
-            if check_id_str_of_employee(id):
-                continue
-            if (int(permission) < 0) or (int(permission) <= man_permission and role != "Manager"):
-                continue
             employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password,
                         "friends": [],
                         "schedule": {}}
