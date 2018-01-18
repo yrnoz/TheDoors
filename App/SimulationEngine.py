@@ -20,6 +20,8 @@ def simulation_import_room_details_from_file(input_file):
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
             id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
+            if check_id_of_simroom(id):
+                continue
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
             SimRooms.insert(room)  # add room's details to the DB
@@ -232,7 +234,7 @@ def mainTest():
     start_time = random.randint(8,12)
     end_time = random.randint(13, 20)
     percent_employee = random.randint(1,8)
-    simulation_day_in_factory(start_time,end_time,percent_employee*10)
+    simulation_day_in_factory(start_time,end_time,percent_employee*10, "addition_room.csv")
 
 
 if __name__ == "__main__":
