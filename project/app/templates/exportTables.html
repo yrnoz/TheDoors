@@ -66,25 +66,10 @@
         border: 1px solid #f44336;
         text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-        background-image: url({{ url_for('static' , filename= 'goback_picture.png')
-    }
+        background-image: url({{ url_for('static' , filename= 'goback_picture.png')}});
 
-    }
-    )
-    ;
-
-    margin-left:
-
-    200
-    px
-
-    ;
-    margin-top:
-
-    110
-    px
-
-    ;
+    margin-left:200px;
+    margin-top:110px;
     }
     .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
         filter: none;
@@ -256,13 +241,28 @@
     <h1>Export Tables</h1>
 
 
-    <form method="post" action="{{ url_for('download_employees') }}" enctype="multipart/form-data">
-        <button type="submit" class="btn btn-primary btn-block btn-large">employees csv</button>
+    <form action="{{ url_for('exportTables') }}" method="post">
+
+        {{ room_form.hidden_tag() }}
+        {{ room_form.csrf_token }}
+
+         <div class="btn btn-primary btn-block btn-large">
+             {{room_form.submit_room()}}
+        </div>
+
     </form>
-    <form method="post" action="{{ url_for('download_rooms') }}" enctype="multipart/form-data">
-        <input id="file" type="file" name="file" placeholder="Username" required="required"/>
-        <button type="submit" class="btn btn-primary btn-block btn-large">rooms csv</button>
+        </br>
+
+    <form action="{{ url_for('exportTables') }}" method="post">
+          {{ employee_form.hidden_tag() }}
+        {{ employee_form.csrf_token }}
+    <div class="btn btn-primary btn-block btn-large">
+            {{employee_form.submit_employee()}}
+    </div>
     </form>
+
+
+
     <br/>
     <br/>
     <br/>
@@ -271,7 +271,7 @@
     <br/>
     <br/>
     <div class="go_back">
-        <a href="{{ url_for('managerInterface') }}">
+        <a href="{{ url_for('editDB') }}">
             <button type="button" class="btn-primary-go_back btn-large-goback"></button>
         </a>
     </div>
