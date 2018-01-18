@@ -210,14 +210,16 @@
 </style>
 {% extends "base.html" %}
 {% block content %}
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
 </head>
 
-<body data-spy="scroll" data-target=".navbar" data-offset="50">
+<body>
 
 <div class="editRooms">
     <h1>Edit Rooms</h1>
+
     <form method="post" action="{{url_for('updateRooms')}}">
         {{ form_search.hidden_tag() }}
         {{ form_search.csrf_token }}
@@ -230,6 +232,7 @@
         </div>
 
     </form>
+
     <form method="post">
         {{ form_update.hidden_tag() }}
         {{ form_update.csrf_token }}

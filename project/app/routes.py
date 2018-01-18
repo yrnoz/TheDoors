@@ -9,7 +9,7 @@ from config import Config
 from app import app, db
 from app.Database.ManageDB import *
 from app.forms import *
-from app.models import User
+from app.models import User, Room
 
 flag = 0
 
@@ -157,66 +157,66 @@ def upload_rooms():
     return redirect(url_for('import_rooms'))
 
 
-@app.route('/editRooms', methods=['GET', 'POST'])
-@login_required
-def editRooms():
-    form_search = RoomSearchForm()
-    form_update = RoomUpdateForm()
-    form_delete = RoomDelateForm()
-    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update)
-
-
-def form_room_search_case(form_search, form_update, form_delete):
-    try:
-        room = Room.objects.get(room_id=str(form_search.search.data))
-        return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-                               form_update=form_update, data=room)
-    except Exception as e:
-        print  e
-        flash('room id not exist')
-        return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-                               form_update=form_update, data=None)
-
-
-def form_room_update_case(form_search, form_update, form_delete):
-    try:
-        room = Room.objects.get(room_id=str(form_update.room_id.data))
-        room.update(room_id=form_update.room_id.data, floor=form_update.floor.data,
-                    access_permission=form_update.permission.data,
-                    maxCapacity=form_update.maxCapacity.data)
-        room.save()
-        room = Room.objects.get(room_id=form_update.room_id.data)
-        return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-                               form_update=form_update, data=room)
-    except Exception as e:
-        print e
-        flash('room id not exist')
-        return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-                               form_update=form_update, data=None)
-
-
-def form_room_delete_case(form_search, form_update, form_delete):
-    pass
-
-
-@app.route('/updateRooms', methods=['GET', 'POST'])
-@login_required
-def updateRooms():
-    print "halalaaallllasl"
-    form_search = RoomSearchForm()
-    form_update = RoomUpdateForm()
-    form_delete = RoomDelateForm()
-    if form_search.validate_on_submit():
-        return form_room_search_case(form_search, form_update, form_delete)
-    elif form_update.validate_on_submit():
-        return form_room_update_case(form_search, form_update, form_delete)
-    elif form_delete.validate_on_submit():
-        return form_room_delete_case(form_search, form_update, form_delete)
-    flash('missing data: ' + str(form_update.errors) + "\n please notice that we edit the room with the given id")
-    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update)
-
+# @app.route('/editRooms', methods=['GET', 'POST'])
+# @login_required
+# def editRooms():
+#     form_search = RoomSearchForm()
+#     form_update = RoomUpdateForm()
+#     form_delete = RoomDelateForm()
+#     return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+#                            form_update=form_update)
+#
+#
+# def form_room_search_case(form_search, form_update, form_delete):
+#     try:
+#         room = Room.objects.get(room_id=str(form_search.search.data))
+#         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+#                                form_update=form_update, data=room)
+#     except Exception as e:
+#         print  e
+#         flash('room id not exist')
+#         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+#                                form_update=form_update, data=None)
+#
+#
+# def form_room_update_case(form_search, form_update, form_delete):
+#     try:
+#         room = Room.objects.get(room_id=str(form_update.room_id.data))
+#         room.update(room_id=form_update.room_id.data, floor=form_update.floor.data,
+#                     access_permission=form_update.permission.data,
+#                     maxCapacity=form_update.maxCapacity.data)
+#         room.save()
+#         room = Room.objects.get(room_id=form_update.room_id.data)
+#         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+#                                form_update=form_update, data=room)
+#     except Exception as e:
+#         print e
+#         flash('room id not exist')
+#         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+#                                form_update=form_update, data=None)
+#
+#
+# def form_room_delete_case(form_search, form_update, form_delete):
+#     pass
+#
+#
+# @app.route('/updateRooms', methods=['GET', 'POST'])
+# @login_required
+# def updateRooms():
+#     print "halalaaallllasl"
+#     form_search = RoomSearchForm()
+#     form_update = RoomUpdateForm()
+#     form_delete = RoomDelateForm()
+#     if form_search.validate_on_submit():
+#         return form_room_search_case(form_search, form_update, form_delete)
+#     elif form_update.validate_on_submit():
+#         return form_room_update_case(form_search, form_update, form_delete)
+#     elif form_delete.validate_on_submit():
+#         return form_room_delete_case(form_search, form_update, form_delete)
+#     flash('missing data: ' + str(form_update.errors) + "\n please notice that we edit the room with the given id")
+#     return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+#                            form_update=form_update)
+#
 
 @app.route('/exportTables', methods=['GET', 'POST'])
 @login_required
@@ -335,6 +335,84 @@ def user_add_friends():
 @login_required
 def changePassword():
     return render_template('changePassword.html', title='editEmployeesByThem')
+
+
+
+#########################################edit rooms functions######################################################
+
+@app.route('/searchRooms', methods=['GET', 'POST'])
+@login_required
+def searchRooms():
+    form_delete = RoomDeleteForm()
+    form_search = RoomSearchForm()
+    form_update = RoomUpdateForm()
+    room = None
+    if form_search.validate_on_submit():
+        print("search {}".format(form_search.search.data))
+        try:
+            room = Room.objects.get(room_id=form_search.search.data)
+        except:
+            flash('room id not exist')
+            room = None
+    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+                           form_update=form_update, data=room)
+
+
+@app.route('/updateRooms', methods=['GET', 'POST'])
+@login_required
+def updateRooms():
+    form_delete = RoomDeleteForm()
+    form_search = RoomSearchForm()
+    form_update = RoomUpdateForm()
+    room = None
+
+    if form_update.validate_on_submit():
+        print("in update {} {} {} {}".format(form_update.room_id.data, form_update.permission.data,
+                                             form_update.floor.data,
+                                             form_update.maxCapacity.data))
+        print("update {}".format(form_update.room_id.data))
+        try:
+            room = Room.objects.get(room_id=form_update.room_id.data)
+            room.update(floor=form_update.floor.data, access_permission=form_update.permission.data,
+                        maxCapacity=form_update.maxCapacity.data)
+            room.save()
+            room = Room.objects.get(room_id=form_update.room_id.data)
+        except:
+            flash('room id not exist')
+            room = None
+    else:
+        flash("missing data")
+    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+                           form_update=form_update, data=room)
+
+
+@app.route('/deleteRooms', methods=['GET', 'POST'])
+@login_required
+def deleteRooms():
+    form_delete = RoomDeleteForm()
+    form_search = RoomSearchForm()
+    form_update = RoomUpdateForm()
+    if form_delete.validate_on_submit():
+        print("delete {}".format(form_delete.room_id.data))
+        try:
+            room = Room.objects.get(room_id=form_delete.room_id.data)
+            room.delete()
+            flash('room {} deleted'.format(form_delete.room_id.data))
+        except:
+            flash('room id not exist')
+    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+                           form_update=form_update)
+
+
+@app.route('/editRooms', methods=['GET', 'POST'])
+@login_required
+def editRooms():
+    form_delete = RoomDeleteForm()
+    form_search = RoomSearchForm()
+    form_update = RoomUpdateForm()
+    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+                           form_update=form_update)
+
 
 
 """

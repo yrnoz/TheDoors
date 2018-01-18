@@ -20,6 +20,8 @@ def simulation_import_room_details_from_file(input_file):
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
             id, capacity, permission, floor = line[:-1].split(",")  # get the parameters we need from the line
+            if check_id_of_simroom(id):
+                continue
             room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
                     "schedule": {}}
             SimRooms.insert(room)  # add room's details to the DB
@@ -176,6 +178,12 @@ def simulation_update_schedule_employees(date_time, room_id, employee_id, num_em
 #THIS IS THE MAIN FUNCTION OF THE SIMULATION
 #
 def simulation_day_in_factory(start_time, finish_time, percent_employees, new_rooms_details = None):
+    if start_time < 0 or start_time > 24 or finish_time < 0 or finish_time > 24:
+        raise NameError("start time or finish time is not in the right format")
+    if start_time > finish_time:
+        raise NameError("start time have to be smaller than finish time")
+    if percent_employees < 0 or percent_employees > 100 or percent_employees % 10 != 0:
+        raise NameError("percent_employees is not in the right format")
     if simulation_copy_employees_from_DB() is False:
         raise NameError("There are no employees")
     if simulation_copy_rooms_from_DB() is False:
@@ -185,11 +193,17 @@ def simulation_day_in_factory(start_time, finish_time, percent_employees, new_ro
     date_now = time.strftime("%d/%m/%y")
     with open('Simulation_Stats.xls', 'w') as output:
         for hour in range(start_time, finish_time):
-            date_time = date_now + " " + str(hour)
+            if hour < 10:
+                date_time = date_now + " 0" + str(hour)
+            else:
+                date_time = date_now + " " + str(hour)
             simulation_assign_employees(date_time, percent_employees)
         rooms = list(SimRooms.find())
         for hour in range(start_time, finish_time):
-            date_time = date_now + " " + str(hour)
+            if hour < 10:
+                date_time = date_now + " 0" + str(hour)
+            else:
+                date_time = date_now + " " + str(hour)
             output.write(date_time + "\n")
             for room in rooms:
                 if not (date_time in room["schedule"]):
@@ -198,14 +212,33 @@ def simulation_day_in_factory(start_time, finish_time, percent_employees, new_ro
                 schedule = room["schedule"][date_time]
                 output.write(room["id"] + "\t" + str(float(schedule[0])/int(room["capacity"])*100) + "%" + "\n")
 
-def main():
+def mainTest():
     import_employees_from_file("employees_test.csv")
     import_room_details_from_file("rooms_test.csv")
-    simulation_day_in_factory(12,15,30)
+    try:
+        simulation_day_in_factory(26, 12, 30)
+    except Exception as e:
+        print e
+    try:
+        simulation_day_in_factory(8, 30, 30)
+    except Exception as e:
+        print e
+    try:
+        simulation_day_in_factory(9, 12, 17)
+    except Exception as e:
+        print e
+    try:
+        simulation_day_in_factory(16, 12, 20)
+    except Exception as e:
+        print e
+    start_time = random.randint(8,12)
+    end_time = random.randint(13, 20)
+    percent_employee = random.randint(1,8)
+    simulation_day_in_factory(start_time,end_time,percent_employee*10, "addition_room.csv")
 
 
 if __name__ == "__main__":
-    main()
+    mainTest()
 
 
 
