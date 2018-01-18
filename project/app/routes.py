@@ -324,6 +324,8 @@ def editEmployees():
     return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
                            form_update=form_update)
 
+
+"""
 @app.route('/room_recommendation_page',methods=['GET', 'POST'])
 @login_required
 def room_recommendation_page():
@@ -347,3 +349,4 @@ def form_room_recommend(form_recommend):
             reccomendedList.append(room.room_id)
         recommendedList
     return render_template('room_recommendation_page.html', form_recommend)
+"""
