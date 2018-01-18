@@ -381,6 +381,13 @@ def updateRooms():
             flash('room id not exist')
             room = None
     else:
+
+        print("in update fail {} {} {} {}".format(form_update.room_id.data, form_update.permission.data,
+                                             form_update.floor.data,
+                                             form_update.maxCapacity.data))
+
+
+
         flash("missing data")
     return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
                            form_update=form_update, data=room)

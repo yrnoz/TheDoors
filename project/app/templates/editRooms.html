@@ -207,6 +207,23 @@
         box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 {% extends "base.html" %}
 {% block content %}
@@ -220,7 +237,7 @@
 <div class="editRooms">
     <h1>Edit Rooms</h1>
 
-    <form method="post" action="{{url_for('updateRooms')}}">
+    <form method="post" action="{{url_for('searchRooms')}}">
         {{ form_search.hidden_tag() }}
         {{ form_search.csrf_token }}
         <p class="white-text">
@@ -233,12 +250,16 @@
 
     </form>
 
-    <form method="post">
+    <form method="post" action="{{url_for('updateRooms')}}">
         {{ form_update.hidden_tag() }}
         {{ form_update.csrf_token }}
+
         <div class="white-text">
             {% if data %}
-            (current values)</br>
+            (current values)
+
+            </br>
+
             <p>ID ({{data.room_id}}):{{form_update.room_id}} </p>
             <p>Floor ({{data.floor}}):{{form_update.floor}}</p>
             <p>MaxCapacity ({{data.maxCapacity}}):{{form_update.maxCapacity}}</p>
@@ -247,35 +268,48 @@
             {% endif %}
             {% if not data %}
 
-
             ID: <p class="white-text">
             {{form_update.room_id}}
-        </p>
+           </p>
+
             Floor: <p class="white-text">
             {{form_update.floor}}
-        </p>
+            </p>
+
             MaxCapacity: <p class="white-text">
             {{form_update.maxCapacity}}
-        </p>
+            </p>
+
             Permission: <p class="white-text">
             {{form_update.permission}}
-        </p>
+            </p>
         </div>
 
         {% endif %}
         <div class="btn btn-primary btn-block btn-large">
             {{ form_update.submit_button_update() }}
         </div>
-        <button type="button" class="btn btn-primary-red btn-block btn-large black-text">Delete</button>
+    </form>
 
+
+    <form method="post" action="{{url_for('deleteRooms')}}">
+
+        {{ form_delete.hidden_tag() }}
+        {{ form_delete.csrf_token }}
+
+         <div class="btn btn-primary-red btn-block btn-large black-text">
+               <p hidden="hidden">
+                   {{form_delete.room_id}} = {{form_update.room_id}}
+               </p>
+              {{form_delete.submit_button_delete()}}
+        </div >
     </form>
     <br/>
     <br/>
     <br/>
-    <a href="{{ url_for('editDB') }}">
+    <a href="{{url_for('editDB')}}">
         <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
     </a>
-</div>
 
 
 </body>
