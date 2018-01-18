@@ -10,7 +10,7 @@ class LoginForm(FlaskForm):
 
 
 class EmployeeSearchForm(FlaskForm):
-    search = StringField('search id or name', validators=[DataRequired()])
+    search = StringField('search id', validators=[DataRequired()])
     submit_button_search = SubmitField('Search')
 
 
