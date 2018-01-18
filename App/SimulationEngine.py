@@ -198,7 +198,10 @@ def simulation_day_in_factory(start_time, finish_time, percent_employees, new_ro
             simulation_assign_employees(date_time, percent_employees)
         rooms = list(SimRooms.find())
         for hour in range(start_time, finish_time):
-            date_time = date_now + " " + str(hour)
+            if hour < 10:
+                date_time = date_now + " 0" + str(hour)
+            else:
+                date_time = date_now + " " + str(hour)
             output.write(date_time + "\n")
             for room in rooms:
                 if not (date_time in room["schedule"]):
