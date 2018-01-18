@@ -177,7 +177,7 @@ def simulation_update_schedule_employees(date_time, room_id, employee_id, num_em
 #
 #THIS IS THE MAIN FUNCTION OF THE SIMULATION
 #
-def simulation_day_in_factory(start_time, finish_time, percent_employees, new_rooms_details = None):
+def simulation_day_in_factory(start_time = 8, finish_time = 20, percent_employees = 30, new_rooms_details = None):
     if start_time < 0 or start_time > 24 or finish_time < 0 or finish_time > 24:
         raise NameError("start time or finish time is not in the right format")
     if start_time > finish_time:

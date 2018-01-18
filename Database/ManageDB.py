@@ -480,9 +480,7 @@ def delete_a_friend_aux(employee, friend_id):
     """
     employee_friends = employee["friends"]
     employee_friends.remove(friend_id)
-    Employees.update_one({'id': employee["id"]},
-                         {'$set': {
-                             'friends': employee_friends}}).matched_count
+    Employees.update_one({'id': employee["id"]},{'$set': {'friends': employee_friends}}).matched_count
 
 
 def set_location_of_employee(employee_id, room_id, room_floor):
