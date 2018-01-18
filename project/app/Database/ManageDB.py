@@ -352,7 +352,7 @@ def get_password_of_employee_by_id(id):
 # input: id output: True - if there is employee with this id False other wise
 def check_id_of_employee(id):
     global Employees
-    employee = Employees.find_one({"id": str(id)})
+    employee = Employees.objects.get(user_id=str(id))
     if employee is None:
         return False
     return True
@@ -380,7 +380,7 @@ def check_password_of_employee(username, password):
 # input: id output: the employee with this id
 def find_employee(id):
     if check_id_of_employee(id):
-        return Employees.find_one({"id": str(id)})
+        return Employees.objects.get(user_id=str(id))
 
 
 def check_ligal_permission(employee, room, id_employee_list):

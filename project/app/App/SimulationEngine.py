@@ -169,7 +169,6 @@ def simulation_day_in_factory(start_time, finish_time, percent_employees, new_ro
             simulation_hist[date_now].update({room["id"] : (schedule[0], room["capacity"])})
             ws["A"+str(i)] = room["id"]
             ws["B"+str(i)] = float(schedule[0])/int(room["capacity"])*100
-    wb.save('Simulation_Stats.xlsx')
 
 
 

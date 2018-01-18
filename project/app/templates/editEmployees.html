@@ -268,9 +268,11 @@
 <div class="editEmployees">
     <h1>Edit Employees</h1>
 
-    <form method="post" action="{{url_for('updateEmployees')}}">
+    <form method="post" action="{{url_for('searchEmployees')}}">
         {{ form_search.hidden_tag() }}
         {{ form_search.csrf_token }}
+
+
         <p class="white-text">
             {{ form_search.search.label }}<br>
             {{ form_search.search(size=32) }}<br>
@@ -278,11 +280,12 @@
         <div class="btn btn-primary btn-block btn-large">
             {{ form_search.submit_button_search() }}
         </div>
-
     </form>
-    <form method="post">
+    <form method="post" action="{{url_for('updateEmployees')}}">
         {{ form_update.hidden_tag() }}
         {{ form_update.csrf_token }}
+
+
         <div class="white-text">
             {% if data %}
             (current values)</br>
@@ -312,9 +315,21 @@
         <div class="btn btn-primary btn-block btn-large">
             {{ form_update.submit_button_update() }}
         </div >
-        <form action="{{url_for('deleteEmployee')}}">
-            <button type="button" class="btn btn-primary-red btn-block btn-large black-text">Delete</button>
-        </form>
+    </form>
+    </br>
+        <form method="post" action="{{url_for('deleteEmployees')}}">
+
+        {{ form_delete.hidden_tag() }}
+        {{ form_delete.csrf_token }}
+
+         <div class="btn btn-primary-red btn-block btn-large black-text">
+               <p hidden="hidden">
+
+               {{form_delete.user_id}} = {{form_update.user_id}}
+
+                   </p>
+              {{form_delete.submit_button_delete()}}
+        </div >
     </form>
     <br/>
     <br/>

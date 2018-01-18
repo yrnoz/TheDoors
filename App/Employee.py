@@ -26,7 +26,7 @@ class Employee:
         for friend in self.friends:
             if friend.get_location() is not None and friend.get_room_permission() < self.access_permission:
                 count = best_rooms.get(friend.location, 0) + 1
-                best_rooms += {friend.location, count}
+                best_rooms.update(friend.location, count)
         sorted_rooms = sorted(best_rooms.items(), key=lambda x: x[1])
         return sorted_rooms[::-1]  # reverse list
 
@@ -34,7 +34,7 @@ class Employee:
         """return Room object or None"""
         return self.location
 
-    def get_room_permission(self):
+    def get_curr_room_permission(self):
         cur_room = self.get_location()
         if cur_room is None:
             raise "%d employee is not in a room right now".format(self.id)

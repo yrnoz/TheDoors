@@ -20,8 +20,8 @@ def add_employee_aux(employee_str):
 
 
 def add_room_aux(room_str):
-    id, floor, max_capacity, access_permission, password = room_str.split()
-    add_room(Room(id, int(floor), int(max_capacity), int(access_permission), password))
+    id, floor, max_capacity, access_permission = room_str.split()
+    add_room(Room(id, int(floor), int(max_capacity), int(access_permission)))
 
 
 def remove_employee_aux(id):
@@ -52,9 +52,9 @@ def get_room_recommendation(cmd_str):
 
 def help():
     print '\n'.join(['Currently, available commands are: ', 'enter_rooms_csv filename', 'enter_employees_csv filename',
-                     'add_employee id name role access_permission', 'add_room id floor max_capacity access_permission',
+                     'add_employee id name role access_permission password', 'add_room id floor max_capacity access_permission',
                      'remove_employee id', 'remove_room id', 'update_employee id name role access_permission',
-                     'update_room id floor max_capacity access_permission', 'help', 'quit'])
+                     'update_room id floor max_capacity access_permission', 'simulation', 'help', 'quit'])
     # 'enter_week_sched_cvs id filename',
     # 'get_room_recommendation id DD/MM/YY HH',
 
@@ -76,6 +76,9 @@ if __name__ == "__main__":
             print 'Shutting down Program'
             p.terminate()
             break
+        elif cmd_args == ['simulation']:
+            print 'RUNNING SIMULATION'
+            simulation_day_in_factory()
         elif len(cmd_args) > 1 and cmd_args[0] in cmd_dict.keys():
             cmd, args = cmd_args
             try:
