@@ -216,20 +216,30 @@
 
 <div class="editDetails">
     <h1>Edit Details</h1>
-    <form method="post">
-        <br/>
-        <a href="changePassword.html">
+    <form action="">
+    <div class="buttons">
+
+        <a href="{{ url_for('user_add_friends') }}">
+            <button type="button" class="btn btn-primary btn-block btn-large">
+                <img src="{{ url_for('static', filename = 'picture_people2.png')}}" class="img-rounded pull-left" width="50" height="50">
+                Add friends</button>
+        </a>
+        <br>
+        <a href="{{ url_for('changePassword') }}">
             <button type="button" class="btn btn-primary btn-block btn-large">
                 <img src="{{ url_for('static', filename = 'picture_password.png')}}" class="img-rounded pull-left" width="50" height="50">
                 Change password</button>
         </a>
-        <br/>
-        <a href="">
-            <button type="button" class="btn btn-primary btn-block btn-large">
-                <img src="{{ url_for('static', filename = 'picture_people2.png')}}" class="img-rounded pull-left" width="50" height="50">
-                Edit friends list</button>
-        </a>
+
+    </div>
     </form>
+
+
+
+
+
+
+
     <br/>
     <br/>
     <br/>

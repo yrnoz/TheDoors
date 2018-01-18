@@ -40,7 +40,8 @@ class RoomUpdateForm(FlaskForm):
     submit_button_update = SubmitField('Update')
 
 
-class RoomDeleteForm(FlaskForm):  # tod
+class RoomDeleteForm(FlaskForm):
+    room_id = StringField('id')
     submit_button_delete = SubmitField('Delete')
 
 
