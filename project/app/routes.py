@@ -325,6 +325,18 @@ def editEmployees():
                            form_update=form_update)
 
 
+@app.route('/user_add_friends', methods=['GET', 'POST'])
+@login_required
+def user_add_friends():
+    return render_template('user_add_friends.html', title='editEmployeesByThem')
+
+
+@app.route('/changePassword', methods=['GET', 'POST'])
+@login_required
+def changePassword():
+    return render_template('changePassword.html', title='editEmployeesByThem')
+
+
 """
 @app.route('/room_recommendation_page',methods=['GET', 'POST'])
 @login_required
