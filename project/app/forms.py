@@ -10,7 +10,7 @@ class LoginForm(FlaskForm):
 
 
 class EmployeeSearchForm(FlaskForm):
-    search = StringField('search id or name', validators=[DataRequired()])
+    search = StringField('search id', validators=[DataRequired()])
     submit_button_search = SubmitField('Search')
 
 
@@ -52,3 +52,11 @@ class roomRecommendationPage(FlaskForm):
     submit_button = SubmitField('recommend')
     # output = OutputField('recommend', validators=[DataRequired()])
     output = SelectField('recommend', validators=[DataRequired()])
+
+
+class exportRoomForm(FlaskForm):  # tod
+    submit_room = SubmitField('Rooms csv')
+
+
+class exportEmplyeeForm(FlaskForm):  # tod
+    submit_employee = SubmitField('Employee csv')
