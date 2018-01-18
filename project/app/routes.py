@@ -112,7 +112,8 @@ def upload_employees():
 
     # only allow upload of text files
     if newfile.content_type != 'application/vnd.ms-excel':
-        return "Only csv files allowed"
+        flash('only cssv files')
+        return redirect(url_for('import_employees'))
 
     save_path = os.path.join(Config.UPLOAD_DIR, newfile.filename)
     newfile.save(save_path)
@@ -137,6 +138,7 @@ def upload_rooms():
     # only allow upload of text files
     if newfile.content_type != 'application/vnd.ms-excel':
         flash("Only csv files allowed")
+        return redirect(url_for('import_rooms'))
 
     save_path = os.path.join(Config.UPLOAD_DIR, newfile.filename)
     newfile.save(save_path)

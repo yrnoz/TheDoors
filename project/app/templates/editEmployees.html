@@ -282,7 +282,7 @@
         </div>
     </form>
     <form method="post" action="{{url_for('updateEmployees')}}">
-         {{ form_update.hidden_tag() }}
+        {{ form_update.hidden_tag() }}
         {{ form_update.csrf_token }}
 
 
@@ -319,9 +319,10 @@
     </br>
         <form method="post" action="{{url_for('deleteEmployees')}}">
 
-    {{ form_delete.hidden_tag() }}
+        {{ form_delete.hidden_tag() }}
         {{ form_delete.csrf_token }}
-           <div class="btn btn-primary-red btn-block btn-large black-text">
+
+         <div class="btn btn-primary-red btn-block btn-large black-text">
                <p hidden="hidden">
 
                {{form_delete.user_id}} = {{form_update.user_id}}
