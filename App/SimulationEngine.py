@@ -1,13 +1,12 @@
 from Database.ManageDB import *
-from openpyxl import Workbook
 import random
 import time
 
 
-SimRooms = db["Rooms"]  # create new table that called SimRooms just for the Simulation
+SimRooms = db["SimRooms"]  # create new table that called SimRooms just for the Simulation
 
 # SimEmployees contains: id, permission, schedule, friends
-SimEmployees = db["Employees"]  # create new table that called SimEmployees just for the Simulation
+SimEmployees = db["SimEmployees"]  # create new table that called SimEmployees just for the Simulation
 
 
 def simulation_import_room_details_from_file(input_file):
@@ -73,19 +72,48 @@ def simulation_get_schedule_of_employee(id):
         employee_schedule += date_time + ": " + tuple[1] + "; "
     return employee_schedule
 
+def check_id_of_simemployee(id):
+    global SimEmployees
+    employee = SimEmployees.find_one({"id": str(id)})
+    if employee is None:
+        return False
+    return True
+
+
 #the function copy all employees from the DB to the simulation DB
 def simulation_copy_employees_from_DB():
     global SimEmployees
+    global Employees
+    if Employees.find().count() == 0:
+        return False
     for employee in Employees.find():
+        if check_id_of_simemployee(employee["id"]):
+            continue
         employee["schedule"] = {}
-        SimEmployees.insert(employee)
+        SimEmployees.insert_one(employee)
+    return True
+
+def check_id_of_simroom(id):
+    global SimRooms
+    room = SimRooms.find_one({"id": str(id)})
+    if room is None:
+        return False
+    return True
 
 # the function copy all rooms from the DB to the simulation DB
 def simulation_copy_rooms_from_DB():
     global SimRooms
+    global Rooms
+    if Rooms.find().count() == 0:
+        return False
     for room in Rooms.find():
+        if check_id_of_simroom(room["id"]):
+            room["schedule"] = {}
+            SimRooms.replace_one({'_id': room['_id']}, room)
+            continue
         room["schedule"] = {}
         SimRooms.insert(room)
+    return True
 
 #the function assign employees with random people to rooms
 def simulation_assign_employees(date_time, percent_employees):
@@ -93,15 +121,16 @@ def simulation_assign_employees(date_time, percent_employees):
     rooms = SimRooms.find()
     employees = SimEmployees.find()
     count = 0
+    dbg = list(rooms)
     for employee in employees:
         count += 1
-        i = random.randint(0, len(rooms))
-        num_employees = random.randint(0, int(len(employees)/4))
-        while simulation_assign_employees_to_room_one_hour(date_time, rooms[i], num_employees, employee):
-            i = random.randint(0, len(rooms))
-        if count >= int((percent_employees*employees)/100):
+        num_employees = random.randint(1, int(employees.count()/5))
+        random.shuffle(dbg)
+        for room in dbg:
+            if simulation_assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
+                break
+        if count >= int((percent_employees*(employees.count()))/100):
             break
-
 
 
 def simulation_assign_employees_to_room_one_hour(date_time, room, num_employees, employee):
@@ -130,7 +159,7 @@ def simulation_assign_employees_to_room_one_hour(date_time, room, num_employees,
         schedule_employee[date_time] = (num_employees, room["id"])
         simulation_update_schedule_employees(date_time, room["id"], employee["id"], num_employees)
     else:
-        if schedule[date_time][0] + num_employees > capacity | (date_time in schedule_employee):
+        if schedule[date_time][0] + num_employees > capacity or (date_time in schedule_employee):
             return False
         schedule[date_time] = (schedule[date_time][0] + num_employees, None)
         schedule_employee[date_time] = (num_employees, room["id"])
@@ -147,32 +176,36 @@ def simulation_update_schedule_employees(date_time, room_id, employee_id, num_em
 #THIS IS THE MAIN FUNCTION OF THE SIMULATION
 #
 def simulation_day_in_factory(start_time, finish_time, percent_employees, new_rooms_details = None):
-    simulation_copy_employees_from_DB()
-    simulation_copy_rooms_from_DB()
-    wb = Workbook()
-    ws = wb.active()
+    if simulation_copy_employees_from_DB() is False:
+        raise NameError("There are no employees")
+    if simulation_copy_rooms_from_DB() is False:
+        raise NameError("There are no employees")
     if not (new_rooms_details is None):
         simulation_import_room_details_from_file(new_rooms_details)
     date_now = time.strftime("%d/%m/%y")
-    for hour in range(start_time, finish_time, 1):
-        date_now += " " + str(hour)
-        simulation_assign_employees(date_now, percent_employees)
-    simulation_hist = dict()
-    rooms = SimRooms.find()
-    for hour in range(start_time, finish_time, 1):
-        date_now += " " + str(hour)
-        simulation_hist[date_now] = dict()
-        i = 0
-        for room in rooms:
-            i+=1
-            schedule = room["schedule"][date_now]
-            simulation_hist[date_now].update({room["id"] : (schedule[0], room["capacity"])})
-            ws["A"+str(i)] = room["id"]
-            ws["B"+str(i)] = float(schedule[0])/int(room["capacity"])*100
-    wb.save('Simulation_Stats.xlsx')
+    with open('Simulation_Stats.xls', 'w') as output:
+        for hour in range(start_time, finish_time):
+            date_time = date_now + " " + str(hour)
+            simulation_assign_employees(date_time, percent_employees)
+        rooms = list(SimRooms.find())
+        for hour in range(start_time, finish_time):
+            date_time = date_now + " " + str(hour)
+            output.write(date_time + "\n")
+            for room in rooms:
+                if not (date_time in room["schedule"]):
+                    output.write(room["id"] + "\t" + "empty\n")
+                    continue
+                schedule = room["schedule"][date_time]
+                output.write(room["id"] + "\t" + str(float(schedule[0])/int(room["capacity"])*100) + "%" + "\n")
+
+def main():
+    import_employees_from_file("employees_test.csv")
+    import_room_details_from_file("rooms_test.csv")
+    simulation_day_in_factory(12,15,30)
 
 
-
+if __name__ == "__main__":
+    main()
 
 
 
