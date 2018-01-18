@@ -18,10 +18,11 @@ class Schedule(Document):
 
 
 class Room(Document):
-    room_id = StringField(max_length=50 ,primary_key=True)
+    room_id = StringField(max_length=50, primary_key=True)
     floor = IntField()
     maxCapacity = IntField()
-    schedules = ListField(Nested(Schedule))
+    # schedules = ListField(Nested(Schedule))
+    schedules = ListField(Schedule)
     access_permission = IntField()
 
 
