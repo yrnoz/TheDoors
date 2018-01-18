@@ -1,4 +1,4 @@
-from app.Database.ManageDB import *
+from App.Database.ManageDB import *
 
 
 class Employee:
