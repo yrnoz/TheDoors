@@ -22,8 +22,8 @@ class EmployeeUpdateForm(FlaskForm):
     submit_button_update = SubmitField('Update')
 
 
-class EmployeeDelateForm(FlaskForm):  # todo
-    search = StringField('search id or name', validators=[DataRequired()])
+class EmployeeDeleteForm(FlaskForm):
+    user_id = StringField('id')
     submit_button_delete = SubmitField('Delete')
 
 
@@ -40,8 +40,7 @@ class RoomUpdateForm(FlaskForm):
     submit_button_update = SubmitField('Update')
 
 
-class RoomDeleteForm(FlaskForm):  # todo
-    search = StringField('search id', validators=[DataRequired()])
+class RoomDeleteForm(FlaskForm):  # tod
     submit_button_delete = SubmitField('Delete')
 
 

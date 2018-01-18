@@ -67,11 +67,11 @@ def managerInterface():
     return render_template('managerInterface.html', title='userInterface')
 
 
-@app.route('/room_recommendation_page', methods=['GET', 'POST'])
-@login_required
-def room_recommendation_page():
-    return render_template('room_recommendation_page.html', title='userInterface')
-
+# @app.route('/room_recommendation_page', methods=['GET', 'POST'])
+# @login_required
+# def room_recommendation_page():
+#     return render_template('room_recommendation_page.html', title='userInterface')
+#
 
 @app.route('/weekly_schedule_page', methods=['GET', 'POST'])
 @login_required
@@ -180,7 +180,8 @@ def form_room_search_case(form_search, form_update, form_delete):
 def form_room_update_case(form_search, form_update, form_delete):
     try:
         room = Room.objects.get(room_id=str(form_update.room_id.data))
-        room.update(room_id=form_update.room_id.data, floor=form_update.floor.data, access_permission=form_update.permission.data,
+        room.update(room_id=form_update.room_id.data, floor=form_update.floor.data,
+                    access_permission=form_update.permission.data,
                     maxCapacity=form_update.maxCapacity.data)
         room.save()
         room = Room.objects.get(room_id=form_update.room_id.data)
@@ -215,79 +216,24 @@ def updateRooms():
                            form_update=form_update)
 
 
-def form_search_case(form_search, form_update, form_delete):
-    try:
-        user = User.objects.get(user_id=form_search.search.data)
-        return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                               form_update=form_update, data=user)
-    except:
-        flash('user id not exist')
-        return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                               form_update=form_update, data=None)
-
-
-def form_update_case(form_search, form_update, form_delete):
-    try:
-        user = User.objects.get(user_id=form_update.user_id.data)
-        user.update(username=form_update.username.data, access_permission=form_update.permission.data,
-                    role=form_update.role.data)
-        user.save()
-        user = User.objects.get(user_id=form_update.user_id.data)
-        return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                               form_update=form_update, data=user)
-    except:
-        flash('user id not exist')
-        return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                               form_update=form_update, data=None)
-
-
-def form_delete_case(form_search, form_update, form_delete):
-    pass
-
-
-@app.route('/updateEmployees', methods=['GET', 'POST'])
-@login_required
-def updateEmployees():
-    form_search = EmployeeSearchForm()
-    form_update = EmployeeUpdateForm()
-    form_delete = EmployeeDelateForm()
-    if form_search.validate_on_submit():
-        return form_search_case(form_search, form_update, form_delete)
-    elif form_update.validate_on_submit():
-        print(form_update.user_id.data + "  " + form_update.username.data)
-        return form_update_case(form_search, form_update, form_delete)
-    elif form_delete.validate_on_submit():
-        return form_delete_case(form_search, form_update, form_delete)
-    flash('missing data: ' + str(form_update.errors) + "\n please notice that we edit the user with the given id")
-    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update)
-
-
 @app.route('/exportTables', methods=['GET', 'POST'])
 @login_required
 def exportTables():
     return render_template('exportTables.html', title='userInterface')
 
 
-@app.route('/editEmployees', methods=['GET', 'POST'])
-@login_required
-def editEmployees():
-    form_search = EmployeeSearchForm()
-    form_update = EmployeeUpdateForm()
-    form_delete = EmployeeDelateForm()
-    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update)
-
-@app.route('/room_recommendation_page',methods=['GET', 'POST'])
+@app.route('/room_recommendation_page', methods=['GET', 'POST'])
 @login_required
 def room_recommendation_page():
     form_recommend = roomRecommendationPage()
     if form_recommend.validate_on_submit():
         return form_room_recommend(form_recommend)
-    return render_template('room_recommendation_page.html')
+    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
+
 
 def form_room_recommend(form_recommend):
     recommendedList = []
+    form_recommend = roomRecommendationPage()
     for room in Rooms.objects.all():
         if room.access_permission > find_employee(session['user_id']).access_permission:
             continue
@@ -298,5 +244,80 @@ def form_room_recommend(form_recommend):
                 break
         if 1 <= room.maxCapacity - schedule_date_time.occupancy:
             reccomendedList.append(room.room_id)
-        recommendedList.
-    return render_template('room_recommendation_page.html', output = )
+    return render_template('room_recommendation_page.html', output=recommendedList, form_recommend=form_recommend)
+
+
+#########################################edit employees functions######################################################
+
+@app.route('/searchEmployees', methods=['GET', 'POST'])
+@login_required
+def searchEmployees():
+    form_delete = EmployeeDeleteForm()
+    form_search = EmployeeSearchForm()
+    form_update = EmployeeUpdateForm()
+    user = None
+    if form_search.validate_on_submit():
+        print("search {}".format(form_search.search.data))
+        try:
+            user = User.objects.get(user_id=form_search.search.data)
+        except:
+            flash('user id not exist')
+            user = None
+    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
+                           form_update=form_update, data=user)
+
+
+@app.route('/updateEmployees', methods=['GET', 'POST'])
+@login_required
+def updateEmployees():
+    form_delete = EmployeeDeleteForm()
+    form_search = EmployeeSearchForm()
+    form_update = EmployeeUpdateForm()
+    user = None
+
+    if form_update.validate_on_submit():
+        print("in update {} {} {} {}".format(form_update.user_id.data, form_update.permission.data,
+                                             form_update.username.data,
+                                             form_update.role.data))
+        print("update {}".format(form_update.user_id.data))
+        try:
+            user = User.objects.get(user_id=form_update.user_id.data)
+            user.update(username=form_update.username.data, access_permission=form_update.permission.data,
+                        role=form_update.role.data)
+            user.save()
+            user = User.objects.get(user_id=form_update.user_id.data)
+        except:
+            flash('user id not exist')
+            user = None
+    else:
+        flash("missing data")
+    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
+                           form_update=form_update, data=user)
+
+
+@app.route('/deleteEmployees', methods=['GET', 'POST'])
+@login_required
+def deleteEmployees():
+    form_delete = EmployeeDeleteForm()
+    form_search = EmployeeSearchForm()
+    form_update = EmployeeUpdateForm()
+    if form_delete.validate_on_submit():
+        print("delete {}".format(form_delete.user_id.data))
+        try:
+            user = User.objects.get(user_id=form_delete.user_id.data)
+            user.delete()
+            flash('user {} deleted'.format(form_delete.user_id.data))
+        except:
+            flash('user id not exist')
+    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
+                           form_update=form_update)
+
+
+@app.route('/editEmployees', methods=['GET', 'POST'])
+@login_required
+def editEmployees():
+    form_delete = EmployeeDeleteForm()
+    form_search = EmployeeSearchForm()
+    form_update = EmployeeUpdateForm()
+    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
+                           form_update=form_update)
