@@ -197,6 +197,7 @@ def form_room_delete_case(form_search, form_update, form_delete):
     pass
 
 
+
 @app.route('/updateRooms', methods=['GET', 'POST'])
 @login_required
 def updateRooms():
