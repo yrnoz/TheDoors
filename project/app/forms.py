@@ -58,5 +58,5 @@ class exportRoomForm(FlaskForm):  # tod
     submit_room = SubmitField('Rooms csv')
 
 
-class exportEmplyeeForm(FlaskForm):  # tod
+class exportEmployeeForm(FlaskForm):  # tod
     submit_employee = SubmitField('Employee csv')

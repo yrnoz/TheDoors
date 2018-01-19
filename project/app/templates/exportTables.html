@@ -241,7 +241,7 @@
     <h1>Export Tables</h1>
 
 
-    <form action="{{ url_for('exportTables') }}" method="post">
+    <form action="{{ url_for('exportRooms') }}" method="post">
 
         {{ room_form.hidden_tag() }}
         {{ room_form.csrf_token }}
@@ -253,7 +253,7 @@
     </form>
         </br>
 
-    <form action="{{ url_for('exportTables') }}" method="post">
+    <form action="{{ url_for('exportEmployees') }}" method="post">
           {{ employee_form.hidden_tag() }}
         {{ employee_form.csrf_token }}
     <div class="btn btn-primary btn-block btn-large">

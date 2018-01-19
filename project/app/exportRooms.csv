@@ -1,0 +1,12 @@
+# Room_id ,maxCapacity ,Access permission, Floor #
+taub 1,200,3,0
+taub 2,150,3,0
+taub 3,50,3,0
+taub 4,40,3,1
+taub 5,50,3,1
+taub 6,38,3,1
+taub 7,80,3,1
+taub 8,20,3,1
+taub 9,70,3,1
+ssdl Lab 236,40,2,2
+ssdl Lab 234,23,2,2

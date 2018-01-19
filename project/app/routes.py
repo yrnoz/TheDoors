@@ -30,8 +30,12 @@ def login():
     if flag == 0:
         User.drop_collection()
         Room.drop_collection()
-        import_employees_from_file('employees_test.csv')
-        import_room_details_from_file('rooms_test.csv')
+
+        # import_employees_from_file('employees_test.csv')
+        # import_room_details_from_file('rooms_test.csv')
+
+        import_employees_from_file('exportEmployees.csv')
+        import_room_details_from_file('exportRooms.csv')
 
         flag = 1
     if form.validate_on_submit():
@@ -331,7 +335,6 @@ def changePassword():
     return render_template('changePassword.html', title='editEmployeesByThem')
 
 
-
 #########################################edit rooms functions######################################################
 
 @app.route('/searchRooms', methods=['GET', 'POST'])
@@ -408,7 +411,6 @@ def editRooms():
                            form_update=form_update)
 
 
-
 """
 @app.route('/room_recommendation_page',methods=['GET', 'POST'])
 @login_required
@@ -439,23 +441,28 @@ def form_room_recommend(form_recommend):
 @app.route('/exportTables', methods=['GET', 'POST'])
 @login_required
 def exportTables():
-    employee_form = exportEmplyeeForm()
+    employee_form = exportEmployeeForm()
     room_form = exportRoomForm()
+    return render_template('exportTables.html', room_form=room_form, employee_form=employee_form)
+
+
+@app.route('/exportRooms', methods=['GET', 'POST'])
+@login_required
+def exportRooms():
     dir_path = Config.DOWNLOAD_DIR
     rooms_file = 'rooms_DB.csv'
-    employees_file = 'employees_DB.csv'
+    print('room_form')
+    print('room_form')
+    export_rooms_to_file(rooms_file)
+    return send_from_directory(directory=dir_path, filename='rooms_DB.csv')
 
-    if room_form.validate_on_submit():
-        print('room_form')
-        print('room_form')
-        export_rooms_to_file(rooms_file)
-        subprocess.call("send_from_directory(directory=dir_path, filename='rooms_DB.csv')", shell=True)
-        return redirect(url_for('exportTables'))
-    elif employee_form.validate_on_submit():
-        print('employee_form')
-        print('employee_form')
-        os.subprocess.call("send_from_directory(directory=dir_path, filename='employees_DB.csv')")
-        employee_form = exportEmplyeeForm()
-        export_employees_to_file(employees_file)
-        return redirect(url_for('exportTables'))
-    return render_template('exportTables.html', employee_form=employee_form, room_form=room_form)
+
+@app.route('/exportEmployees', methods=['GET', 'POST'])
+@login_required
+def exportEmployees():
+    dir_path = Config.DOWNLOAD_DIR
+    employees_file = 'employees_DB.csv'
+    print('employee_form')
+    print('employee_form')
+    export_employees_to_file(employees_file)
+    return send_from_directory(directory=dir_path, filename='employees_DB.csv')

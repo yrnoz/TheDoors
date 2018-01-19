@@ -30,6 +30,8 @@ def import_employees_from_file(input_file):
     man_permission = get_permission_of_manager()
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
+            if line.find('#') != -1:
+                continue
             id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
             if (int(permission) < 0) or (int(permission) <= man_permission and role != "Manager"):
                 continue
@@ -53,17 +55,18 @@ def export_employees_to_file(output_file):
     """
     global Employees
     with open(output_file, 'w') as output:
+        output.write("# User_id ,Username ,Role ,Access permission ,Password #\n")
         for employee in Employees.objects():
             output.write(str(employee.user_id) + "," + employee.username + "," + employee.role + ","
                          + str(employee.access_permission) + "," + employee.password + "\n")
 
-            # if not employee["friends"]:
-            #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-            #                  + str(employee["permission"]) + "," + employee["password"] + "\n")
-            # else:
-            #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-            #                  + str(employee["permission"]) + "," + employee["password"] + "," + ",".join(
-            #         employee["friends"]) + "\n")
+    # if not employee["friends"]:
+    #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+    #                  + str(employee["permission"]) + "," + employee["password"] + "\n")
+    # else:
+    #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+    #                  + str(employee["permission"]) + "," + employee["password"] + "," + ",".join(
+    #         employee["friends"]) + "\n")
 
 
 def export_rooms_to_file(output_file):
@@ -73,6 +76,7 @@ def export_rooms_to_file(output_file):
     """
     global Rooms
     with open(output_file, 'w') as output:
+        output.write("# Room_id ,maxCapacity ,Access permission, Floor #\n")
         for room in Rooms.objects():
             output.write(str(room.room_id) + "," + str(room.maxCapacity) + "," + str(room.access_permission) + ","
                          + str(room.floor) + "\n")
@@ -88,6 +92,8 @@ def import_room_details_from_file(input_file):
     global Rooms
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.translate(None, '\n'), details.readlines()):
+            if line.find('#') != -1:
+                continue
             id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
             if int(capacity) <= 0 or int(permission) < 0:
                 continue
