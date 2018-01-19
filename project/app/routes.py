@@ -1,5 +1,6 @@
 import subprocess
 # import client as client
+import os
 from flask import render_template, flash, redirect, url_for, request, session, send_from_directory
 from flask_login import login_user, logout_user, login_required
 from werkzeug.datastructures import FileStorage
@@ -31,11 +32,10 @@ def login():
         User.drop_collection()
         Room.drop_collection()
 
-        # import_employees_from_file('employees_test.csv')
-        # import_room_details_from_file('rooms_test.csv')
+        import_employees_from_file('employees_test.csv')
+        import_room_details_from_file('rooms_test.csv')
 
-        import_employees_from_file('exportEmployees.csv')
-        import_room_details_from_file('exportRooms.csv')
+
 
         flag = 1
     if form.validate_on_submit():
@@ -380,10 +380,8 @@ def updateRooms():
     else:
 
         print("in update fail {} {} {} {}".format(form_update.room_id.data, form_update.permission.data,
-                                             form_update.floor.data,
-                                             form_update.maxCapacity.data))
-
-
+                                                  form_update.floor.data,
+                                                  form_update.maxCapacity.data))
 
         flash("missing data")
     return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
@@ -448,6 +446,11 @@ def form_room_recommend(form_recommend):
 @app.route('/exportTables', methods=['GET', 'POST'])
 @login_required
 def exportTables():
+    try:
+        os.remove('employees_DB.csv')
+        os.remove('rooms_DB.csv')
+    except:
+        pass
     employee_form = exportEmployeeForm()
     room_form = exportRoomForm()
     return render_template('exportTables.html', room_form=room_form, employee_form=employee_form)
