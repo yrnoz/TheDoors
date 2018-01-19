@@ -12,7 +12,6 @@ MAX_PERMISSION = 100
 
 Employees = User
 
-
 Rooms = Room
 
 
@@ -31,6 +30,8 @@ def import_employees_from_file(input_file):
     man_permission = get_permission_of_manager()
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.strip(), details.readlines()):
+            if line.find('#') != -1:
+                continue
             id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
             if (int(permission) < 0) or (int(permission) <= man_permission and role != "Manager"):
                 continue
@@ -40,7 +41,7 @@ def import_employees_from_file(input_file):
                         role=role, access_permission=permission,
                         )
             user.save()
-            #print("{} num of users {}".format(name, User.objects.count()))
+            # print("{} num of users {}".format(name, User.objects.count()))
         # employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password,
         #             "friends": [],
         #             "schedule": {}}
@@ -54,14 +55,18 @@ def export_employees_to_file(output_file):
     """
     global Employees
     with open(output_file, 'w') as output:
-        for employee in Employees.find():
-            if not employee["friends"]:
-                output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                             + str(employee["permission"]) + "," + employee["password"] + "\n")
-            else:
-                output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-                             + str(employee["permission"]) + "," + employee["password"] + "," + ",".join(
-                    employee["friends"]) + "\n")
+        output.write("# User_id ,Username ,Role ,Access permission ,Password #\n")
+        for employee in Employees.objects():
+            output.write(str(employee.user_id) + "," + employee.username + "," + employee.role + ","
+                         + str(employee.access_permission) + "," + employee.password + "\n")
+
+    # if not employee["friends"]:
+    #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+    #                  + str(employee["permission"]) + "," + employee["password"] + "\n")
+    # else:
+    #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+    #                  + str(employee["permission"]) + "," + employee["password"] + "," + ",".join(
+    #         employee["friends"]) + "\n")
 
 
 def export_rooms_to_file(output_file):
@@ -71,9 +76,10 @@ def export_rooms_to_file(output_file):
     """
     global Rooms
     with open(output_file, 'w') as output:
-        for room in Rooms.find():
-            output.write(room["id"] + "," + str(room["capacity"]) + "," + str(room["permission"]) + ","
-                         + str(room["floor"]) + "\n")
+        output.write("# Room_id ,maxCapacity ,Access permission, Floor #\n")
+        for room in Rooms.objects():
+            output.write(str(room.room_id) + "," + str(room.maxCapacity) + "," + str(room.access_permission) + ","
+                         + str(room.floor) + "\n")
 
 
 def import_room_details_from_file(input_file):
@@ -86,6 +92,8 @@ def import_room_details_from_file(input_file):
     global Rooms
     with open(input_file) as details:  # open the file
         for line in filter(lambda x: x.translate(None, '\n'), details.readlines()):
+            if line.find('#') != -1:
+                continue
             id, capacity, permission, floor = line.split(",")  # get the parameters we need from the line
             if int(capacity) <= 0 or int(permission) < 0:
                 continue
@@ -94,7 +102,7 @@ def import_room_details_from_file(input_file):
                         maxCapacity=capacity,
                         access_permission=permission)
             room.save()
-            #print("room id {} floor {}".format(room.room_id, room.floor))
+            # print("room id {} floor {}".format(room.room_id, room.floor))
     # room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
     #         "schedule": {}}
     # Rooms.insert_one(room)  # add employee's details to the DB
@@ -366,6 +374,7 @@ def check_id_str_of_employee(id):
         return False
     return True
 
+
 # input: id, password output: True if the password match the employee False otherwise
 def check_password_of_employee(username, password):
     global Employees
@@ -399,7 +408,7 @@ def check_ligal_permission(employee, room, id_employee_list):
 
 # input: id output: the room with this id
 def find_room(id):
-    return Rooms.objects(room_id = str(id))
+    return Rooms.objects(room_id=str(id))
 
 
 def get_average_friends_in_factory():
@@ -410,7 +419,7 @@ def get_average_friends_in_factory():
     num_employees = Employees.find().count()
     if num_employees is 0:
         return -1
-    employees=[]
+    employees = []
     for employee in Employees.find():
         employees.append(employee)
     num_friends = reduce(lambda x, y: x + y, map(lambda x: len(x["friends"]), employees))
@@ -429,6 +438,7 @@ def get_minimum_permission_in_factory():
         permissions.append(int(employee["permission"]))
     return max(permissions)
 
+
 def get_permission_of_manager():
     '''
     A function that returns the permission of the manager in the factory
@@ -437,11 +447,12 @@ def get_permission_of_manager():
     if Employees.objects().count() == 0:
         return -1
     permissions = []
-    for employee in Employees.objects(role = "Manager"):
+    for employee in Employees.objects(role="Manager"):
         permissions.append(employee.access_permission)
     if permissions == []:
         return -1
     return min(permissions)
+
 
 def add_a_friend_for_employee(employee_id, friend_id):
     """

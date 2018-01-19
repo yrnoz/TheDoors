@@ -1,7 +1,7 @@
-import os
-
+import subprocess
 # import client as client
-from flask import render_template, flash, redirect, url_for, request, session
+import os
+from flask import render_template, flash, redirect, url_for, request, session, send_from_directory
 from flask_login import login_user, logout_user, login_required
 from werkzeug.datastructures import FileStorage
 
@@ -30,8 +30,12 @@ def login():
     global flag
     if flag == 0:
         User.drop_collection()
+        Room.drop_collection()
+
         import_employees_from_file('employees_test.csv')
         import_room_details_from_file('rooms_test.csv')
+
+
 
         flag = 1
     if form.validate_on_submit():
@@ -112,7 +116,7 @@ def upload_employees():
 
     # only allow upload of text files
     if newfile.content_type != 'application/vnd.ms-excel':
-        flash('only cssv files')
+        flash('only csv files')
         return redirect(url_for('import_employees'))
 
     save_path = os.path.join(Config.UPLOAD_DIR, newfile.filename)
@@ -217,12 +221,6 @@ def upload_rooms():
 #     return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
 #                            form_update=form_update)
 #
-
-@app.route('/exportTables', methods=['GET', 'POST'])
-@login_required
-def exportTables():
-    return render_template('exportTables.html', title='userInterface')
-
 
 @app.route('/room_recommendation_page', methods=['GET', 'POST'])
 @login_required
@@ -337,7 +335,6 @@ def changePassword():
     return render_template('changePassword.html', title='editEmployeesByThem')
 
 
-
 #########################################edit rooms functions######################################################
 
 @app.route('/searchRooms', methods=['GET', 'POST'])
@@ -381,6 +378,11 @@ def updateRooms():
             flash('room id not exist')
             room = None
     else:
+
+        print("in update fail {} {} {} {}".format(form_update.room_id.data, form_update.permission.data,
+                                                  form_update.floor.data,
+                                                  form_update.maxCapacity.data))
+
         flash("missing data")
     return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
                            form_update=form_update, data=room)
@@ -414,7 +416,6 @@ def editRooms():
                            form_update=form_update)
 
 
-
 """
 @app.route('/room_recommendation_page',methods=['GET', 'POST'])
 @login_required
@@ -440,3 +441,38 @@ def form_room_recommend(form_recommend):
         recommendedList
     return render_template('room_recommendation_page.html', form_recommend)
 """
+
+
+@app.route('/exportTables', methods=['GET', 'POST'])
+@login_required
+def exportTables():
+    try:
+        os.remove('employees_DB.csv')
+        os.remove('rooms_DB.csv')
+    except:
+        pass
+    employee_form = exportEmployeeForm()
+    room_form = exportRoomForm()
+    return render_template('exportTables.html', room_form=room_form, employee_form=employee_form)
+
+
+@app.route('/exportRooms', methods=['GET', 'POST'])
+@login_required
+def exportRooms():
+    dir_path = Config.DOWNLOAD_DIR
+    rooms_file = 'rooms_DB.csv'
+    print('room_form')
+    print('room_form')
+    export_rooms_to_file(rooms_file)
+    return send_from_directory(directory=dir_path, filename='rooms_DB.csv')
+
+
+@app.route('/exportEmployees', methods=['GET', 'POST'])
+@login_required
+def exportEmployees():
+    dir_path = Config.DOWNLOAD_DIR
+    employees_file = 'employees_DB.csv'
+    print('employee_form')
+    print('employee_form')
+    export_employees_to_file(employees_file)
+    return send_from_directory(directory=dir_path, filename='employees_DB.csv')
