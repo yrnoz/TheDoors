@@ -68,10 +68,10 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
         background-image: url({{ url_for('static' , filename='goback_picture.png') }});
 
-
         margin-left: 200px;
         margin-top: 110px;
     }
+
     .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
         filter: none;
         background-color: #f44336;
@@ -83,7 +83,7 @@
         background-color: #f44336;
     }
 
-     .btn-large-goback {
+    .btn-large-goback {
         padding: 25px 50px;
         font-size: 15px;
         line-height: normal;
@@ -94,8 +94,8 @@
 
     .go_back {
         color: #fff;
-        <!--background-image: url("goback_picture.png");-->
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    <!-- background-image: url("goback_picture.png");
+    --> text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
         position: absolute;
         top: 85%;
@@ -223,8 +223,9 @@
         letter-spacing: 1px;
         text-align: center;
     }
+
     .white-text {
-       color: #ffffff;
+        color: #ffffff;
     }
 
     .black-text {
@@ -259,86 +260,92 @@
 {% block content %}
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-<div class="editEmployees">
-    <h1>Edit Employees</h1>
+    <div class="editEmployees">
+        <h1>Edit Employees</h1>
 
-    <form method="post" action="{{url_for('searchEmployees')}}">
-        {{ form_search.hidden_tag() }}
-        {{ form_search.csrf_token }}
+        <form method="post" action="{{ url_for('searchEmployees')}}">
+            {{ form_search.hidden_tag() }}
+            {{ form_search.csrf_token }}
 
 
-        <p class="white-text">
-            {{ form_search.search.label }}<br>
-            {{ form_search.search(size=32) }}<br>
-        </p>
-        <div class="btn btn-primary btn-block btn-large">
-            {{ form_search.submit_button_search() }}
+            <p class="white-text">
+                {{ form_search.search.label }}<br>
+                {{ form_search.search(size=32) }}<br>
+            </p>
+            <div class="btn btn-primary btn-block btn-large">
+                {{ form_search.submit_button_search() }}
+            </div>
+        </form>
+        <form method="post" action="{{ url_for('updateEmployees')}}">
+            {{ form_update.hidden_tag() }}
+            {{ form_update.csrf_token }}
+
+
+            <div class="white-text">
+                {% if data %}
+                    (current values)</br>
+                    <p>ID ({{ data.user_id }}):{{ form_update.user_id }}</p>
+                    <p>Full Name ({{ data.username }}):{{ form_update.username }}</p>
+                    <p>Role ({{ data.role }}):{{ form_update.role }}</p>
+                    <p>Permission ({{ data.access_permission }}):{{ form_update.permission }}</p>
+
+                {% endif %}
+                {% if not data %}
+
+                    ID: <p class="white-text">
+                    {{ form_update.user_id }}
+                </p>
+                    Full Name: <p class="white-text">
+                    {{ form_update.username }}
+                </p>
+                    Role: <p class="white-text">
+                    {{ form_update.role }}
+                </p>
+                    Permission: <p class="white-text">
+                    {{ form_update.permission }}
+                </p>
+                    </div>
+
+                {% endif %}
+            <div class="btn btn-primary btn-block btn-large">
+                {{ form_update.submit_button_update() }}
+            </div>
+        </form>
+        </br>
+        <form method="post" action="{{ url_for('deleteEmployees')}}">
+
+            {{ form_delete.hidden_tag() }}
+            {{ form_delete.csrf_token }}
+
+            <div class="btn btn-primary-red btn-block btn-large black-text">
+                <p hidden="hidden">
+
+                    {{ form_delete.user_id }} = {{ form_search.search }}
+
+                </p>
+                {{ form_delete.submit_button_delete()}}
+            </div>
+        </form>
+        <br/>
+        <br/>
+        <br/>
+        <div class="go_back">
+            <a href="{{ url_for('editDB') }}">
+                <button type="button" class="btn-primary-go_back btn-large-goback"></button>
+            </a>
         </div>
-    </form>
-    <form method="post" action="{{url_for('updateEmployees')}}">
-        {{ form_update.hidden_tag() }}
-        {{ form_update.csrf_token }}
+    <!--
+        <a href="{{ url_for('editDB')}}">
+            <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
+        </a> -->
+    </div>
 
-
-        <div class="white-text">
-            {% if data %}
-            (current values)</br>
-            <p>ID ({{data.user_id}}):{{form_update.user_id}}</p>
-            <p>Full Name ({{data.username}}):{{form_update.username}}</p>
-            <p>Role ({{data.role}}):{{form_update.role}}</p>
-            <p>Permission ({{data.access_permission}}):{{form_update.permission}}</p>
-
-            {% endif %}
-            {% if not data %}
-
-            ID: <p class="white-text">
-            {{form_update.user_id}}
-        </p>
-            Full Name: <p class="white-text">
-            {{form_update.username}}
-        </p>
-            Role: <p class="white-text">
-            {{form_update.role}}
-        </p>
-            Permission: <p class="white-text">
-            {{form_update.permission}}
-        </p>
-        </div>
-
-        {% endif %}
-        <div class="btn btn-primary btn-block btn-large">
-            {{ form_update.submit_button_update() }}
-        </div >
-    </form>
-    </br>
-        <form method="post" action="{{url_for('deleteEmployees')}}">
-
-        {{ form_delete.hidden_tag() }}
-        {{ form_delete.csrf_token }}
-
-         <div class="btn btn-primary-red btn-block btn-large black-text">
-               <p hidden="hidden">
-
-               {{form_delete.user_id}} = {{form_search.search}}
-
-                   </p>
-              {{form_delete.submit_button_delete()}}
-        </div >
-    </form>
-    <br/>
-    <br/>
-    <br/>
-    <a href="{{url_for('editDB')}}">
-        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
-    </a>
-</div>
-
-</body>
+    </body>
 {% endblock %}
 </html>
