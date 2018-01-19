@@ -195,7 +195,7 @@ def test_get_friends_list():
     friends_list = get_friends_list("123")
     assert cmp(["Elyasaf"], friends_list) == 0
     friends_list = get_friends_list("498")
-    cmp(["Aviad"], friends_list) == 0
+    assert cmp(["Aviad"], friends_list) == 0
     delete_a_friend_from_employee("123", "498")
     friends_list = get_friends_list("123")
     assert not friends_list
