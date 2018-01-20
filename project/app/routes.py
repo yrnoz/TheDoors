@@ -80,7 +80,7 @@ def upload_weekly_schedule():
     if (session['user_id']):
         flash(session['user_id'])
     else:
-        flash('what the fuck')
+        flash('id was not found')
     # get the 'newfile' field from the form
     new_file = request.files['file']
     # only allow upload of text files

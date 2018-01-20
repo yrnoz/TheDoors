@@ -1,13 +1,19 @@
 from datetime import datetime, timedelta
+
+from mongoengine import Q
 from pymongo import MongoClient
 # from app import Rooms_table
 
+import logging
+
+logging.basicConfig(filename='myapp.log', level=logging.INFO)
 # client = MongoClient()  # making the connection with the DB
 # db = client['test-database']  # create a new DB
 # Rooms = db["Rooms"]  # create new table that called Rooms
 # Employees = db["Employees"]  # create new table that called Employees
 from app.models import User, Room
 
+NO_EMPLOYEE_ERROR = -1
 MAX_PERMISSION = 100
 
 Employees = User
@@ -161,14 +167,16 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     return True
 
 
-def update_schedule_employees(date_time, room, id_employee_list, num_employees):
-    global Rooms
-    global Employees
-    for id in id_employee_list:
-        employee = find_employee(id)
-        schedule_employee = employee["schedule"]
-        schedule_employee[date_time] = (num_employees, room["id"])
-        Employees.replace_one({'_id': employee['_id']}, employee)
+def assign_employee_to_room(date_time, employee, num_hours, num_employees, guests_ids):
+    pass
+
+
+def parse_string_time_to_datetime(date_str, time_delta=0):
+    return datetime.strptime(date_str, "%d/%m/%y %H") + timedelta(hours=time_delta)
+
+
+def parse_datetime_to_string(date_time, time_delta=0):
+    return datetime.strftime(date_time + timedelta(hours=time_delta), "%d/%m/%y %H")
 
 
 def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee, id_employee_list, max_capacity):
@@ -236,23 +244,23 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
             # return anouncments_list
 
 
-def add_weekly_schedule(employee_id, schedule_file=None):
-    import logging
-    logging.basicConfig(filename='myapp.log', level=logging.INFO)
-    logging.info('Started')
-    if schedule_file is None:
-        schedule_file = []
-        logging.info('room order is none')
-    global Employees
-    global Rooms
-    employee = find_employee(employee_id)
-    logging.info('found employee %s' % employee_id)
-    # logging.info('file path: %s' % room_order_items)
-    for item in schedule_file:
-        date_time = item.date_time
-        num_employees = item.num_employees
-        num_hours = item.num_hours
-        assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee)
+# def add_weekly_schedule(employee_id, schedule_file=None):
+#     import logging
+#     logging.basicConfig(filename='myapp.log', level=logging.INFO)
+#     logging.info('Started')
+#     if schedule_file is None:
+#         schedule_file = []
+#         logging.info('room order is none')
+#     global Employees
+#     global Rooms
+#     employee = find_employee(employee_id)
+#     logging.info('found employee %s' % employee_id)
+#     # logging.info('file path: %s' % room_order_items)
+#     for item in schedule_file:
+#         date_time = item.date_time
+#         num_employees = item.num_employees
+#         num_hours = item.num_hours
+#         assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, employee)
 
 
 # the function check if there is a employee which have already ordered room for the same date_time
@@ -369,8 +377,11 @@ def update_room(id, floor, max_capacity, access_permission, schedule):
 
 def get_access_permission_of_employee_by_id(id):
     global Employees
-    employee = Employees.find_one({"id": str(id)})
-    return int(employee["permission"])
+    if not (check_id_of_employee(id)):
+        return NO_EMPLOYEE_ERROR
+    employee = find_employee(id)
+
+    return int(employee.permission)
 
 
 # input: id output: password of this employee
@@ -430,8 +441,14 @@ def check_ligal_permission(employee, room, id_employee_list):
     return False
 
 
+def check_room_id(id):
+    global Rooms
+    return Rooms.objects.get(room_id=str(id)) is not None
+
+
 # input: id output: the room with this id
 def find_room(id):
+    global Rooms
     return Rooms.objects(room_id=str(id))
 
 
@@ -473,10 +490,12 @@ def get_permission_of_manager():
     permissions = []
     for employee in Employees.objects(role="Manager"):
         permissions.append(employee.access_permission)
-    if permissions == []:
+    if not permissions:
         return -1
     return min(permissions)
 
+
+####################### NEEDS TO BE UPDATED, DOESN'T WORK ANYMORE! ################################
 
 def add_a_friend_for_employee(employee_id, friend_id):
     """
