@@ -218,14 +218,19 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
     return anouncments_list
 
 
-def add_weekly_schedule(employee_id, room_order_items=None):
-    if room_order_items is None:
-        room_order_items = []
+def add_weekly_schedule(employee_id, schedule_file=None):
+    import logging
+    logging.basicConfig(filename='myapp.log', level=logging.INFO)
+    logging.info('Started')
+    if schedule_file is None:
+        schedule_file = []
+        logging.info('room order is none')
     global Employees
     global Rooms
     employee = find_employee(employee_id)
-
-    for item in room_order_items:
+    logging.info('found employee %s' % employee_id)
+    #logging.info('file path: %s' % room_order_items)
+    for item in schedule_file:
         date_time = item.date_time
         num_employees = item.num_employees
         num_hours = item.num_hours
@@ -390,6 +395,7 @@ def check_password_of_employee(username, password):
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.objects.get(user_id=str(id))
+    return None
 
 
 def check_ligal_permission(employee, room, id_employee_list):
