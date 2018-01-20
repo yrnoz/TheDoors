@@ -15,15 +15,6 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
-    <!--</head>-->
-
-
-    <!--<head>-->
-    <!--<meta charset="UTF-8">-->
-    <!--<title>Login Form</title>-->
-    <!---->
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">-->
-
 
     <style>
         /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
@@ -77,19 +68,8 @@
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
             background-image: url({{ url_for('static' , filename= 'goback_picture.png')}})
-
-
         }
 
-        /*}*/
-        /*)*/
-        /*;*/
-
-        /*margin-left: 200px */
-        /*margin-top: 110px*/
-
-        /*;*/
-        /*}*/
         .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
             filter: none;
             background-color: #f44336;
@@ -112,8 +92,7 @@
 
         .go_back {
             color: #fff;
-        <!-- background-image: url("goback_picture.png");
-        --> text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             letter-spacing: 1px;
             position: absolute;
             top: 85%;
@@ -298,53 +277,64 @@
 <div class="container">
     <h2>Room Recommendation</h2>
     <p class="text-info"> Dear employee! You can order room for one hour. Enjoy!</p>
-    <form method="post">
-        <div id="datepicker" class="input-group date" date-date-formate="dd-mm-yy">
-            <input class="form-control" type="text" name="">
-            <span class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </span>
-        </div>
-        <br>
-        <div class="form-group">
-            <label class="text-muted">Begin time:</label>
-            <select class="form-control">
-                <option>00:00</option>
-                <option>01:00</option>
-                <option>02:00</option>
-                <option>03:00</option>
-                <option>04:00</option>
-                <option>05:00</option>
-                <option>06:00</option>
-                <option>07:00</option>
-                <option>08:00</option>
-                <option>09:00</option>
-                <option>10:00</option>
-                <option>11:00</option>
-                <option>12:00</option>
-                <option>13:00</option>
-                <option>14:00</option>
-                <option>15:00</option>
-                <option>16:00</option>
-                <option>17:00</option>
-                <option>18:00</option>
-                <option>19:00</option>
-                <option>20:00</option>
-                <option>21:00</option>
-                <option>22:00</option>
-                <option>23:00</option>
-            </select>
-            <br>
+        <!--<div id="datepicker" class="input-group date" date-date-formate="dd-mm-yy">-->
+            <!--<input class="form-control" type="text" name="">-->
+            <!--<span class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </span>-->
+        <!--</div>-->
+        <!--<br>-->
+        <!--<div class="form-group">-->
+            <!--<label class="text-muted">Begin time:</label>-->
+            <!--<select class="form-control">-->
+                <!--<option>00:00</option>-->
+                <!--<option>01:00</option>-->
+                <!--<option>02:00</option>-->
+                <!--<option>03:00</option>-->
+                <!--<option>04:00</option>-->
+                <!--<option>05:00</option>-->
+                <!--<option>06:00</option>-->
+                <!--<option>07:00</option>-->
+                <!--<option>08:00</option>-->
+                <!--<option>09:00</option>-->
+                <!--<option>10:00</option>-->
+                <!--<option>11:00</option>-->
+                <!--<option>12:00</option>-->
+                <!--<option>13:00</option>-->
+                <!--<option>14:00</option>-->
+                <!--<option>15:00</option>-->
+                <!--<option>16:00</option>-->
+                <!--<option>17:00</option>-->
+                <!--<option>18:00</option>-->
+                <!--<option>19:00</option>-->
+                <!--<option>20:00</option>-->
+                <!--<option>21:00</option>-->
+                <!--<option>22:00</option>-->
+                <!--<option>23:00</option>-->
+            <!--</select>-->
+            <!--<br>-->
 
-        </div>
-        <button type="button" class="btn btn-primary btn-block btn-large">Recommend</button>
+        <!--</div>-->
 
-    </form>
+        <!--<div class="white-text">-->
+            <!--<p>Max Floor: ({{ data.room_id }}):{{ form_update.room_id }} </p>-->
+            <!--<p>Capacity Balance: ({{ data.floor }}):{{ form_update.floor }}</p>-->
+        <!--</div>-->
+
+        <!--<button type="button" class="btn btn-primary btn-block btn-large">Recommend</button>-->
+        <form method="post" action="{{ url_for('room_reccomendation')}}">
+            {{ form_reccomend.hidden_tag() }}
+            {{ form_reccomend.csrf_token }}
+            <p class="white-text">
+                {{ form_reccomend.reccomend.label }}<br>
+                {{ form_reccomend.reccomend(size=32) }}<br>
+            </p>
+            <div class="btn btn-primary btn-block btn-large">
+                {{ form_reccomend.submit_button_reccomend() }}
+            </div>
+
+        </form>
+
     <div class="spacer_button"></div>
 
-
-    <!--<button type="button" class="btn btn-primary btn-large">Recommend</button>-->
-
-
-    <!--<div class="spacer"></div>-->
     <div class="well">
         <table id="reccomendations table" style="width:100%">
             <tr>
