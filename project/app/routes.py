@@ -69,12 +69,6 @@ def managerInterface():
     return render_template('managerInterface.html', title='userInterface')
 
 
-# @app.route('/room_recommendation_page', methods=['GET', 'POST'])
-# @login_required
-# def room_recommendation_page():
-#     return render_template('room_recommendation_page.html', title='userInterface')
-#
-
 @app.route('/upload_weekly_schedule', methods=['GET', 'POST'])
 def upload_weekly_schedule():
     if (session['user_id']):
@@ -182,15 +176,6 @@ def upload_rooms():
     # redirect to home page if it all works ok
     flash('import file success')
     return redirect(url_for('import_rooms'))
-
-
-@app.route('/room_recommendation_page', methods=['GET', 'POST'])
-@login_required
-def room_recommendation_page():
-    form_recommend = roomRecommendationPage()
-    if form_recommend.validate_on_submit():
-        return form_room_recommend(form_recommend)
-    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
 
 
 def form_room_recommend(form_recommend):
@@ -398,3 +383,21 @@ def searchDB():
 def deleteDB():
     search = EmployeeDeleteForm()
     return render_template('deleteDB.html', title='userInterface', search=search)
+
+
+@app.route('/room_recommendation_page', methods=['GET', 'POST'])
+@login_required
+def room_recommendation_page():
+    form_recommend = roomRecommendationPage()
+    if form_recommend.validate_on_submit():
+        return form_room_recommend(form_recommend)
+    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
+
+
+@app.route('/room_reccomendation', methods=['GET', 'POST'])
+@login_required
+def room_reccomendation():
+    form_recommend = roomRecommendationPage()
+    if form_recommend.validate_on_submit():
+        return form_room_recommend(form_recommend)
+    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
