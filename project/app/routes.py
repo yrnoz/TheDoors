@@ -90,7 +90,7 @@ def upload_weekly_schedule():
     save_path = os.path.join(Config.UPLOAD_DIR, new_file.filename)
     new_file.save(save_path)
     try:
-        add_weekly_schedule(session['user_id'], Config.UPLOAD_DIR + new_file.filename)
+        add_weekly_schedule_for_employee(session['user_id'], Config.UPLOAD_DIR + new_file.filename)
     except:
         flash('import file failed, wrong file')
         return redirect(url_for('weekly_schedule_page'))
