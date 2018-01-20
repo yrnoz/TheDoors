@@ -23,7 +23,7 @@
         display: inline-block;
         *display: inline;
         *zoom: 1;
-        padding: 4px 10px 4px;
+        padding: 0px 0px 0px;
         margin-bottom: 0;
         font-size: 13px;
         line-height: 18px;
@@ -58,12 +58,12 @@
     }
 
     .btn-large {
-        padding: 9px 14px;
-        font-size: 15px;
-        line-height: normal;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
+        padding: 0px 0px;
+        font-size: 5px;
+        line-height: 0px;
+        -webkit-border-radius: 1px;
+        -moz-border-radius: 1px;
+        border-radius: 1px;
     }
 
     .btn:hover {
@@ -185,7 +185,7 @@
 
     input {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 0px;
         background: rgba(0, 0, 0, 0.3);
         border: none;
         outline: none;
@@ -268,9 +268,11 @@
     <br/>
     <br/>
     <br/>
-    <a href="{{url_for('editDB')}}">
-        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
-    </a>
+    <div class="go_back">
+        <a href="{{url_for('editDB')}}">
+            <button type="button" class="btn-primary-go_back btn-large-goback"></button>
+        </a>
+    </div>
 
 </div>
 </body>

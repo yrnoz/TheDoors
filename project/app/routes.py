@@ -69,12 +69,6 @@ def managerInterface():
     return render_template('managerInterface.html', title='userInterface')
 
 
-# @app.route('/room_recommendation_page', methods=['GET', 'POST'])
-# @login_required
-# def room_recommendation_page():
-#     return render_template('room_recommendation_page.html', title='userInterface')
-#
-
 @app.route('/upload_weekly_schedule', methods=['GET', 'POST'])
 def upload_weekly_schedule():
     if (session['user_id']):
@@ -184,19 +178,9 @@ def upload_rooms():
     return redirect(url_for('import_rooms'))
 
 
-@app.route('/room_recommendation_page', methods=['GET', 'POST'])
-@login_required
-def room_recommendation_page():
-    form_recommend = roomRecommendationPage()
-    if form_recommend.validate_on_submit():
-        return form_room_recommend(form_recommend)
-    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
-
-
 def form_room_recommend(form_recommend):
     recommendedList = []
-    form_recommend = roomRecommendationPage()
-    for room in Rooms.objects.all():
+    for room in Room.objects.all():
         if room.access_permission > find_employee(session['user_id']).access_permission:
             continue
         schedule_date_time = Schedule()
@@ -407,3 +391,23 @@ def show_all_db():
     print "***********************************************************"
     print search
     return render_template('show_all_db.html', search=search)
+
+
+@app.route('/room_recommendation_page', methods=['GET', 'POST'])
+@login_required
+def room_recommendation_page():
+    form_recommend = roomRecommendationPage()
+    if form_recommend.validate_on_submit():
+        return form_room_recommend(form_recommend)
+    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
+
+
+@app.route('/room_reccomendation', methods=['GET', 'POST'])
+@login_required
+def room_reccomendation():
+    print("enter!!!!!!!!!!!!!!!!!!!!")
+    form_recommend = roomRecommendationPage()
+    if form_recommend.validate_on_submit():
+        print("ssssssssssssssssssss!!!!!!!!!!!!!!!!!!!!")
+        return form_room_recommend(form_recommend)
+    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
