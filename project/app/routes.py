@@ -35,8 +35,6 @@ def login():
         import_employees_from_file('employees_test.csv')
         import_room_details_from_file('rooms_test.csv')
 
-
-
         flag = 1
     if form.validate_on_submit():
         try:
@@ -76,6 +74,31 @@ def managerInterface():
 # def room_recommendation_page():
 #     return render_template('room_recommendation_page.html', title='userInterface')
 #
+
+@app.route('/upload_weekly_schedule', methods=['GET', 'POST'])
+def upload_weekly_schedule():
+    if (session['user_id']):
+        flash(session['user_id'])
+    else:
+        flash('what the fuck')
+    # get the 'newfile' field from the form
+    new_file = request.files['file']
+    # only allow upload of text files
+    if new_file.content_type != 'application/vnd.ms-excel':
+        flash('only csv files are allowed!')
+        return redirect(url_for('weekly_schedule_page'))
+    save_path = os.path.join(Config.UPLOAD_DIR, new_file.filename)
+    new_file.save(save_path)
+    try:
+        add_weekly_schedule_for_employee(session['user_id'], Config.UPLOAD_DIR + new_file.filename)
+    except:
+        flash('import file failed, wrong file')
+        return redirect(url_for('weekly_schedule_page'))
+
+    # redirect to home page if it all works ok
+    flash('importing schedule succeeded!')
+    return redirect(url_for('weekly_schedule_page'))
+
 
 @app.route('/weekly_schedule_page', methods=['GET', 'POST'])
 @login_required
