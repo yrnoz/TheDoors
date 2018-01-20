@@ -278,22 +278,18 @@
     <h2>Room Recommendation</h2>
     <p class="text-info"> Dear employee! You can order room for one hour. Enjoy!</p>
 
-        <form method="post" action="{{ url_for('room_reccomendation')}}" class="white-text">
+        <form method="post" action="{{ url_for('room_reccomendation')}}"  >
             {{ form_recommend.hidden_tag() }}
             {{ form_recommend.csrf_token }}
             <p class="white-text" >
-                {{ form_recommend.date.label }}<br>
-                {{ form_recommend.date(size=32) }}<br>
 
-                {{ form_recommend.start_time.label }}<br>
-                {{ form_recommend.start_time }}<br>
 
-                {{ form_recommend.end_time.label }}<br>
-                {{ form_recommend.end_time }}<br>
-
-                {{ form_recommend.submit_button.label }}<br>
-                {{ form_recommend.submit_button}}<br>
-
+            <p style="color: white">   {{ form_recommend.start_time.label }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form_recommend.end_time.label }}</p>
+                {{ form_recommend.start_time }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ form_recommend.end_time }}<br>
 
             </p>
             <div class="btn btn-primary btn-block btn-large">

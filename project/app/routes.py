@@ -180,8 +180,7 @@ def upload_rooms():
 
 def form_room_recommend(form_recommend):
     recommendedList = []
-    form_recommend = roomRecommendationPage()
-    for room in Rooms.objects.all():
+    for room in Room.objects.all():
         if room.access_permission > find_employee(session['user_id']).access_permission:
             continue
         schedule_date_time = Schedule()
@@ -397,7 +396,9 @@ def room_recommendation_page():
 @app.route('/room_reccomendation', methods=['GET', 'POST'])
 @login_required
 def room_reccomendation():
+    print("enter!!!!!!!!!!!!!!!!!!!!")
     form_recommend = roomRecommendationPage()
     if form_recommend.validate_on_submit():
+        print("ssssssssssssssssssss!!!!!!!!!!!!!!!!!!!!")
         return form_room_recommend(form_recommend)
     return render_template('room_recommendation_page.html', form_recommend=form_recommend)

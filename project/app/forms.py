@@ -50,9 +50,9 @@ class RoomDeleteForm(FlaskForm):
 
 
 class roomRecommendationPage(FlaskForm):
-    date = DateTimeField('Date', validators=[DataRequired()])
-    start_time = SelectField('start time', validators=[DataRequired()], choices=TIME_HOUR)
-    end_time = SelectField('end time', validators=[DataRequired()], choices=TIME_HOUR)
+    # date = DateTimeField('Date', validators=[DataRequired()])
+    start_time = SelectField('start time', choices=TIME_HOUR)
+    end_time = SelectField('end time', choices=TIME_HOUR)
     submit_button = SubmitField('recommend')
     # output = OutputField('recommend', validators=[DataRequired()])
     # output = SelectField('recommend', validators=[DataRequired()])
