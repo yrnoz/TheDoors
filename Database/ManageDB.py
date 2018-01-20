@@ -530,4 +530,13 @@ def check_if_theres_an_employee_friend_in_room(employee_id, room_id):
     return False
         # friends_in_room = friends_list.filter()
 
+def get_friends_list(employee_id):
+    if not check_id_of_employee(employee_id):
+        print "no such employee in the system %s" % employee_id
+        return []
+    friends_list = find_employee(employee_id)["friends"]
+    friends_names = map(lambda x: find_employee(x)["name"], friends_list)
+    return friends_names
+
+
 ####################################################################################################

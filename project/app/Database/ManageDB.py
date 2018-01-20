@@ -42,10 +42,10 @@ def import_employees_from_file(input_file):
                         )
             user.save()
             # print("{} num of users {}".format(name, User.objects.count()))
-        # employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password,
-        #             "friends": [],
-        #             "schedule": {}}
-        # Employees.insert(employee)  # add employee's details to the DB
+            # employee = {"id": id, "name": name, "role": role, "permission": int(permission), "password": password,
+            #             "friends": [],
+            #             "schedule": {}}
+            # Employees.insert(employee)  # add employee's details to the DB
 
 
 def export_employees_to_file(output_file):
@@ -60,13 +60,13 @@ def export_employees_to_file(output_file):
             output.write(str(employee.user_id) + "," + employee.username + "," + employee.role + ","
                          + str(employee.access_permission) + "," + employee.password + "\n")
 
-    # if not employee["friends"]:
-    #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-    #                  + str(employee["permission"]) + "," + employee["password"] + "\n")
-    # else:
-    #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
-    #                  + str(employee["permission"]) + "," + employee["password"] + "," + ",".join(
-    #         employee["friends"]) + "\n")
+            # if not employee["friends"]:
+            #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+            #                  + str(employee["permission"]) + "," + employee["password"] + "\n")
+            # else:
+            #     output.write(str(employee["id"]) + "," + employee["name"] + "," + employee["role"] + ","
+            #                  + str(employee["permission"]) + "," + employee["password"] + "," + ",".join(
+            #         employee["friends"]) + "\n")
 
 
 def export_rooms_to_file(output_file):
@@ -103,9 +103,9 @@ def import_room_details_from_file(input_file):
                         access_permission=permission)
             room.save()
             # print("room id {} floor {}".format(room.room_id, room.floor))
-    # room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
-    #         "schedule": {}}
-    # Rooms.insert_one(room)  # add employee's details to the DB
+            # room = {"id": id, "capacity": int(capacity), "permission": int(permission), "floor": int(floor),
+            #         "schedule": {}}
+            # Rooms.insert_one(room)  # add employee's details to the DB
 
 
 #######################################################################################
@@ -125,9 +125,9 @@ def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, 
     """
     global Rooms
     global Employees
-    capacity = room["capacity"]
-    schedule = room["schedule"]
-    schedule_employee = employee["schedule"]
+    capacity = room.maxCapacity
+    schedule = room.schedule
+    schedule_employee = employee.schedule
 
     if not check_ligal_permission(employee, room, id_employee_list):
         return
@@ -181,8 +181,8 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
 
     # employee_permission = get_access_permission_of_employee_by_id(id)
     anouncments_list = []
-    num_rooms = Rooms.find().count()  # size of the DB of Rooms
-    previous_room = Rooms.find()[0]
+    num_rooms = Rooms.objects.count()  # size of the DB of Rooms
+    previous_room = Rooms.objects.first()
     for i in range(0, num_hours):
         updated_time_temp = (datetime.strptime(date_time, "%d/%m/%y %H") + timedelta(hours=i))
         updated_time = datetime.strftime(updated_time_temp, "%d/%m/%y %H")
@@ -196,14 +196,12 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
                                                                 anouncments_list)
         # print anouncments_list
         if not is_asigned_previous:
-            for j in range(0, num_rooms):
-                room = Rooms.find()[j]
+            for room in Rooms.objects:
                 if num_rooms == 1:
                     anouncments_list.append(
                         "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
                     continue
-
-                if room["id"] == previous_room["id"]:
+                if room.room_id == previous_room.room_id:
                     continue
                 is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee,
                                                                id_employee_list, max_capacity,
@@ -214,18 +212,43 @@ def assign_employees_to_room_to_X_hours(date_time, num_employees, num_hours, emp
                 if not is_asigned:
                     anouncments_list.append(
                         "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
-    print anouncments_list
-    return anouncments_list
+            print anouncments_list
+            return anouncments_list
+            #         for j in range(0, num_rooms):
+            #             room = Rooms.objects[j]
+            #             if num_rooms == 1:
+            #                 anouncments_list.append(
+            #                     "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
+            #                 continue
+            #
+            #             if room['id'] == previous_room['id']:
+            #                 continue
+            #             is_asigned = assign_employees_to_room_one_hour(updated_time, room, num_employees, employee,
+            #                                                            id_employee_list, max_capacity,
+            #                                                            anouncments_list)
+            #             if is_asigned:
+            #                 previous_room = room
+            #                 break
+            #             if not is_asigned:
+            #                 anouncments_list.append(
+            #                     "Dear {}! There is no free room the {} ! Sorry.".format(employee['name'], updated_time))
+            # print anouncments_list
+            # return anouncments_list
 
 
-def add_weekly_schedule(employee_id, room_order_items=None):
-    if room_order_items is None:
-        room_order_items = []
+def add_weekly_schedule(employee_id, schedule_file=None):
+    import logging
+    logging.basicConfig(filename='myapp.log', level=logging.INFO)
+    logging.info('Started')
+    if schedule_file is None:
+        schedule_file = []
+        logging.info('room order is none')
     global Employees
     global Rooms
     employee = find_employee(employee_id)
-
-    for item in room_order_items:
+    logging.info('found employee %s' % employee_id)
+    # logging.info('file path: %s' % room_order_items)
+    for item in schedule_file:
         date_time = item.date_time
         num_employees = item.num_employees
         num_hours = item.num_hours
@@ -390,6 +413,7 @@ def check_password_of_employee(username, password):
 def find_employee(id):
     if check_id_of_employee(id):
         return Employees.objects.get(user_id=str(id))
+    return None
 
 
 def check_ligal_permission(employee, room, id_employee_list):

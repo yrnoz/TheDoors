@@ -3,7 +3,11 @@ from app.Database.ManageDB import *
 #format of input_file: date, duration_time, max_percent_capacity, num_employees, str_id_employee
 #max_percent_capacity is double between 0 to 100. Value of 100 means that you accept maximus capacity in the room
 def add_weekly_schedule_for_employee(id, input_file):
+    import logging
+    logging.basicConfig(filename='myapp.log', level=logging.INFO)
+    logging.info('Started')
     if not check_id_of_employee(id):
+        logging.info('Employee doesn't exist in the system')
         return "Employee doesn't exist in the system"
     employee = find_employee(id)
     employee_permission = get_access_permission_of_employee_by_id(id)

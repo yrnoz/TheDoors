@@ -57,56 +57,54 @@
             *margin-left: .3em;
         }
 
-         .btn-primary-go_back {
-        background-color: #555555;
-        background-image: -moz-linear-gradient(top, #555555, #555555);
-        background-image: -ms-linear-gradient(top, #555555, #555555);
-        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#555555));
-        background-image: -webkit-linear-gradient(top, #555555, #555555);
-        background-image: -o-linear-gradient(top, #555555, #555555);
-        background-image: linear-gradient(top, #555555, #555555);
-        background-repeat: repeat-x;
-        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#555555, endColorstr=#555555, GradientType=0);
-        border: 1px solid #f44336;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
-        background-image: url({{ url_for('static' , filename='goback_picture.png') }});
+        .btn-primary-go_back {
+            background-color: #555555;
+            background-image: -moz-linear-gradient(top, #555555, #555555);
+            background-image: -ms-linear-gradient(top, #555555, #555555);
+            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#555555));
+            background-image: -webkit-linear-gradient(top, #555555, #555555);
+            background-image: -o-linear-gradient(top, #555555, #555555);
+            background-image: linear-gradient(top, #555555, #555555);
+            background-repeat: repeat-x;
+            filter: progid:dximagetransform.microsoft.gradient(startColorstr=#555555, endColorstr=#555555, GradientType=0);
+            border: 1px solid #f44336;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
+            background-image: url({{ url_for('static' , filename='goback_picture.png') }});
 
+            margin-left: 200px;
+            margin-top: 110px;
+        }
 
-        margin-left: 200px;
-        margin-top: 110px;
-    }
-    .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
-        filter: none;
-        background-color: #f44336;
-        border: 5px solid #f44336;
-    }
+        .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
+            filter: none;
+            background-color: #f44336;
+            border: 5px solid #f44336;
+        }
 
-    .btn-primary-go_back:active {
-        filter: none;
-        background-color: #f44336;
-    }
+        .btn-primary-go_back:active {
+            filter: none;
+            background-color: #f44336;
+        }
 
-     .btn-large-goback {
-        padding: 25px 50px;
-        font-size: 15px;
-        line-height: normal;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-    }
+        .btn-large-goback {
+            padding: 25px 50px;
+            font-size: 15px;
+            line-height: normal;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
 
-    .go_back {
-        color: #fff;
-        <!--background-image: url("goback_picture.png");-->
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        letter-spacing: 1px;
-        position: absolute;
-        top: 85%;
-        margin: 100px 0 0 -450px;
-    }
-
-
+        .go_back {
+            color: #fff;
+        <!-- background-image: url("goback_picture.png");
+        --> text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            position: absolute;
+            top: 85%;
+            margin: 100px 0 0 -450px;
+        }
 
         .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] {
             background-color: #e6e6e6;
@@ -282,48 +280,54 @@
     {% extends "base.html" %}
     {% block content %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
 
-</head>
-<body>
+        </head>
+        <body>
 
 
-<div class="container">
-    <h2>Add Weekly Schedule</h2>
+        <div class="container">
+            <h2>Add Weekly Schedule</h2>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <h3> {{ message }}</h3>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <!--<div class="spacer_button"></div>-->
+            <form method="post" action="{{ url_for('upload_weekly_schedule') }}" enctype="multipart/form-data">
+                <!--<div class="file-loading">-->
+                <input id="file" type="file" name="file" placeholder="Username" required="required"/>
+                <!--</div>-->
 
-    <!--<div class="spacer_button"></div>-->
-    <form method="post">
-        <!--<div class="file-loading">-->
-        <input id="input-20" type="file">
+                <!--<span class='label label-info' id="upload-file-info"></span>-->
+                <!--<div class="spacer_schedule"></div>-->
+                <!--<div class="col-xs-6 text-right">-->
+                <!--<button type="button" class="btn btn-schedule">Schedule</button>-->
+                <button type="submit" class="btn btn-primary btn-block btn-large">Schedule</button>
+                <!--</div>-->
+            </form>
+            </br>
+
+            <!--<div class="spacer_result"></div>-->
+
+            <div class="well-wider well">The recommendation will be </br> shown here.</div>
+            <br/>
+            <br/>
+            <br/>
+            <div class="go_back">
+                <a href="{{ url_for('userInterface') }}">
+                    <button type="button" class="btn-primary-go_back btn-large-goback"></button>
+                </a>
+            </div>
+        </div>
         <!--</div>-->
 
-        <!--<span class='label label-info' id="upload-file-info"></span>-->
-        <!--<div class="spacer_schedule"></div>-->
-        <!--<div class="col-xs-6 text-right">-->
-        <!--<button type="button" class="btn btn-schedule">Schedule</button>-->
-        <button type="submit" class="btn btn-primary btn-block btn-large">Schedule</button>
-        <!--</div>-->
-    </form>
-    </br>
 
-    <!--<div class="spacer_result"></div>-->
-
-    <div class="well-wider well">The recommendation will </br> showed here.</div>
-    <br/>
-    <br/>
-    <br/>
-    <div class="go_back">
-    <a href="{{ url_for('userInterface') }}">
-        <button type="button" class="btn-primary-go_back btn-large-goback"></button>
-    </a>
-    </div>
-</div>
-<!--</div>-->
-
-
-</body>
-{% endblock %}
+        </body>
+    {% endblock %}
 
 </html>
 
