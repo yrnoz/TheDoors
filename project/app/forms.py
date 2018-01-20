@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Selec
 from wtforms.validators import DataRequired
 
 
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -10,8 +11,8 @@ class LoginForm(FlaskForm):
 
 
 class EmployeeSearchForm(FlaskForm):
-    search = StringField('search id', validators=[DataRequired()])
-    submit_button_search = SubmitField('Search')
+    search = StringField('search room or user id', validators=[DataRequired()])
+    submit_employee_search = SubmitField('Search')
 
 
 class EmployeeUpdateForm(FlaskForm):
@@ -23,13 +24,13 @@ class EmployeeUpdateForm(FlaskForm):
 
 
 class EmployeeDeleteForm(FlaskForm):
-    user_id = StringField('id')
+    search = StringField('search room or user id')
     submit_button_delete = SubmitField('Delete')
 
 
 class RoomSearchForm(FlaskForm):
     search = StringField('search id', validators=[DataRequired()])
-    submit_button_search = SubmitField('Search')
+    submit_room_search = SubmitField('Search')
 
 
 class RoomUpdateForm(FlaskForm):
@@ -60,3 +61,19 @@ class exportRoomForm(FlaskForm):  # tod
 
 class exportEmployeeForm(FlaskForm):  # tod
     submit_employee = SubmitField('Employee csv')
+
+
+class selectRoom(FlaskForm):
+    rooms = SelectField(
+        'Room id',
+        choices=[]
+    )
+    submit = SubmitField('Submit')
+
+
+class selectEmplyee(FlaskForm):
+    ids = SelectField(
+        'User id',
+        choices=[]
+    )
+    submit = SubmitField('Submit')

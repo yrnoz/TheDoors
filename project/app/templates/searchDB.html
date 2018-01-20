@@ -53,6 +53,55 @@
         *margin-left: .3em;
     }
 
+    .btn-primary-go_back {
+        background-color: #555555;
+        background-image: -moz-linear-gradient(top, #555555, #555555);
+        background-image: -ms-linear-gradient(top, #555555, #555555);
+        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#555555));
+        background-image: -webkit-linear-gradient(top, #555555, #555555);
+        background-image: -o-linear-gradient(top, #555555, #555555);
+        background-image: linear-gradient(top, #555555, #555555);
+        background-repeat: repeat-x;
+        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#555555, endColorstr=#555555, GradientType=0);
+        border: 1px solid #f44336;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
+        background-image: url({{ url_for('static' , filename='goback_picture.png') }});
+
+
+        margin-left: 200px;
+        margin-top: 110px;
+    }
+    .btn-primary-go_back:hover, .btn-primary-go_back.disabled, .btn-primary-go_back[disabled] {
+        filter: none;
+        background-color: #f44336;
+        border: 5px solid #f44336;
+    }
+
+    .btn-primary-go_back:active {
+        filter: none;
+        background-color: #f44336;
+    }
+
+     .btn-large-goback {
+        padding: 25px 50px;
+        font-size: 15px;
+        line-height: normal;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+    }
+
+    .go_back {
+        color: #fff;
+        <!--background-image: url("goback_picture.png");-->
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        letter-spacing: 1px;
+        position: absolute;
+        top: 85%;
+        margin: 100px 0 0 -450px;
+    }
+
     .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] {
         background-color: #e6e6e6;
     }
@@ -159,7 +208,7 @@
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
     }
 
-    .editRooms {
+    .editEmployees {
         position: absolute;
         top: 30%;
         left: 50%;
@@ -168,15 +217,14 @@
         height: 300px;
     }
 
-    .editRooms h1 {
+    .editEmployees h1 {
         color: #fff;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
         text-align: center;
     }
-
     .white-text {
-        color: #ffffff;
+       color: #ffffff;
     }
 
     .black-text {
@@ -206,11 +254,10 @@
     input:focus {
         box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
     }
-
-
 </style>
 {% extends "base.html" %}
 {% block content %}
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
@@ -218,48 +265,45 @@
 
 <body>
 
-<div class="editRooms">
-    <h1>Update Rooms</h1>
+<div class="editEmployees">
+    <h1>Search</h1>
+
+    <form method="post" action="{{url_for('searchData')}}">
+        {{ search.hidden_tag() }}
+        {{ search.csrf_token }}
 
 
-
-        <form method="post" action="{{url_for('editEmployees')}}">
-       {{ form_update.hidden_tag() }}
-        {{ form_update.csrf_token }}
-          <div class="white-text">
-            {% if data %}
-
-
-            </br>
-
-            <p>ID ({{data.user_id}}):{{form_update.user_id}} </p>
-            <p>Username ({{data.username}}):{{form_update.username}}</p>
-            <p>Role ({{data.role}}):{{form_update.role}}</p>
-            <p>Permission ({{data.access_permission}}):{{form_update.permission}}</p>
+        <p class="white-text">
+            {{ search.search.label }}<br>
+            {{ search.search(size=32) }}<br>
+        </p>
+        <div class="btn btn-primary btn-block btn-large">
+            {{ search.submit_employee_search() }}
+        </div>
+         <div class="white-text">
+            {% if employee %}
+             User id:
+             <input value="{{employee.user_id}}" readonly="readonly"/>
+             User Name:
+             <input value="{{employee.username}}" readonly="readonly"/>
+             User Role:
+             <input value="{{employee.role}}" readonly="readonly"/>
+             User Permission:
+             <input value="{{employee.access_permission}}" readonly="readonly"/>
 
             {% endif %}
-            {% if not data %}
+                {% if room %}
 
-            User ID: <p class="white-text">
-            {{form_update.user_id}}
-           </p>
+             Room id:
+             <input value="{{room.room_id}}" readonly="readonly"/>
+             Room Floor:
+             <input value="{{room.floor}}" readonly="readonly"/>
+             Room Capacity:
+             <input value="{{room.maxCapacity}}" readonly="readonly"/>
+             Room Permission:
+             <input value="{{room.access_permission}}" readonly="readonly"/>
 
-            Username: <p class="white-text">
-            {{form_update.username}}
-            </p>
-
-            Role: <p class="white-text">
-            {{form_update.role}}
-            </p>
-
-            Permission: <p class="white-text">
-            {{form_update.permission}}
-            </p>
-        </div>
-
-        {% endif %}
-        <div class="btn btn-primary btn-block btn-large">
-            {{ form_update.submit_button_update() }}
+            {% endif %}
         </div>
     </form>
 
@@ -271,8 +315,8 @@
     <a href="{{url_for('editDB')}}">
         <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
     </a>
-
 </div>
+
 </body>
 {% endblock %}
 </html>
