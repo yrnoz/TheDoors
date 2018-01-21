@@ -116,6 +116,14 @@ def show_rooms_page():
                      + str(room.floor) + "\n")
     return list_rooms
 
+def show_employee_page():
+    global Employees
+    list_employees =[]
+    for employee in Employees.objects():
+        list_employees.append(str(employee.user_id) + "," + employee.username + "," + employee.role + ","
+                     + str(employee.access_permission) + "," + employee.password + "\n")
+    return list_employees
+
 
 #######################################################################################
 

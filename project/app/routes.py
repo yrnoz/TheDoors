@@ -384,13 +384,20 @@ def deleteDB():
     return render_template('deleteDB.html', title='userInterface', search=search)
 
 
-@app.route('/show_all_db', methods=['GET', 'POST'])
+@app.route('/show_all_db_rooms', methods=['GET', 'POST'])
 @login_required
-def show_all_db():
+def show_all_db_rooms():
     search=show_rooms_page()
     print "***********************************************************"
     print search
-    return render_template('show_all_db.html', search=search)
+    return render_template('show_all_db_rooms.html', search=search)
+
+@app.route('/show_all_db_employee', methods=['GET', 'POST'])
+@login_required
+def show_all_db_employee():
+    search=show_employee_page()
+    return render_template('show_all_db_employee.html', search=search)
+
 
 
 @app.route('/room_recommendation_page', methods=['GET', 'POST'])
