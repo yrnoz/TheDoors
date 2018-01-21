@@ -1,9 +1,10 @@
 import subprocess
 # import client as client
 import os
+
+from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, session, send_from_directory
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.datastructures import FileStorage
 
 from config import Config
 from app import app, db
@@ -12,6 +13,11 @@ from app.forms import *
 from app.models import User, Room, Schedule
 
 flag = 0
+
+Dict_hours = {'8:00': 1, '9:00': 2, '10:00': 3, '11:00': 4, '12:00': 5,
+              '13:00': 6, '14:00': 7, '15:00': 8, '16:00': 9, '17:00': 10, '18:00': 11,
+              '19:00': 12, '20:00': 13,
+              '21:00': 14}
 
 
 @app.route('/logout')
@@ -44,7 +50,7 @@ def login():
             if user is not None:
                 if user.password == form.password.data:
                     login_user(user)
-                    if user.access_permission == 100:
+                    if user.access_permission == 0:
                         return redirect(url_for('managerInterface'))
                     else:
                         return redirect(url_for('userInterface'))
@@ -186,27 +192,28 @@ def cmp_room(room1, room2):
 
 def form_room_recommend(form_recommend):
     recommendedList = []
-    start_time = form_recommend.start_time.data
-    end_time = form_recommend.end_time.data
-    print("end time: " + str(end_time) + 'start time: ' + str(start_time))
-
+    start_time = Dict_hours[form_recommend.start_time.data]
+    end_time = Dict_hours[form_recommend.end_time.data]
+    date_time = datetime.now()
+    print(end_time)
+    list_time = []
+    for hour in range(start_time, end_time + 1):
+        list_time.append(date_time.replace(hour=hour + 7).strftime("%d/%m/%y %H"))
+    print(str(list_time))
     rooms = [room for room in Room.objects() if room.access_permission <= current_user.access_permission]
-    print('user permisssin = ' + str(current_user.access_permission) + 'name: ' + current_user.username)
-    print (rooms)
     for room in rooms:
         schedule_date_time = Schedule()
         if not room.schedules:
             recommendedList.append(((room.room_id, room.floor), room.maxCapacity))
         else:
             for schedule in room.schedules:
-                if schedule.date == form_recommend.date and schedule.time == form_recommend.start_time:
+                if schedule.date == form_recommend.date and schedule.time == start_time:
                     schedule_date_time = schedule
                     break
             if 1 <= room.maxCapacity - schedule_date_time.occupancy:
                 recommendedList.append((room.room_id, room.floor), room.maxCapacity - schedule_date_time.occupancy)
     recommendedList = sorted(recommendedList, cmp=cmp_room)
     recommendedList = recommendedList[:7]
-    print(recommendedList)
 
     return render_template('room_recommendation_page.html',
                            output=recommendedList, form_recommend=form_recommend)
@@ -450,10 +457,10 @@ def room_recommendation_page():
 @app.route('/room_reccomendation', methods=['GET', 'POST'])
 @login_required
 def room_reccomendation():
-    print("enter!!!!!!!!!!!!!!!!!!!!")
     form_recommend = roomRecommendationPage()
     if form_recommend.validate():
-        print("ssssssssssssssssssss!!!!!!!!!!!!!!!!!!!!")
+        if Dict_hours[form_recommend.start_time.data] >= Dict_hours[form_recommend.end_time.data]:
+            flash('start and end time are invalid')
+            return render_template('room_recommendation_page.html', form_recommend=form_recommend)
         return form_room_recommend(form_recommend)
-
     return render_template('room_recommendation_page.html', form_recommend=form_recommend)
