@@ -203,7 +203,6 @@ def get_valid_rooms(orderer_permission, date, num_hours=1, num_employees=1):
     # Rooms.objects((Q(access_permission__lte=orderer_permission) & Q(maxCapacity__gte=(o)))
 
 
-########## ELYASAG: PROBLEMATIC CODE########################
 def add_weekly_schedule_employee(employee_id, room_id, date, time=1):
     assert check_id_of_employee(employee_id)
     logging.info('in add weekly schedule for employee %s' % employee_id)
@@ -214,7 +213,7 @@ def add_weekly_schedule_employee(employee_id, room_id, date, time=1):
     logging.info('in add weekly schedule for employee %s after updating schedule' % employee_id)
     if not updated:
         logging.info('in add weekly schedule for employee %s new schedule' % employee_id)
-        Employees.objects(Q(user_id=employee_id)).update_one(schedules=[sched])  # ELYASAF: MORE SPECIFICALLY THIS
+        Employees.objects(Q(user_id=employee_id)).update_one(push__schedules=sched)
         logging.info('in add weekly schedule for employee %s new schedule finish' % employee_id)
 
 
@@ -227,8 +226,8 @@ def add_weekly_schedule_room(room_id, date, employees_ids, time=1):
     new_sched = None
     if old_scheds:
         logging.info('in add weekly schedule old sched not empty')
-        new_sched = Schedule(room_id=room_id, date=date, occupancy=len(employees_ids) + len(old_scheds[0].employees_id),
-                             employees_id=employees_ids + old_scheds[0].employees_id, time=time)
+        new_sched = Schedule(room_id=room_id, date=date, occupancy=len(set(employees_ids + old_scheds[0].employees_id)),
+                             employees_id=set(employees_ids + old_scheds[0].employees_id), time=time)
     else:
         logging.info('in add weekly schedule old sched is empty')
         new_sched = Schedule(room_id=room_id, date=date, occupancy=len(employees_ids), employees_id=employees_ids,

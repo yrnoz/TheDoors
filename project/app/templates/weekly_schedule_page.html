@@ -289,13 +289,13 @@
 
         <div class="container">
             <h2>Add Weekly Schedule</h2>
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <h3> {{ message }}</h3>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+            {#            {% with messages = get_flashed_messages() %}#}
+            {#                {% if messages %}#}
+            {#                    {% for message in messages %}#}
+            {#                        <h3> {{ message }}</h3>#}
+            {#                    {% endfor %}#}
+            {#                {% endif %}#}
+            {#            {% endwith %}#}
             <!--<div class="spacer_button"></div>-->
             <form method="post" action="{{ url_for('upload_weekly_schedule') }}" enctype="multipart/form-data">
                 <!--<div class="file-loading">-->
