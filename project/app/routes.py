@@ -105,7 +105,8 @@ def upload_weekly_schedule():
 @app.route('/weekly_schedule_page', methods=['GET', 'POST'])
 @login_required
 def weekly_schedule_page():
-    return render_template('weekly_schedule_page.html', title='userInterface')
+    return render_template('weekly_schedule_page.html', title='userInterface',
+                           output=User.objects.get(user_id=session['user_id']).schedules)
 
 
 @app.route('/editEmployeesByThem', methods=['GET', 'POST'])
@@ -199,8 +200,8 @@ def add_sched(rooms, date_time):
         if room.room_id == 'taub 3':
             room.schedules.append(
                 Schedule(date=date_time.replace(hour=12).strftime("%d/%m/%y %H"), occupancy=room.maxCapacity))
-    # for room in rooms:
-    #     room.schedules.append(Schedule())
+            # for room in rooms:
+            #     room.schedules.append(Schedule())
 
 
 def form_room_recommend(form_recommend):

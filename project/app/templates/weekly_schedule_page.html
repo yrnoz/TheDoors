@@ -276,6 +276,9 @@
             box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
+        .table-fit {
+            width: 1px;
+        }
     </style>
     {% extends "base.html" %}
     {% block content %}
@@ -285,8 +288,6 @@
 
         </head>
         <body>
-
-
         <div class="container">
             <h2>Add Weekly Schedule</h2>
             {#            {% with messages = get_flashed_messages() %}#}
@@ -310,22 +311,42 @@
                 <!--</div>-->
             </form>
             </br>
-
-            <!--<div class="spacer_result"></div>-->
-
-            <div class="well-wider well">The recommendation will be </br> shown here.</div>
-            <br/>
-            <br/>
-            <br/>
-            <div class="go_back">
-                <a href="{{ url_for('userInterface') }}">
-                    <button type="button" class="btn-primary-go_back btn-large-goback"></button>
-                </a>
+            <div class="well-wider well">
+                <table id="weekly_schedule" class="table">
+                    <tbody>
+                    <tr>
+                        <th>Date</th>
+                        <th>Length in hours</th>
+                        <th>Room ID</th>
+                        <th>Invited Employees</th>
+                    </tr>
+                    {% if output %}
+                        {% for schedule in output %}
+                            <tr>
+                                <td>{{ schedule.date }}</td>
+                                <td>{{ schedule.time }}</td>
+                                <td>{{ schedule.room_id }}</td>
+                                {% if schedule.employees_id %}
+                                    <td>{{ schedule.employees_id }}</td>
+                                {% else %}
+                                    <td>{{ '' }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+                <br/>
+                <br/>
+                <br/>
+                <div class="go_back">
+                    <a href="{{ url_for('userInterface') }}">
+                        <button type="button" class="btn-primary-go_back btn-large-goback"></button>
+                    </a>
+                </div>
             </div>
+
         </div>
-        <!--</div>-->
-
-
         </body>
     {% endblock %}
 
