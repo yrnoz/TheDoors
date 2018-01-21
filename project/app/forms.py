@@ -77,3 +77,13 @@ class selectEmplyee(FlaskForm):
         choices=[]
     )
     submit = SubmitField('Submit')
+
+
+
+class changePass(FlaskForm):
+    old_pass = PasswordField('Previous password', validators=[DataRequired()])
+    password = PasswordField('New Password:', validators=[DataRequired()])
+    again = PasswordField(' New password again:', validators=[DataRequired()])
+    submit = SubmitField('Edit')
+
+

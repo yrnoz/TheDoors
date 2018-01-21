@@ -289,7 +289,20 @@ def user_add_friends():
 @app.route('/changePassword', methods=['GET', 'POST'])
 @login_required
 def changePassword():
-    return render_template('changePassword.html', title='editEmployeesByThem')
+    pass_form = changePass()
+    if pass_form.validate_on_submit():
+        user = User.objects.get(user_id=current_user.user_id)
+        print('curr pass: ' + str(user.password) + ' old pass:  ' + str(pass_form.old_pass.data) + ' new pass:  ' + str(
+            pass_form.password.data))
+        if user.password != pass_form.old_pass.data:
+            flash('Wrong password')
+        elif pass_form.password.data == pass_form.again.data:
+            user.password = pass_form.password.data
+            user.save()
+            flash('Success')
+        else:
+            flash('Wrong again password')
+    return render_template('changePassword.html', title='editEmployeesByThem', pass_form=pass_form)
 
 
 #########################################edit rooms functions######################################################
