@@ -17,6 +17,8 @@ flag = 0
 @app.route('/logout')
 def logout():
     logout_user()
+    export_rooms_to_file('rooms_test.csv')
+    export_employees_to_file('employees_test.csv')
     return redirect(url_for('login'))
 
 
@@ -54,7 +56,7 @@ def login():
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('login.html', title='Home')
+    return redirect(url_for('login'))
 
 
 @app.route('/userInterface', methods=['GET', 'POST'])
