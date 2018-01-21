@@ -41,7 +41,7 @@ def import_employees_from_file(input_file):
             id, name, role, permission, password = line[:-1].split(",")  # get the parameters we need from the line
             if (int(permission) < 0) or (int(permission) <= man_permission and role != "Manager"):
                 continue
-            user = User(id=id,
+            user = User(user_id=id,
                         username=name,
                         password=password,
                         role=role, access_permission=permission,

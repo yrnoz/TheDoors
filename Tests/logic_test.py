@@ -6,7 +6,7 @@ from App.AddWeeklySchedule import add_weekly_schedule_for_employee
 from App.AddWeeklySchedule import delete_weekly_schedule
 from App.Room import Room
 from App.RoomReccomendations import initialize_employee_from_dict, \
-    emptyRooms, recommend_by_friends
+    emptyRooms, recommend_by_friends, reccomendationToEmployeeByRoom
 from App.SimulationEngine import mainTest
 from Database.ManageDB import *
 from App.Employee import *
@@ -278,9 +278,6 @@ def print_friends():
         print "friends of {} id-{}:".format(employee["name"], employee["id"]) + str(employee["friends"])
 
 
-@pytest.mark.skip(reason="not relevant for now")
-def test_reccomendationToEmployeeByRoom():
-    pass
 
 
 @pytest.mark.skip(reason="fix it")
@@ -305,10 +302,6 @@ def test_emptyRooms():
     x = emptyRooms(koby, "24/07/17 12")
     assert emptyRooms(koby, "24/07/17 12") == {"taub 4": 5}
 
-
-@pytest.mark.skip(reason="not relevant for now")
-def test_room_with_my_friends():
-    pass
 
 
 def print_employees_db():
@@ -370,45 +363,45 @@ def print_rooms_db():
 #     Employees.drop()
 
 
-# def test_roomRecommendation_no_place_in_rooms():
-#     Rooms.drop()
-#     Employees.drop()
-#     import_employees_from_file("Tests%semployees_test.csv" % os.sep)
-#     # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
-#     koby = Employee(234, 'Koby', 'Engineer', 2)
-#     room1 = Room("taub 1", 0, 0, 3)
-#     room2 = Room("taub 2", 0, 0, 3)
-#     room3 = Room("taub 3", 0, 30, 4)
-#     add_room(room1)
-#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-#     assert len(recommended) == 0
-#     add_room(room2)
-#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-#     assert len(recommended) == 0
-#     add_room(room3)
-#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-#     assert len(recommended) == 1
-#     assert recommended == [room3.id]
-#     Rooms.drop()
-#     Employees.drop()
+def test_roomRecommendation_no_place_in_rooms():
+    Rooms.drop()
+    Employees.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    koby = Employee(234, 'Koby', 'Engineer', 2, 1234)
+    room1 = Room("taub 1", 0, 0, 3)
+    room2 = Room("taub 2", 0, 0, 3)
+    room3 = Room("taub 3", 0, 30, 4)
+    add_room(room1)
+    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+    assert len(recommended) == 0
+    add_room(room2)
+    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+    assert len(recommended) == 0
+    add_room(room3)
+    recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
+    assert len(recommended) == 1
+    assert recommended == [room3.id]
+    Rooms.drop()
+    Employees.drop()
 
 
-# def test_roomRecommendation_many_rooms():
-#     Rooms.drop()
-#     Employees.drop()
-#     import_employees_from_file("Tests%semployees_test.csv" % os.sep)
-#     import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
-#     koby = Employee(234, 'Koby', 'Engineer', 1)
-#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-#     assert len(recommended) == 11
-#     Rooms.drop()
-#     for i in range(500):
-#         room = Room(randomword(7), 0, 30, 2)
-#         add_room(room)
-#     recommended = reccomendationToEmployeeByRoom(koby, "24/12/17 14")
-#     assert len(recommended) == 500
-#     Rooms.drop()
-#     Employees.drop()
+def test_roomRecommendation_many_rooms():
+    Rooms.drop()
+    Employees.drop()
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
+    koby = Employee(234, 'Koby', 'Engineer', 1, 1234)
+    recommended = reccomendationToEmployeeByRoom(koby)
+    assert len(recommended) == 11
+    Rooms.drop()
+    for i in range(500):
+        room = Room(randomword(7), 0, 30, 2)
+        add_room(room)
+    recommended = reccomendationToEmployeeByRoom(koby, "27/2/18 14")
+    assert len(recommended) == 500
+    Rooms.drop()
+    Employees.drop()
 
 
 def create_friend_relationship():
@@ -419,7 +412,6 @@ def create_friend_relationship():
             friend = initialize_employee_from_dict(employee)
             if employee.id != friend.id:
                 employee.add_friends(list(friend.id))
-
 
 @pytest.mark.skip(reason="not relevant for now")
 def test_recommend_by_friends():
@@ -439,3 +431,6 @@ def test_sim_engine():
 
 if __name__ == '__main__':
     test_weekly_schedule2()
+    test_roomRecommendation_many_rooms()
+    test_recommend_by_friends()
+    test_roomRecommendation_no_place_in_rooms()

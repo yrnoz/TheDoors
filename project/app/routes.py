@@ -1,9 +1,10 @@
 import subprocess
 # import client as client
 import os
+
+from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, session, send_from_directory
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.datastructures import FileStorage
 
 from config import Config
 from app import app, db
@@ -13,10 +14,17 @@ from app.models import User, Room, Schedule
 
 flag = 0
 
+Dict_hours = {'8:00': 1, '9:00': 2, '10:00': 3, '11:00': 4, '12:00': 5,
+              '13:00': 6, '14:00': 7, '15:00': 8, '16:00': 9, '17:00': 10, '18:00': 11,
+              '19:00': 12, '20:00': 13,
+              '21:00': 14}
+
 
 @app.route('/logout')
 def logout():
     logout_user()
+    export_rooms_to_file('rooms.csv')
+    export_employees_to_file('employees.csv')
     return redirect(url_for('login'))
 
 
@@ -32,8 +40,8 @@ def login():
         User.drop_collection()
         Room.drop_collection()
 
-        import_employees_from_file('employees_test.csv')
-        import_room_details_from_file('rooms_test.csv')
+        import_employees_from_file('employees.csv')
+        import_room_details_from_file('rooms.csv')
 
         flag = 1
     if form.validate_on_submit():
@@ -42,7 +50,7 @@ def login():
             if user is not None:
                 if user.password == form.password.data:
                     login_user(user)
-                    if user.access_permission == 100:
+                    if user.access_permission == 0:
                         return redirect(url_for('managerInterface'))
                     else:
                         return redirect(url_for('userInterface'))
@@ -54,7 +62,7 @@ def login():
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('login.html', title='Home')
+    return redirect(url_for('login'))
 
 
 @app.route('/userInterface', methods=['GET', 'POST'])
@@ -164,8 +172,6 @@ def upload_rooms():
     save_path = os.path.join(Config.UPLOAD_DIR, newfile.filename)
     newfile.save(save_path)
     try:
-        print str(Config.UPLOAD_DIR)
-        print str(newfile.filename)
         import_room_details_from_file(str(Config.UPLOAD_DIR + newfile.filename))
 
     except Exception as e:
@@ -182,30 +188,50 @@ def cmp_room(room1, room2):
     return room2[1] - room1[1]
 
 
+def add_sched(rooms, date_time):
+    for room in rooms:
+        if room.room_id == 'taub 1':
+            room.schedules.append(
+                Schedule(date=date_time.replace(hour=10).strftime("%d/%m/%y %H"), occupancy=room.maxCapacity))
+        if room.room_id == 'taub 2':
+            room.schedules.append(
+                Schedule(date=date_time.replace(hour=11).strftime("%d/%m/%y %H"), occupancy=room.maxCapacity))
+        if room.room_id == 'taub 3':
+            room.schedules.append(
+                Schedule(date=date_time.replace(hour=12).strftime("%d/%m/%y %H"), occupancy=room.maxCapacity))
+    # for room in rooms:
+    #     room.schedules.append(Schedule())
+
+
 def form_room_recommend(form_recommend):
     recommendedList = []
-    start_time = form_recommend.start_time.data
-    end_time = form_recommend.end_time.data
-    print("end time: " + str(end_time) + 'start time: ' + str(start_time))
-
+    start_time = Dict_hours[form_recommend.start_time.data]
+    end_time = Dict_hours[form_recommend.end_time.data]
+    for_hours = end_time - start_time
+    date_time = datetime.now()
+    list_time = []
+    for hour in range(start_time, end_time):
+        list_time.append(date_time.replace(hour=hour + 7).strftime("%d/%m/%y %H"))
     rooms = [room for room in Room.objects() if room.access_permission <= current_user.access_permission]
-    print('user permisssin = ' + str(current_user.access_permission) + 'name: ' + current_user.username)
-    print (rooms)
+    add_sched(rooms, date_time)
+
     for room in rooms:
-        schedule_date_time = Schedule()
         if not room.schedules:
             recommendedList.append(((room.room_id, room.floor), room.maxCapacity))
         else:
             for schedule in room.schedules:
-                if schedule.date == form_recommend.date and schedule.time == form_recommend.start_time:
-                    schedule_date_time = schedule
-                    break
-            if 1 <= room.maxCapacity - schedule_date_time.occupancy:
-                recommendedList.append((room.room_id, room.floor), room.maxCapacity - schedule_date_time.occupancy)
+                count = 0
+                factor = 0
+                for date in list_time:
+                    if schedule.date != date or (1 <= (room.maxCapacity) - int(
+                            schedule.occupancy) and schedule.date == date):
+                        count += 1
+                        factor += room.maxCapacity - schedule.occupancy
+
+                if count == for_hours:
+                    recommendedList.append(((room.room_id, room.floor), factor))
     recommendedList = sorted(recommendedList, cmp=cmp_room)
     recommendedList = recommendedList[:7]
-    print(recommendedList)
-
     return render_template('room_recommendation_page.html',
                            output=recommendedList, form_recommend=form_recommend)
 
@@ -219,7 +245,6 @@ def searchData():
     employee = None
     room = None
     if search.validate_on_submit():
-        print("search {}".format(search.search.data))
         try:
             employee = User.objects.get(user_id=search.search.data)
         except:
@@ -231,6 +256,29 @@ def searchData():
                            employee=employee, room=room)
 
 
+@app.route('/addEmployee', methods=['GET', 'POST'])
+@login_required
+def addEmployee():
+    form_add = EmployeeAddForm()
+
+    user = None
+    if form_add.validate_on_submit():
+        try:
+            user = User(user_id=form_add.user_id.data,
+                        username=form_add.username.data,
+                        password=form_add.password.data,
+                        role=form_add.role.data,
+                        access_permission=form_add.permission.data, )
+            user.save()
+            user = User.objects.get(user_id=form_add.user_id.data)
+            flash("Adding Success")
+        except:
+            flash("Adding Fail\n maybe missing data")
+
+    return render_template('addEmployee.html',
+                           form_add=form_add, data=user)
+
+
 @app.route('/updateEmployees', methods=['GET', 'POST'])
 @login_required
 def updateEmployees():
@@ -240,10 +288,7 @@ def updateEmployees():
     user = None
 
     if form_update.validate_on_submit():
-        print("in update {} {} {} {}".format(form_update.user_id.data, form_update.permission.data,
-                                             form_update.username.data,
-                                             form_update.role.data))
-        print("update {}".format(form_update.user_id.data))
+
         try:
             user = User.objects.get(user_id=form_update.user_id.data)
             user.update(username=form_update.username.data, access_permission=form_update.permission.data,
@@ -264,7 +309,6 @@ def updateEmployees():
 def deleteData():
     search = EmployeeDeleteForm()
     if search.validate_on_submit():
-        print("delete {}".format(search.search.data))
         try:
             user = User.objects.get(user_id=search.search.data)
             user.delete()
@@ -292,8 +336,7 @@ def changePassword():
     pass_form = changePass()
     if pass_form.validate_on_submit():
         user = User.objects.get(user_id=current_user.user_id)
-        print('curr pass: ' + str(user.password) + ' old pass:  ' + str(pass_form.old_pass.data) + ' new pass:  ' + str(
-            pass_form.password.data))
+
         if user.password != pass_form.old_pass.data:
             flash('Wrong password')
         elif pass_form.password.data == pass_form.again.data:
@@ -306,7 +349,6 @@ def changePassword():
 
 
 #########################################edit rooms functions######################################################
-
 
 
 @app.route('/addRoom', methods=['GET', 'POST'])
@@ -330,10 +372,8 @@ def addRoom():
     return render_template('addRoom.html',
                            form_add=form_add, data=room)
 
-    print(str(select.rooms.choices))
     return render_template('addRoom.html', select=select,
                            form_add=form_add)
-
 
 
 @app.route('/editRooms', methods=['GET', 'POST'])
@@ -356,7 +396,6 @@ def editRooms():
     return render_template('editRooms.html',
                            form_update=form_update, data=room)
 
-    print(str(select.rooms.choices))
     return render_template('editRooms.html', select=select,
                            form_update=form_update)
 
@@ -370,8 +409,10 @@ def editEmployees():
     if form_update.validate_on_submit():
         try:
             user = User.objects.get(user_id=form_update.user_id.data)
+
             user.update(username=form_update.username.data, access_permission=form_update.permission.data,
                         role=form_update.role.data)
+
             user.save()
             user = User.objects.get(user_id=form_update.user_id.data)
             flash("update Success")
@@ -381,7 +422,6 @@ def editEmployees():
     return render_template('editEmployees.html',
                            form_update=form_update, data=user)
 
-    print(str(select.rooms.choices))
     return render_template('editEmployees.html', select=select,
                            form_update=form_update)
 
@@ -446,8 +486,6 @@ def deleteDB():
 @login_required
 def show_all_db_rooms():
     search = show_rooms_page()
-    print "***********************************************************"
-    print search
     return render_template('show_all_db_rooms.html', search=search)
 
 
@@ -476,10 +514,10 @@ def room_recommendation_page():
 @app.route('/room_reccomendation', methods=['GET', 'POST'])
 @login_required
 def room_reccomendation():
-    print("enter!!!!!!!!!!!!!!!!!!!!")
     form_recommend = roomRecommendationPage()
     if form_recommend.validate():
-        print("ssssssssssssssssssss!!!!!!!!!!!!!!!!!!!!")
+        if Dict_hours[form_recommend.start_time.data] >= Dict_hours[form_recommend.end_time.data]:
+            flash('start and end time are invalid')
+            return render_template('room_recommendation_page.html', form_recommend=form_recommend)
         return form_room_recommend(form_recommend)
-
     return render_template('room_recommendation_page.html', form_recommend=form_recommend)

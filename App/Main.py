@@ -93,7 +93,7 @@ if __name__ == "__main__":
             break
         elif cmd_args == ['simulation']:
             print 'RUNNING SIMULATION'
-            simulation_day_in_factory(new_rooms_details='rooms_test.csv')
+            simulation_day_in_factory(new_rooms_details='rooms_demo.csv')
         elif len(cmd_args) > 1 and cmd_args[0] in cmd_dict.keys():
             cmd, args = cmd_args
             try:

@@ -2,9 +2,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, IntegerField, DateTimeField
 from wtforms.validators import DataRequired
 
-TIME_HOUR = [('1', '8:00'), ('2', '9:00'), ('3','10:00'), ('4', '11:00'), ('4', '11:00'), ('5', '12:00'), ('6', '13:00'),
-             ('7', '14:00'), ('8', '15:00'), ('9', '16:00'), ('10', '17:00'), ('11', '18:00'), ('12', '19:00'), ('13', '20:00'),
-             ('12', '21:00')]
+TIME_HOUR = [('8:00', '8:00'), ('9:00', '9:00'), ('10:00', '10:00'), ('11:00', '11:00'), ('12:00', '12:00'),
+             ('13:00', '13:00'),
+             ('14:00', '14:00'), ('15:00', '15:00'), ('16:00', '16:00'), ('17:00', '17:00'), ('18:00', '18:00'),
+             ('19:00', '19:00'), ('20:00', '20:00'),
+             ('21:00', '21:00')]
 
 
 class LoginForm(FlaskForm):
@@ -16,6 +18,15 @@ class LoginForm(FlaskForm):
 class EmployeeSearchForm(FlaskForm):
     search = StringField('search room or user id', validators=[DataRequired()])
     submit_employee_search = SubmitField('Search')
+
+
+class EmployeeAddForm(FlaskForm):
+    user_id = StringField('id', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
+    permission = IntegerField('Permission', validators=[DataRequired()])
+    role = StringField('Role', validators=[DataRequired()])
+    password = StringField('Password', validators=[DataRequired()])
+    submit_button_add = SubmitField('Add')
 
 
 class EmployeeUpdateForm(FlaskForm):
@@ -86,11 +97,8 @@ class selectEmplyee(FlaskForm):
     submit = SubmitField('Submit')
 
 
-
 class changePass(FlaskForm):
     old_pass = PasswordField('Previous password', validators=[DataRequired()])
     password = PasswordField('New Password:', validators=[DataRequired()])
     again = PasswordField(' New password again:', validators=[DataRequired()])
     submit = SubmitField('Edit')
-
-

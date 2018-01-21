@@ -23,7 +23,7 @@
         display: inline-block;
         *display: inline;
         *zoom: 1;
-        padding: 4px 10px 4px;
+        padding: 0px 0px 0px;
         margin-bottom: 0;
         font-size: 13px;
         line-height: 18px;
@@ -52,6 +52,7 @@
         cursor: pointer;
         *margin-left: .3em;
     }
+
 
     .btn-primary-go_back {
         background-color: #555555;
@@ -103,17 +104,18 @@
     }
 
 
+
     .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] {
         background-color: #e6e6e6;
     }
 
     .btn-large {
-        padding: 9px 14px;
-        font-size: 15px;
-        line-height: normal;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
+        padding: 0px 0px;
+        font-size: 5px;
+        line-height: 0px;
+        -webkit-border-radius: 1px;
+        -moz-border-radius: 1px;
+        border-radius: 1px;
     }
 
     .btn:hover {
@@ -152,9 +154,29 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
     }
 
+    .btn-primary-red {
+        background-color: #d40d00;
+        background-image: -moz-linear-gradient(top, #de3729, #d40d00);
+        background-image: -ms-linear-gradient(top, #de3729, #d40d00);
+        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#de3729), to(#d40d00));
+        background-image: -webkit-linear-gradient(top, #de3729, #d40d00);
+        background-image: -o-linear-gradient(top, #de3729, #d40d00);
+        background-image: linear-gradient(top, #de3729, #d40d00);
+        background-repeat: repeat-x;
+        filter: progid:dximagetransform.microsoft.gradient(startColorstr=#de3729, endColorstr=#d40d00, GradientType=0);
+        border: 1px solid #ff0900;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
     .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
         filter: none;
         background-color: #4a77d4;
+    }
+
+    .btn-primary-red:hover, .btn-primary-red:active, .btn-primary-red.active, .btn-primary-red.disabled, .btn-primary-red[disabled] {
+        filter: none;
+        background-color: #ff0900;
     }
 
     .btn-block {
@@ -189,7 +211,7 @@
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
     }
 
-    .editDB {
+    .addEmployee {
         position: absolute;
         top: 30%;
         left: 50%;
@@ -198,16 +220,24 @@
         height: 300px;
     }
 
-    .editDB h1 {
+    .addEmployee h1 {
         color: #fff;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
         text-align: center;
     }
 
+    .white-text {
+        color: #ffffff;
+    }
+
+    .black-text {
+        color: #000000;
+    }
+
     input {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 0px;
         background: rgba(0, 0, 0, 0.3);
         border: none;
         outline: none;
@@ -229,6 +259,7 @@
         box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 
+
 </style>
 {% extends "base.html" %}
 {% block content %}
@@ -239,53 +270,51 @@
 
 <body>
 
-<div class="editDB">
-    <h1>Database </h1>
-    <form method="post">
-          <a href="{{ url_for('searchDB') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Search DB</button>
-        </a>
-        <br/>
-        <a href="{{ url_for('deleteDB') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Delete DB</button>
-        </a>
-        <br/>
-        <a href="{{ url_for('addRoom') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Add Room</button>
-        </a>
-        <br/>
-        <a href="{{ url_for('editRooms') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Edit Rooms</button>
-        </a>
-        <br/>
-        <a href="{{ url_for('addEmployee') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Add Employee</button>
-        </a>
-        <br/>
-        <a href="{{ url_for('editEmployees') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Edit Employees</button>
-        </a>
-        <br/>
-        <a href="{{ url_for('exportTables') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">Export Tables</button>
-        </a>
-        <br/>
-        <a href="{{ url_for('show_all_db') }}">
-            <button type="button" class="btn btn-primary btn-block btn-large">View Tables</button>
-        </a>
+<div class="addEmployee">
+    <h1>Add Employees</h1>
 
+        <form method="post" action="{{url_for('addEmployee')}}">
+        {{ form_add.hidden_tag() }}
+        {{ form_add.csrf_token }}
+          <div class="white-text">
+
+            User ID: <p class="white-text">
+            {{form_add.user_id}}
+           </p>
+
+            Username: <p class="white-text">
+            {{form_add.username}}
+            </p>
+
+            Role: <p class="white-text">
+            {{form_add.role}}
+            </p>
+
+            Permission: <p class="white-text">
+            {{form_add.permission}}
+            </p>
+
+            Password: <p class="white-text">
+            {{form_add.password}}
+            </p>
+        </div>
+
+        <div class="btn btn-primary btn-block btn-large">
+            {{ form_add.submit_button_add() }}
+        </div>
     </form>
+
+
     <br/>
     <br/>
     <br/>
     <div class="go_back">
-    <a href="{{ url_for('managerInterface') }}">
-        <button type="button" class="btn-primary-go_back btn-large-goback"></button>
-    </a>
+        <a href="{{url_for('editDB')}}">
+            <button type="button" class="btn-primary-go_back btn-large-goback"></button>
+        </a>
     </div>
+
 </div>
-
-
 </body>
 {% endblock %}
 </html>
