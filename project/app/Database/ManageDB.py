@@ -116,18 +116,19 @@ def import_room_details_from_file(input_file):
 
 def show_rooms_page():
     global Rooms
-    list_rooms =[]
+    list_rooms = []
     for room in Rooms.objects():
         list_rooms.append(str(room.room_id) + "," + str(room.maxCapacity) + "," + str(room.access_permission) + ","
-                     + str(room.floor) + "\n")
+                          + str(room.floor) + "\n")
     return list_rooms
+
 
 def show_employee_page():
     global Employees
-    list_employees =[]
+    list_employees = []
     for employee in Employees.objects():
         list_employees.append(str(employee.user_id) + "," + employee.username + "," + employee.role + ","
-                     + str(employee.access_permission) + "," + employee.password + "\n")
+                              + str(employee.access_permission) + "," + employee.password + "\n")
     return list_employees
 
 
@@ -171,7 +172,9 @@ def add_weekly_schedule(id, input_file):
                 for _id in guests_ids:
                     add_weekly_schedule_employee(_id, valid_rooms[0],
                                                  date_aux)  # TODO: need a better heuristic to choose room (e.g. least busy, etc)
-            add_weekly_schedule_room(valid_rooms[0])
+                add_weekly_schedule_room(valid_rooms[0], date_aux, [id] + guests_ids)
+            else:
+                add_weekly_schedule_room(valid_rooms[0], date_aux, [id])
     return True
     # anouncments_list = assign_employees_to_room_to_X_hours(date, num_employees, int(duration_hours), employee, id_employee_list, max_capacity)
     # anouncments_string = ""
@@ -216,17 +219,25 @@ def add_weekly_schedule_employee(employee_id, room_id, date, time=1):
 
 
 def add_weekly_schedule_room(room_id, date, employees_ids, time=1):
+    logging.info('in add weekly schedule room id: %s' % room_id)
     assert Rooms.objects(room_id=room_id)
-    old_sched = Rooms.objects(Q(schedules__date=date) & Q(room_id=room_id)).schedules
+    logging.info('in add weekly schedule room id: %s after assert' % room_id)
+    old_scheds = filter(lambda s: s.date == date, Rooms.objects(Q(room_id=room_id)).only('schedules')[0].schedules)
+    logging.info('in add weekly schedule after old_sched')
     new_sched = None
-    if old_sched:
-        new_sched = Schedule(room_id=room_id, date=date, occupancy=len(employees_ids + old_sched[0].employees_id),
-                             employees_ids=old_sched[0].employees_id + employees_ids, time=time)
+    if old_scheds:
+        logging.info('in add weekly schedule old sched not empty')
+        new_sched = Schedule(room_id=room_id, date=date, occupancy=len(employees_ids) + len(old_scheds[0].employees_id),
+                             employees_id=employees_ids + old_scheds[0].employees_id, time=time)
     else:
+        logging.info('in add weekly schedule old sched is empty')
         new_sched = Schedule(room_id=room_id, date=date, occupancy=len(employees_ids), employees_id=employees_ids,
                              time=time)
-    Rooms.objects(Q(schedules__date=date) & Q(room_id=room_id)).update_one(pull__schedules__date=date)
-    Rooms.objects(Q(schedules__date=date) & Q(room_id=room_id)).update_one(push__schedules=new_sched)
+    logging.info('after if else')
+    Rooms.objects(Q(room_id=room_id)).update_one(pull__schedules__date=date)
+    logging.info('pull')
+    Rooms.objects(Q(room_id=room_id)).update_one(push__schedules=new_sched)
+    logging.info('after push')
 
 
 def assign_employees_to_room_one_hour(date_time, room, num_employees, employee, id_employee_list, max_capacity,
