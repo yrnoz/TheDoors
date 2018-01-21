@@ -10,9 +10,7 @@ def load_user(id):
 
 
 class Schedule(EmbeddedDocument):
-    room_id = StringField(max_length=50)
     date = DateTimeField()
-    time = IntField()
     occupancy = IntField()
     employees_id = ListField(StringField(max_length=9))
 
@@ -21,7 +19,6 @@ class Room(Document):
     room_id = StringField(max_length=50, primary_key=True)
     floor = IntField()
     maxCapacity = IntField()
-    # schedules = ListField(Nested(Schedule))
     schedules = EmbeddedDocumentListField(Schedule, default=[])
     access_permission = IntField()
 
