@@ -398,7 +398,10 @@ def show_all_db_employee():
     search=show_employee_page()
     return render_template('show_all_db_employee.html', search=search)
 
-
+@app.route('/show_all_db', methods=['GET', 'POST'])
+@login_required
+def show_all_db():
+    return render_template('show_all_db.html', title='editDB')
 
 @app.route('/room_recommendation_page', methods=['GET', 'POST'])
 @login_required
