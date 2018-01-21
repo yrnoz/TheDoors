@@ -168,6 +168,45 @@ def test_add_friend():
     os.remove(output_file)
 
 
+def test_add_friend():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    add_a_friend_for_employee("498", "123")
+    assert "123" in find_employee("498")["friends"]
+    assert "498" in find_employee("123")["friends"]
+    output_file = "Tests%soutput_test.csv" % os.sep
+    export_employees_to_file(output_file)
+    Employees.drop()
+    os.remove(output_file)
+
+
+def test_get_friends_list():
+    file_name = "Tests%semployees_test.csv" % os.sep
+    # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
+    Employees.drop()
+    import_employees_from_file(file_name)
+    friends_list = get_friends_list("123")
+    assert not friends_list
+    add_a_friend_for_employee("498", "123")
+    assert "123" in find_employee("498")["friends"]
+    assert "498" in find_employee("123")["friends"]
+    friends_list = get_friends_list("123")
+    assert cmp(["Elyasaf"], friends_list) == 0
+    friends_list = get_friends_list("498")
+    assert cmp(["Aviad"], friends_list) == 0
+    delete_a_friend_from_employee("123", "498")
+    friends_list = get_friends_list("123")
+    assert not friends_list
+    friends_list = get_friends_list("498")
+    assert not friends_list
+    output_file = "Tests%soutput_test.csv" % os.sep
+    export_employees_to_file(output_file)
+    Employees.drop()
+    os.remove(output_file)
+
+
 def test_remove_friend():
     file_name = "Tests%semployees_test.csv" % os.sep
     # p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))

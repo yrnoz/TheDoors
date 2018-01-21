@@ -1,15 +1,15 @@
-import os
-
+import subprocess
 # import client as client
-from flask import render_template, flash, redirect, url_for, request, session
-from flask_login import login_user, logout_user, login_required
+import os
+from flask import render_template, flash, redirect, url_for, request, session, send_from_directory
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.datastructures import FileStorage
 
 from config import Config
 from app import app, db
 from app.Database.ManageDB import *
 from app.forms import *
-from app.models import User, Room
+from app.models import User, Room, Schedule
 
 flag = 0
 
@@ -30,6 +30,8 @@ def login():
     global flag
     if flag == 0:
         User.drop_collection()
+        Room.drop_collection()
+
         import_employees_from_file('employees_test.csv')
         import_room_details_from_file('rooms_test.csv')
 
@@ -67,11 +69,30 @@ def managerInterface():
     return render_template('managerInterface.html', title='userInterface')
 
 
-# @app.route('/room_recommendation_page', methods=['GET', 'POST'])
-# @login_required
-# def room_recommendation_page():
-#     return render_template('room_recommendation_page.html', title='userInterface')
-#
+@app.route('/upload_weekly_schedule', methods=['GET', 'POST'])
+def upload_weekly_schedule():
+    if (session['user_id']):
+        flash(session['user_id'])
+    else:
+        flash('what the fuck')
+    # get the 'newfile' field from the form
+    new_file = request.files['file']
+    # only allow upload of text files
+    if new_file.content_type != 'application/vnd.ms-excel':
+        flash('only csv files are allowed!')
+        return redirect(url_for('weekly_schedule_page'))
+    save_path = os.path.join(Config.UPLOAD_DIR, new_file.filename)
+    new_file.save(save_path)
+    try:
+        add_weekly_schedule_for_employee(session['user_id'], Config.UPLOAD_DIR + new_file.filename)
+    except:
+        flash('import file failed, wrong file')
+        return redirect(url_for('weekly_schedule_page'))
+
+    # redirect to home page if it all works ok
+    flash('importing schedule succeeded!')
+    return redirect(url_for('weekly_schedule_page'))
+
 
 @app.route('/weekly_schedule_page', methods=['GET', 'POST'])
 @login_required
@@ -112,7 +133,7 @@ def upload_employees():
 
     # only allow upload of text files
     if newfile.content_type != 'application/vnd.ms-excel':
-        flash('only cssv files')
+        flash('only csv files')
         return redirect(url_for('import_employees'))
 
     save_path = os.path.join(Config.UPLOAD_DIR, newfile.filename)
@@ -157,116 +178,57 @@ def upload_rooms():
     return redirect(url_for('import_rooms'))
 
 
-# @app.route('/editRooms', methods=['GET', 'POST'])
-# @login_required
-# def editRooms():
-#     form_search = RoomSearchForm()
-#     form_update = RoomUpdateForm()
-#     form_delete = RoomDelateForm()
-#     return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-#                            form_update=form_update)
-#
-#
-# def form_room_search_case(form_search, form_update, form_delete):
-#     try:
-#         room = Room.objects.get(room_id=str(form_search.search.data))
-#         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-#                                form_update=form_update, data=room)
-#     except Exception as e:
-#         print  e
-#         flash('room id not exist')
-#         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-#                                form_update=form_update, data=None)
-#
-#
-# def form_room_update_case(form_search, form_update, form_delete):
-#     try:
-#         room = Room.objects.get(room_id=str(form_update.room_id.data))
-#         room.update(room_id=form_update.room_id.data, floor=form_update.floor.data,
-#                     access_permission=form_update.permission.data,
-#                     maxCapacity=form_update.maxCapacity.data)
-#         room.save()
-#         room = Room.objects.get(room_id=form_update.room_id.data)
-#         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-#                                form_update=form_update, data=room)
-#     except Exception as e:
-#         print e
-#         flash('room id not exist')
-#         return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-#                                form_update=form_update, data=None)
-#
-#
-# def form_room_delete_case(form_search, form_update, form_delete):
-#     pass
-#
-#
-# @app.route('/updateRooms', methods=['GET', 'POST'])
-# @login_required
-# def updateRooms():
-#     print "halalaaallllasl"
-#     form_search = RoomSearchForm()
-#     form_update = RoomUpdateForm()
-#     form_delete = RoomDelateForm()
-#     if form_search.validate_on_submit():
-#         return form_room_search_case(form_search, form_update, form_delete)
-#     elif form_update.validate_on_submit():
-#         return form_room_update_case(form_search, form_update, form_delete)
-#     elif form_delete.validate_on_submit():
-#         return form_room_delete_case(form_search, form_update, form_delete)
-#     flash('missing data: ' + str(form_update.errors) + "\n please notice that we edit the room with the given id")
-#     return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-#                            form_update=form_update)
-#
-
-@app.route('/exportTables', methods=['GET', 'POST'])
-@login_required
-def exportTables():
-    return render_template('exportTables.html', title='userInterface')
-
-
-@app.route('/room_recommendation_page', methods=['GET', 'POST'])
-@login_required
-def room_recommendation_page():
-    form_recommend = roomRecommendationPage()
-    if form_recommend.validate_on_submit():
-        return form_room_recommend(form_recommend)
-    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
+def cmp_room(room1, room2):
+    return room2[1] - room1[1]
 
 
 def form_room_recommend(form_recommend):
     recommendedList = []
-    form_recommend = roomRecommendationPage()
-    for room in Rooms.objects.all():
-        if room.access_permission > find_employee(session['user_id']).access_permission:
-            continue
+    start_time = form_recommend.start_time.data
+    end_time = form_recommend.end_time.data
+    print("end time: " + str(end_time) + 'start time: ' + str(start_time))
+
+    rooms = [room for room in Room.objects() if room.access_permission <= current_user.access_permission]
+    print('user permisssin = ' + str(current_user.access_permission) + 'name: ' + current_user.username)
+    print (rooms)
+    for room in rooms:
         schedule_date_time = Schedule()
-        for schedule in room.schedules:
-            if schedule.date == form_recommend.date and schedule.time == form_recommend.start_time:
-                schedule_date_time = schedule
-                break
-        if 1 <= room.maxCapacity - schedule_date_time.occupancy:
-            reccomendedList.append(room.room_id)
-    return render_template('room_recommendation_page.html', output=recommendedList, form_recommend=form_recommend)
+        if not room.schedules:
+            recommendedList.append(((room.room_id, room.floor), room.maxCapacity))
+        else:
+            for schedule in room.schedules:
+                if schedule.date == form_recommend.date and schedule.time == form_recommend.start_time:
+                    schedule_date_time = schedule
+                    break
+            if 1 <= room.maxCapacity - schedule_date_time.occupancy:
+                recommendedList.append((room.room_id, room.floor), room.maxCapacity - schedule_date_time.occupancy)
+    recommendedList = sorted(recommendedList, cmp=cmp_room)
+    recommendedList = recommendedList[:7]
+    print(recommendedList)
+
+    return render_template('room_recommendation_page.html',
+                           output=recommendedList, form_recommend=form_recommend)
 
 
 #########################################edit employees functions######################################################
 
-@app.route('/searchEmployees', methods=['GET', 'POST'])
+@app.route('/searchData', methods=['GET', 'POST'])
 @login_required
-def searchEmployees():
-    form_delete = EmployeeDeleteForm()
-    form_search = EmployeeSearchForm()
-    form_update = EmployeeUpdateForm()
-    user = None
-    if form_search.validate_on_submit():
-        print("search {}".format(form_search.search.data))
+def searchData():
+    search = EmployeeSearchForm()
+    employee = None
+    room = None
+    if search.validate_on_submit():
+        print("search {}".format(search.search.data))
         try:
-            user = User.objects.get(user_id=form_search.search.data)
+            employee = User.objects.get(user_id=search.search.data)
         except:
-            flash('user id not exist')
-            user = None
-    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update, data=user)
+            try:
+                room = Room.objects.get(room_id=search.search.data)
+            except:
+                flash('user id not exist\n room id not found')
+    return render_template('searchDB.html', search=search,
+                           employee=employee, room=room)
 
 
 @app.route('/updateEmployees', methods=['GET', 'POST'])
@@ -297,32 +259,25 @@ def updateEmployees():
                            form_update=form_update, data=user)
 
 
-@app.route('/deleteEmployees', methods=['GET', 'POST'])
+@app.route('/deleteData', methods=['GET', 'POST'])
 @login_required
-def deleteEmployees():
-    form_delete = EmployeeDeleteForm()
-    form_search = EmployeeSearchForm()
-    form_update = EmployeeUpdateForm()
-    if form_delete.validate_on_submit():
-        print("delete {}".format(form_delete.user_id.data))
+def deleteData():
+    search = EmployeeDeleteForm()
+    if search.validate_on_submit():
+        print("delete {}".format(search.search.data))
         try:
-            user = User.objects.get(user_id=form_delete.user_id.data)
+            user = User.objects.get(user_id=search.search.data)
             user.delete()
-            flash('user {} deleted'.format(form_delete.user_id.data))
+            flash('SUCCESS!\nuser {} deleted'.format(search.search.data))
         except:
-            flash('user id not exist')
-    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update)
+            try:
+                room = Room.objects.get(room_id=search.search.data)
+                room.delete()
+                flash('SUCCESS!\nroom {} deleted'.format(search.search.data))
+            except:
+                flash('no such room or user to delete')
 
-
-@app.route('/editEmployees', methods=['GET', 'POST'])
-@login_required
-def editEmployees():
-    form_delete = EmployeeDeleteForm()
-    form_search = EmployeeSearchForm()
-    form_update = EmployeeUpdateForm()
-    return render_template('editEmployees.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update)
+    return render_template('deleteDB.html', search=search)
 
 
 @app.route('/user_add_friends', methods=['GET', 'POST'])
@@ -334,109 +289,169 @@ def user_add_friends():
 @app.route('/changePassword', methods=['GET', 'POST'])
 @login_required
 def changePassword():
-    return render_template('changePassword.html', title='editEmployeesByThem')
-
+    pass_form = changePass()
+    if pass_form.validate_on_submit():
+        user = User.objects.get(user_id=current_user.user_id)
+        print('curr pass: ' + str(user.password) + ' old pass:  ' + str(pass_form.old_pass.data) + ' new pass:  ' + str(
+            pass_form.password.data))
+        if user.password != pass_form.old_pass.data:
+            flash('Wrong password')
+        elif pass_form.password.data == pass_form.again.data:
+            user.password = pass_form.password.data
+            user.save()
+            flash('Success')
+        else:
+            flash('Wrong again password')
+    return render_template('changePassword.html', title='editEmployeesByThem', pass_form=pass_form)
 
 
 #########################################edit rooms functions######################################################
 
-@app.route('/searchRooms', methods=['GET', 'POST'])
+
+@app.route('/editRooms', methods=['GET', 'POST'])
 @login_required
-def searchRooms():
-    form_delete = RoomDeleteForm()
-    form_search = RoomSearchForm()
+def editRooms():
     form_update = RoomUpdateForm()
+
     room = None
-    if form_search.validate_on_submit():
-        print("search {}".format(form_search.search.data))
-        try:
-            room = Room.objects.get(room_id=form_search.search.data)
-        except:
-            flash('room id not exist')
-            room = None
-    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update, data=room)
-
-
-@app.route('/updateRooms', methods=['GET', 'POST'])
-@login_required
-def updateRooms():
-    form_delete = RoomDeleteForm()
-    form_search = RoomSearchForm()
-    form_update = RoomUpdateForm()
-    room = None
-
     if form_update.validate_on_submit():
-        print("in update {} {} {} {}".format(form_update.room_id.data, form_update.permission.data,
-                                             form_update.floor.data,
-                                             form_update.maxCapacity.data))
-        print("update {}".format(form_update.room_id.data))
         try:
             room = Room.objects.get(room_id=form_update.room_id.data)
             room.update(floor=form_update.floor.data, access_permission=form_update.permission.data,
                         maxCapacity=form_update.maxCapacity.data)
             room.save()
             room = Room.objects.get(room_id=form_update.room_id.data)
+            flash("update Success")
         except:
-            flash('room id not exist')
-            room = None
-    else:
-        flash("missing data")
-    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+            flash("update Fail\n maybe missing data")
+
+    return render_template('editRooms.html',
                            form_update=form_update, data=room)
 
+    print(str(select.rooms.choices))
+    return render_template('editRooms.html', select=select,
+                           form_update=form_update)
 
-@app.route('/deleteRooms', methods=['GET', 'POST'])
+
+@app.route('/editEmployees', methods=['GET', 'POST'])
 @login_required
-def deleteRooms():
-    form_delete = RoomDeleteForm()
-    form_search = RoomSearchForm()
-    form_update = RoomUpdateForm()
-    if form_delete.validate_on_submit():
-        print("delete {}".format(form_delete.room_id.data))
+def editEmployees():
+    form_update = EmployeeUpdateForm()
+
+    user = None
+    if form_update.validate_on_submit():
         try:
-            room = Room.objects.get(room_id=form_delete.room_id.data)
-            room.delete()
-            flash('room {} deleted'.format(form_delete.room_id.data))
+            user = User.objects.get(user_id=form_update.user_id.data)
+            user.update(username=form_update.username.data, access_permission=form_update.permission.data,
+                        role=form_update.role.data)
+            user.save()
+            user = User.objects.get(user_id=form_update.user_id.data)
+            flash("update Success")
         except:
-            flash('room id not exist')
-    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
+            flash("update Fail\n maybe missing data")
+
+    return render_template('editEmployees.html',
+                           form_update=form_update, data=user)
+
+    print(str(select.rooms.choices))
+    return render_template('editEmployees.html', select=select,
                            form_update=form_update)
 
 
-@app.route('/editRooms', methods=['GET', 'POST'])
+##############################################exportTables######################################################3
+@app.route('/exportTables', methods=['GET', 'POST'])
 @login_required
-def editRooms():
-    form_delete = RoomDeleteForm()
-    form_search = RoomSearchForm()
-    form_update = RoomUpdateForm()
-    return render_template('editRooms.html', form_search=form_search, form_delete=form_delete,
-                           form_update=form_update)
+def exportTables():
+    try:
+        os.remove('employees_DB.csv')
+        os.remove('rooms_DB.csv')
+    except:
+        pass
+    employee_form = exportEmployeeForm()
+    room_form = exportRoomForm()
+    return render_template('exportTables.html', room_form=room_form, employee_form=employee_form)
 
 
+@app.route('/exportRooms', methods=['GET', 'POST'])
+@login_required
+def exportRooms():
+    dir_path = Config.DOWNLOAD_DIR
+    rooms_file = 'rooms_DB.csv'
+    try:
+        os.remove('employees_DB.csv')
+        os.remove('rooms_DB.csv')
+    except:
+        pass
+    export_rooms_to_file(rooms_file)
+    return send_from_directory(directory=dir_path, filename='rooms_DB.csv')
 
-"""
-@app.route('/room_recommendation_page',methods=['GET', 'POST'])
+
+@app.route('/exportEmployees', methods=['GET', 'POST'])
+@login_required
+def exportEmployees():
+    dir_path = Config.DOWNLOAD_DIR
+    employees_file = 'employees_DB.csv'
+    try:
+        os.remove('employees_DB.csv')
+        os.remove('rooms_DB.csv')
+    except:
+        pass
+    export_employees_to_file(employees_file)
+    return send_from_directory(directory=dir_path, filename='employees_DB.csv')
+
+
+@app.route('/searchDB', methods=['GET', 'POST'])
+@login_required
+def searchDB():
+    search = EmployeeSearchForm()
+    return render_template('searchDB.html', title='userInterface', search=search)
+
+
+@app.route('/deleteDB', methods=['GET', 'POST'])
+@login_required
+def deleteDB():
+    search = EmployeeDeleteForm()
+    return render_template('deleteDB.html', title='userInterface', search=search)
+
+
+@app.route('/show_all_db_rooms', methods=['GET', 'POST'])
+@login_required
+def show_all_db_rooms():
+    search = show_rooms_page()
+    print "***********************************************************"
+    print search
+    return render_template('show_all_db_rooms.html', search=search)
+
+
+@app.route('/show_all_db_employee', methods=['GET', 'POST'])
+@login_required
+def show_all_db_employee():
+    search = show_employee_page()
+    return render_template('show_all_db_employee.html', search=search)
+
+
+@app.route('/show_all_db', methods=['GET', 'POST'])
+@login_required
+def show_all_db():
+    return render_template('show_all_db.html', title='editDB')
+
+
+@app.route('/room_recommendation_page', methods=['GET', 'POST'])
 @login_required
 def room_recommendation_page():
     form_recommend = roomRecommendationPage()
     if form_recommend.validate_on_submit():
         return form_room_recommend(form_recommend)
-    return render_template('room_recommendation_page.html')
+    return render_template('room_recommendation_page.html', form_recommend=form_recommend)
 
-def form_room_recommend(form_recommend):
+
+@app.route('/room_reccomendation', methods=['GET', 'POST'])
+@login_required
+def room_reccomendation():
+    print("enter!!!!!!!!!!!!!!!!!!!!")
     form_recommend = roomRecommendationPage()
-    recommendedList = []
-    for room in Rooms.objects.all():
-        if room.access_permission > find_employee(session['user_id']).access_permission:
-            continue
-        schedule_date_time = Schedule()
-        for schedule in room.schedules:
-            if schedule.date == form_recommend.date and schedule.time == form_recommend.start_time:
-                schedule_date_time = schedule
-                break
-        if 1 <= room.maxCapacity - schedule_date_time.occupancy:
-            reccomendedList.append(room.room_id)
-        recommendedList
-    return render_template('room_recommendation_page.html', form_recommend)
-"""
+    if form_recommend.validate():
+        print("ssssssssssssssssssss!!!!!!!!!!!!!!!!!!!!")
+        return form_room_recommend(form_recommend)
+
+    return render_template('room_recommendation_page.html', form_recommend=form_recommend)

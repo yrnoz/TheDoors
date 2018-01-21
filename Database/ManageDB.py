@@ -77,6 +77,10 @@ def import_room_details_from_file(input_file):
             Rooms.insert_one(room)  # add employee's details to the DB
 
 
+
+
+
+
 #######################################################################################
 
 
@@ -480,9 +484,7 @@ def delete_a_friend_aux(employee, friend_id):
     """
     employee_friends = employee["friends"]
     employee_friends.remove(friend_id)
-    Employees.update_one({'id': employee["id"]},
-                         {'$set': {
-                             'friends': employee_friends}}).matched_count
+    Employees.update_one({'id': employee["id"]},{'$set': {'friends': employee_friends}}).matched_count
 
 
 def set_location_of_employee(employee_id, room_id, room_floor):
@@ -531,5 +533,14 @@ def check_if_theres_an_employee_friend_in_room(employee_id, room_id):
             return True
     return False
         # friends_in_room = friends_list.filter()
+
+def get_friends_list(employee_id):
+    if not check_id_of_employee(employee_id):
+        print "no such employee in the system %s" % employee_id
+        return []
+    friends_list = find_employee(employee_id)["friends"]
+    friends_names = map(lambda x: find_employee(x)["name"], friends_list)
+    return friends_names
+
 
 ####################################################################################################

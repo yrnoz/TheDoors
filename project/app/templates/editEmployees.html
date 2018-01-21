@@ -23,7 +23,7 @@
         display: inline-block;
         *display: inline;
         *zoom: 1;
-        padding: 4px 10px 4px;
+        padding: 0px 0px 0px;
         margin-bottom: 0;
         font-size: 13px;
         line-height: 18px;
@@ -52,6 +52,7 @@
         cursor: pointer;
         *margin-left: .3em;
     }
+
 
     .btn-primary-go_back {
         background-color: #555555;
@@ -102,17 +103,19 @@
         margin: 100px 0 0 -450px;
     }
 
+
+
     .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] {
         background-color: #e6e6e6;
     }
 
     .btn-large {
-        padding: 9px 14px;
-        font-size: 15px;
-        line-height: normal;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
+        padding: 0px 0px;
+        font-size: 5px;
+        line-height: 0px;
+        -webkit-border-radius: 1px;
+        -moz-border-radius: 1px;
+        border-radius: 1px;
     }
 
     .btn:hover {
@@ -208,7 +211,7 @@
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
     }
 
-    .editEmployees {
+    .editRooms {
         position: absolute;
         top: 30%;
         left: 50%;
@@ -217,14 +220,15 @@
         height: 300px;
     }
 
-    .editEmployees h1 {
+    .editRooms h1 {
         color: #fff;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
         text-align: center;
     }
+
     .white-text {
-       color: #ffffff;
+        color: #ffffff;
     }
 
     .black-text {
@@ -233,7 +237,7 @@
 
     input {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 0px;
         background: rgba(0, 0, 0, 0.3);
         border: none;
         outline: none;
@@ -254,10 +258,11 @@
     input:focus {
         box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
     }
+
+
 </style>
 {% extends "base.html" %}
 {% block content %}
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
@@ -265,80 +270,63 @@
 
 <body>
 
-<div class="editEmployees">
-    <h1>Edit Employees</h1>
-
-    <form method="post" action="{{url_for('searchEmployees')}}">
-        {{ form_search.hidden_tag() }}
-        {{ form_search.csrf_token }}
+<div class="editRooms">
+    <h1>Update Employees</h1>
 
 
-        <p class="white-text">
-            {{ form_search.search.label }}<br>
-            {{ form_search.search(size=32) }}<br>
-        </p>
-        <div class="btn btn-primary btn-block btn-large">
-            {{ form_search.submit_button_search() }}
-        </div>
-    </form>
-    <form method="post" action="{{url_for('updateEmployees')}}">
-        {{ form_update.hidden_tag() }}
+
+        <form method="post" action="{{url_for('editEmployees')}}">
+       {{ form_update.hidden_tag() }}
         {{ form_update.csrf_token }}
-
-
-        <div class="white-text">
+          <div class="white-text">
             {% if data %}
-            (current values)</br>
-            <p>ID ({{data.user_id}}):{{form_update.user_id}}</p>
-            <p>Full Name ({{data.username}}):{{form_update.username}}</p>
+
+
+            </br>
+
+            <p>ID ({{data.user_id}}):{{form_update.user_id}} </p>
+            <p>Username ({{data.username}}):{{form_update.username}}</p>
             <p>Role ({{data.role}}):{{form_update.role}}</p>
             <p>Permission ({{data.access_permission}}):{{form_update.permission}}</p>
 
             {% endif %}
             {% if not data %}
 
-            ID: <p class="white-text">
+            User ID: <p class="white-text">
             {{form_update.user_id}}
-        </p>
-            Full Name: <p class="white-text">
+           </p>
+
+            Username: <p class="white-text">
             {{form_update.username}}
-        </p>
+            </p>
+
             Role: <p class="white-text">
             {{form_update.role}}
-        </p>
+            </p>
+
             Permission: <p class="white-text">
             {{form_update.permission}}
-        </p>
+            </p>
         </div>
 
         {% endif %}
         <div class="btn btn-primary btn-block btn-large">
             {{ form_update.submit_button_update() }}
-        </div >
+        </div>
     </form>
-    </br>
-        <form method="post" action="{{url_for('deleteEmployees')}}">
 
-        {{ form_delete.hidden_tag() }}
-        {{ form_delete.csrf_token }}
 
-         <div class="btn btn-primary-red btn-block btn-large black-text">
-               <p hidden="hidden">
 
-               {{form_delete.user_id}} = {{form_update.user_id}}
-
-                   </p>
-              {{form_delete.submit_button_delete()}}
-        </div >
-    </form>
     <br/>
     <br/>
     <br/>
-    <a href="{{url_for('editDB')}}">
-        <button type="button" class="btn btn-primary btn-block btn-large">Go Back</button>
-    </a>
+    <div class="go_back">
+        <a href="{{url_for('editDB')}}">
+            <button type="button" class="btn-primary-go_back btn-large-goback"></button>
+        </a>
+    </div>
+
 </div>
-
 </body>
 {% endblock %}
 </html>
