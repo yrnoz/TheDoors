@@ -1,7 +1,7 @@
 from Database.ManageDB import *
 import random
 import time
-
+import os
 
 SimRooms = db["SimRooms"]  # create new table that called SimRooms just for the Simulation
 
@@ -234,7 +234,7 @@ def mainTest():
     start_time = random.randint(8,12)
     end_time = random.randint(13, 20)
     percent_employee = random.randint(1,8)
-    simulation_day_in_factory(start_time,end_time,percent_employee*10, "addition_room.csv")
+    simulation_day_in_factory(start_time,end_time,percent_employee*10, "App%saddition_room.csv" % os.sep)
 
 
 if __name__ == "__main__":
