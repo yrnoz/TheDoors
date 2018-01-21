@@ -278,9 +278,6 @@ def print_friends():
         print "friends of {} id-{}:".format(employee["name"], employee["id"]) + str(employee["friends"])
 
 
-@pytest.mark.skip(reason="not relevant for now")
-def test_reccomendationToEmployeeByRoom():
-    pass
 
 
 @pytest.mark.skip(reason="fix it")
@@ -305,10 +302,6 @@ def test_emptyRooms():
     x = emptyRooms(koby, "24/07/17 12")
     assert emptyRooms(koby, "24/07/17 12") == {"taub 4": 5}
 
-
-@pytest.mark.skip(reason="not relevant for now")
-def test_room_with_my_friends():
-    pass
 
 
 def print_employees_db():
@@ -375,7 +368,7 @@ def test_roomRecommendation_no_place_in_rooms():
     Employees.drop()
     import_employees_from_file("Tests%semployees_test.csv" % os.sep)
     # import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
-    koby = Employee(234, 'Koby', 'Engineer', 2)
+    koby = Employee(234, 'Koby', 'Engineer', 2, 1234)
     room1 = Room("taub 1", 0, 0, 3)
     room2 = Room("taub 2", 0, 0, 3)
     room3 = Room("taub 3", 0, 30, 4)
@@ -398,7 +391,7 @@ def test_roomRecommendation_many_rooms():
     Employees.drop()
     import_employees_from_file("Tests%semployees_test.csv" % os.sep)
     import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
-    koby = Employee(234, 'Koby', 'Engineer', 1)
+    koby = Employee(234, 'Koby', 'Engineer', 1, 1234)
     recommended = reccomendationToEmployeeByRoom(koby)
     assert len(recommended) == 11
     Rooms.drop()
@@ -420,7 +413,7 @@ def create_friend_relationship():
             if employee.id != friend.id:
                 employee.add_friends(list(friend.id))
 
-
+@pytest.mark.skip(reason="not relevant for now")
 def test_recommend_by_friends():
     Rooms.drop()
     Employees.drop()
