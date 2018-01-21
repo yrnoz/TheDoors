@@ -1,14 +1,4 @@
 {
-  "Tests/DB_test.py::test_check_if_theres_friend_in_room": true, 
-  "Tests/DB_test.py::test_export_employees_with_removal_should_decrease": true, 
-  "Tests/DB_test.py::test_export_rooms_with_addition_should_increase": true, 
-  "Tests/DB_test.py::test_export_rooms_without_change_shouldnt_change": true, 
-  "Tests/DB_test.py::test_get_password_of_employee_by_id": true, 
-  "Tests/DB_test.py::test_import_rooms_succeeds": true, 
-  "Tests/DB_test.py::test_remove_friend": true, 
-  "Tests/DB_test.py::test_share_location_entering_a_room_valid_details": true, 
   "Tests/logic_test.py::test_roomRecommendation": true, 
-  "Tests/logic_test.py::test_sim_engine": true, 
-  "Tests/logic_test.py::test_weekly_schedule2": true, 
   "Tests/logic_test.py::test_weekly_schedule_worker": true
 }
