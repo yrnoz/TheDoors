@@ -191,7 +191,7 @@ def simulation_day_in_factory(start_time = 8, finish_time = 20, percent_employee
     if not (new_rooms_details is None):
         simulation_import_room_details_from_file(new_rooms_details)
     date_now = time.strftime("%d/%m/%y")
-    with open('Simulation_Stats.xls', 'w') as output:
+    with open('Tests%sSimulation_Stats.xls' % os.sep, 'w') as output:
         for hour in range(start_time, finish_time):
             if hour < 10:
                 date_time = date_now + " 0" + str(hour)
@@ -213,8 +213,8 @@ def simulation_day_in_factory(start_time = 8, finish_time = 20, percent_employee
                 output.write(room["id"] + "\t" + str(float(schedule[0])/int(room["capacity"])*100) + "%" + "\n")
 
 def mainTest():
-    import_employees_from_file("employees_test.csv")
-    import_room_details_from_file("rooms_test.csv")
+    import_employees_from_file("Tests%semployees_test.csv" % os.sep)
+    import_room_details_from_file("Tests%srooms_test.csv" % os.sep)
     try:
         simulation_day_in_factory(26, 12, 30)
     except Exception as e:
