@@ -44,6 +44,13 @@ class RoomUpdateForm(FlaskForm):
     submit_button_update = SubmitField('Update')
 
 
+class RoomAddForm(FlaskForm):
+    room_id = StringField('id', validators=[DataRequired()])
+    floor = IntegerField('Floor', validators=[DataRequired()])
+    maxCapacity = IntegerField('MaxCapacity', validators=[DataRequired()])
+    permission = IntegerField('Permission', validators=[DataRequired()])
+    submit_button_add = SubmitField('Add')
+
 class RoomDeleteForm(FlaskForm):
     room_id = StringField('id')
     submit_button_delete = SubmitField('Delete')

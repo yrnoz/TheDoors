@@ -308,6 +308,34 @@ def changePassword():
 #########################################edit rooms functions######################################################
 
 
+
+@app.route('/addRoom', methods=['GET', 'POST'])
+@login_required
+def addRoom():
+    form_add = RoomAddForm()
+
+    room = None
+    if form_add.validate_on_submit():
+        try:
+            room = Room(room_id=form_add.room_id.data,
+                        floor=form_add.floor.data,
+                        maxCapacity=form_add.maxCapacity.data,
+                        access_permission=form_add.permission.data)
+            room.save()
+            room = Room.objects.get(room_id=form_add.room_id.data)
+            flash("Adding Success")
+        except:
+            flash("Adding Fail\n maybe missing data")
+
+    return render_template('addRoom.html',
+                           form_add=form_add, data=room)
+
+    print(str(select.rooms.choices))
+    return render_template('addRoom.html', select=select,
+                           form_add=form_add)
+
+
+
 @app.route('/editRooms', methods=['GET', 'POST'])
 @login_required
 def editRooms():
