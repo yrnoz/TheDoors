@@ -413,10 +413,8 @@ def create_friend_relationship():
             if employee.id != friend.id:
                 employee.add_friends(list(friend.id))
 
-
-
+@pytest.mark.skip(reason="not relevant for now")
 def test_recommend_by_friends():
-    pass
     Rooms.drop()
     Employees.drop()
     import_employees_from_file("Tests%sfriends_test.csv" % os.sep)
