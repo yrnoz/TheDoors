@@ -114,6 +114,23 @@ def import_room_details_from_file(input_file):
             # Rooms.insert_one(room)  # add employee's details to the DB
 
 
+def show_rooms_page():
+    global Rooms
+    list_rooms =[]
+    for room in Rooms.objects():
+        list_rooms.append(str(room.room_id) + "," + str(room.maxCapacity) + "," + str(room.access_permission) + ","
+                     + str(room.floor) + "\n")
+    return list_rooms
+
+def show_employee_page():
+    global Employees
+    list_employees =[]
+    for employee in Employees.objects():
+        list_employees.append(str(employee.user_id) + "," + employee.username + "," + employee.role + ","
+                     + str(employee.access_permission) + "," + employee.password + "\n")
+    return list_employees
+
+
 #######################################################################################
 
 

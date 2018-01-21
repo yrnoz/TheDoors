@@ -244,6 +244,23 @@
             box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4), 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
+
+        .all_db {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        margin: -150px 0 0 -150px;
+        width: 300px;
+        height: 300px;
+    }
+
+    .all_db h1 {
+        color: #fff;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        letter-spacing: 1px;
+        text-align: center;
+    }
+
     </style>
     {% extends "base.html" %}
     {% block content %}
@@ -254,22 +271,21 @@
 
 <body>
 
-<div class="changePassword">
-    <h1>Add new Friends</h1>
+<div class="all_db">
+    <h1>View tables</h1>
     <br>
-    <form method="post">
-        <div class="white-text">
-            enter id of employee:<input/>
-        </div>
-        <br>
-        <button type="button" class="btn btn-primary btn-block btn-large ">Add to friends</button>
 
-    </form>
-    <br/>
-    <br/>
-    <br/>
+    <a href="{{ url_for('show_all_db_rooms') }}">
+        <button type="button" class="btn btn-primary btn-block btn-large">View Rooms Table</button>
+    </a>
+    <br>
+    <a href="{{ url_for('show_all_db_employee') }}">
+        <button type="button" class="btn btn-primary btn-block btn-large">View Employees Table</button>
+    </a>
+
+
     <div class="go_back">
-        <a href="{{ url_for('userInterface') }}">
+        <a href="{{ url_for('editDB') }}">
             <button type="button" class="btn-primary-go_back btn-large-goback"></button>
         </a>
     </div>

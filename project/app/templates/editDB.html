@@ -240,8 +240,21 @@
 <body>
 
 <div class="editDB">
-    <h1>Edit DB</h1>
+    <h1>Database </h1>
     <form method="post">
+          <a href="{{ url_for('searchDB') }}">
+            <button type="button" class="btn btn-primary btn-block btn-large">Search DB</button>
+        </a>
+        <br/>
+        <a href="{{ url_for('deleteDB') }}">
+            <button type="button" class="btn btn-primary btn-block btn-large">Delete DB</button>
+        </a>
+        <br/>
+        <a href="{{ url_for('addRoom') }}">
+            <button type="button" class="btn btn-primary btn-block btn-large">Add Room</button>
+        </a>
+
+        <br/>
         <a href="{{ url_for('editRooms') }}">
             <button type="button" class="btn btn-primary btn-block btn-large">Edit Rooms</button>
         </a>
@@ -253,6 +266,11 @@
         <a href="{{ url_for('exportTables') }}">
             <button type="button" class="btn btn-primary btn-block btn-large">Export Tables</button>
         </a>
+        <br/>
+        <a href="{{ url_for('show_all_db') }}">
+            <button type="button" class="btn btn-primary btn-block btn-large">View Tables</button>
+        </a>
+
     </form>
     <br/>
     <br/>
