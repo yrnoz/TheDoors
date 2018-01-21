@@ -183,17 +183,18 @@ def get_valid_rooms(orderer_permission, date, num_hours=1, num_employees=1):
     # Rooms.objects((Q(access_permission__lte=orderer_permission) & Q(maxCapacity__gte=(o)))
 
 
+########## ELYASAG: PROBLEMATIC CODE########################
 def add_weekly_schedule_employee(employee_id, room_id, date, time=1):
     assert check_id_of_employee(employee_id)
     logging.info('in add weekly schedule for employee %s' % employee_id)
-    sched = Schedule(room_id=room_id, date = date, time=time)
+    sched = Schedule(room_id=room_id, date=date, time=time)
     logging.info('in add weekly schedule for employee %s after sched initialization' % employee_id)
     updated = None
     # updated = Employees.objects(Q(user_id=employee_id) & Q(schedules__date=date)).update_one(set__schedules__S=sched)
     logging.info('in add weekly schedule for employee %s after updating schedule' % employee_id)
     if not updated:
         logging.info('in add weekly schedule for employee %s new schedule' % employee_id)
-        Employees.objects(Q(user_id=employee_id)).update_one(schedules=[sched])
+        Employees.objects(Q(user_id=employee_id)).update_one(schedules=[sched])  # ELYASAF: MORE SPECIFICALLY THIS
         logging.info('in add weekly schedule for employee %s new schedule finish' % employee_id)
 
 
