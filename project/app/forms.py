@@ -18,6 +18,15 @@ class EmployeeSearchForm(FlaskForm):
     submit_employee_search = SubmitField('Search')
 
 
+class EmployeeAddForm(FlaskForm):
+    user_id = StringField('id', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
+    permission = IntegerField('Permission', validators=[DataRequired()])
+    role = StringField('Role', validators=[DataRequired()])
+    password = StringField('Password', validators=[DataRequired()])
+    submit_button_add = SubmitField('Add')
+
+
 class EmployeeUpdateForm(FlaskForm):
     user_id = StringField('id', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])

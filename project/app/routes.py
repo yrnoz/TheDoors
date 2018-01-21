@@ -231,6 +231,30 @@ def searchData():
                            employee=employee, room=room)
 
 
+@app.route('/addEmployee', methods=['GET', 'POST'])
+@login_required
+def addEmployee():
+    form_add = EmployeeAddForm()
+
+    user = None
+    if form_add.validate_on_submit():
+        try:
+            user = User(user_id=form_add.user_id.data,
+                        username=form_add.username.data,
+                        password=form_add.password.data,
+                        role=form_add.role.data,
+                        access_permission=form_add.permission.data,)
+            user.save()
+            user = User.objects.get(user_id=form_add.user_id.data)
+            flash("Adding Success")
+        except:
+            flash("Adding Fail\n maybe missing data")
+
+    return render_template('addEmployee.html',
+                           form_add=form_add, data=user)
+
+
+
 @app.route('/updateEmployees', methods=['GET', 'POST'])
 @login_required
 def updateEmployees():
