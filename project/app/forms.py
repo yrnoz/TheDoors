@@ -2,9 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, IntegerField, DateTimeField
 from wtforms.validators import DataRequired
 
-TIME_HOUR = [(1, '8:00'), (2, '9:00'), (3, '10:00'), (4, '11:00'), (4, '11:00'), (5, '12:00'), (6, '13:00'),
-             (7, '14:00'), (8, '15:00'), (9, '16:00'), (10, '17:00'), (11, '18:00'), (12, '19:00'), (13, '20:00'),
-             (12, '21:00')]
+TIME_HOUR = [('1', '8:00'), ('2', '9:00'), ('3','10:00'), ('4', '11:00'), ('4', '11:00'), ('5', '12:00'), ('6', '13:00'),
+             ('7', '14:00'), ('8', '15:00'), ('9', '16:00'), ('10', '17:00'), ('11', '18:00'), ('12', '19:00'), ('13', '20:00'),
+             ('12', '21:00')]
 
 
 class LoginForm(FlaskForm):
@@ -50,12 +50,9 @@ class RoomDeleteForm(FlaskForm):
 
 
 class roomRecommendationPage(FlaskForm):
-    # date = DateTimeField('Date', validators=[DataRequired()])
-    start_time = SelectField('start time', choices=TIME_HOUR)
-    end_time = SelectField('end time', choices=TIME_HOUR)
-    submit_button = SubmitField('recommend')
-    # output = OutputField('recommend', validators=[DataRequired()])
-    # output = SelectField('recommend', validators=[DataRequired()])
+    start_time = SelectField('start time', choices=TIME_HOUR, validators=[DataRequired()])
+    end_time = SelectField('end time', choices=TIME_HOUR, validators=[DataRequired()])
+    submit = SubmitField('recommend')
 
 
 class exportRoomForm(FlaskForm):  # tod
@@ -80,4 +77,13 @@ class selectEmplyee(FlaskForm):
         choices=[]
     )
     submit = SubmitField('Submit')
+
+
+
+class changePass(FlaskForm):
+    old_pass = PasswordField('Previous password', validators=[DataRequired()])
+    password = PasswordField('New Password:', validators=[DataRequired()])
+    again = PasswordField(' New password again:', validators=[DataRequired()])
+    submit = SubmitField('Edit')
+
 

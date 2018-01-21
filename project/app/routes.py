@@ -2,14 +2,14 @@ import subprocess
 # import client as client
 import os
 from flask import render_template, flash, redirect, url_for, request, session, send_from_directory
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.datastructures import FileStorage
 
 from config import Config
 from app import app, db
 from app.Database.ManageDB import *
 from app.forms import *
-from app.models import User, Room
+from app.models import User, Room, Schedule
 
 flag = 0
 
@@ -178,19 +178,36 @@ def upload_rooms():
     return redirect(url_for('import_rooms'))
 
 
+def cmp_room(room1, room2):
+    return room2[1] - room1[1]
+
+
 def form_room_recommend(form_recommend):
     recommendedList = []
-    for room in Room.objects.all():
-        if room.access_permission > find_employee(session['user_id']).access_permission:
-            continue
+    start_time = form_recommend.start_time.data
+    end_time = form_recommend.end_time.data
+    print("end time: " + str(end_time) + 'start time: ' + str(start_time))
+
+    rooms = [room for room in Room.objects() if room.access_permission <= current_user.access_permission]
+    print('user permisssin = ' + str(current_user.access_permission) + 'name: ' + current_user.username)
+    print (rooms)
+    for room in rooms:
         schedule_date_time = Schedule()
-        for schedule in room.schedules:
-            if schedule.date == form_recommend.date and schedule.time == form_recommend.start_time:
-                schedule_date_time = schedule
-                break
-        if 1 <= room.maxCapacity - schedule_date_time.occupancy:
-            reccomendedList.append(room.room_id)
-    return render_template('room_recommendation_page.html', output=recommendedList, form_recommend=form_recommend)
+        if not room.schedules:
+            recommendedList.append(((room.room_id, room.floor), room.maxCapacity))
+        else:
+            for schedule in room.schedules:
+                if schedule.date == form_recommend.date and schedule.time == form_recommend.start_time:
+                    schedule_date_time = schedule
+                    break
+            if 1 <= room.maxCapacity - schedule_date_time.occupancy:
+                recommendedList.append((room.room_id, room.floor), room.maxCapacity - schedule_date_time.occupancy)
+    recommendedList = sorted(recommendedList, cmp=cmp_room)
+    recommendedList = recommendedList[:7]
+    print(recommendedList)
+
+    return render_template('room_recommendation_page.html',
+                           output=recommendedList, form_recommend=form_recommend)
 
 
 #########################################edit employees functions######################################################
@@ -272,7 +289,20 @@ def user_add_friends():
 @app.route('/changePassword', methods=['GET', 'POST'])
 @login_required
 def changePassword():
-    return render_template('changePassword.html', title='editEmployeesByThem')
+    pass_form = changePass()
+    if pass_form.validate_on_submit():
+        user = User.objects.get(user_id=current_user.user_id)
+        print('curr pass: ' + str(user.password) + ' old pass:  ' + str(pass_form.old_pass.data) + ' new pass:  ' + str(
+            pass_form.password.data))
+        if user.password != pass_form.old_pass.data:
+            flash('Wrong password')
+        elif pass_form.password.data == pass_form.again.data:
+            user.password = pass_form.password.data
+            user.save()
+            flash('Success')
+        else:
+            flash('Wrong again password')
+    return render_template('changePassword.html', title='editEmployeesByThem', pass_form=pass_form)
 
 
 #########################################edit rooms functions######################################################
@@ -387,21 +417,24 @@ def deleteDB():
 @app.route('/show_all_db_rooms', methods=['GET', 'POST'])
 @login_required
 def show_all_db_rooms():
-    search=show_rooms_page()
+    search = show_rooms_page()
     print "***********************************************************"
     print search
     return render_template('show_all_db_rooms.html', search=search)
 
+
 @app.route('/show_all_db_employee', methods=['GET', 'POST'])
 @login_required
 def show_all_db_employee():
-    search=show_employee_page()
+    search = show_employee_page()
     return render_template('show_all_db_employee.html', search=search)
+
 
 @app.route('/show_all_db', methods=['GET', 'POST'])
 @login_required
 def show_all_db():
     return render_template('show_all_db.html', title='editDB')
+
 
 @app.route('/room_recommendation_page', methods=['GET', 'POST'])
 @login_required
@@ -417,7 +450,8 @@ def room_recommendation_page():
 def room_reccomendation():
     print("enter!!!!!!!!!!!!!!!!!!!!")
     form_recommend = roomRecommendationPage()
-    if form_recommend.validate_on_submit():
+    if form_recommend.validate():
         print("ssssssssssssssssssss!!!!!!!!!!!!!!!!!!!!")
         return form_room_recommend(form_recommend)
+
     return render_template('room_recommendation_page.html', form_recommend=form_recommend)

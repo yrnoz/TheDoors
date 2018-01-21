@@ -293,7 +293,7 @@
 
             </p>
             <div class="btn btn-primary btn-block btn-large">
-                {{ form_recommend.submit_button() }}
+                {{ form_recommend.submit() }}
             </div>
 
         </form>
@@ -302,18 +302,19 @@
 
     <div class="well">
         <table id="reccomendations table" style="width:100%">
+
             <tr>
                 <th>Room</th>
                 <th>Floor</th>
             </tr>
+            {% if output %}
+            {%for room in output%}
             <tr>
-                <td>taub 1</td>
-                <td>0</td>
+                <td>{{ room[0][0]  }}</td>
+                <td>{{ room[0][1]  }}</td>
             </tr>
-            <tr>
-                <td>taub 8</td>
-                <td>1</td>
-            </tr>
+            {% endfor  %}
+            {% endif  %}
         </table>
     </div>
     <div class="go_back">
