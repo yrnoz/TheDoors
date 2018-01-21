@@ -7,9 +7,10 @@ from App.AddWeeklySchedule import delete_weekly_schedule
 from App.Room import Room
 from App.RoomReccomendations import initialize_employee_from_dict, \
     emptyRooms, recommend_by_friends
+from App.SimulationEngine import mainTest
 from Database.ManageDB import *
 from App.Employee import *
-
+import os
 import random, string
 
 
@@ -431,6 +432,9 @@ def test_recommend_by_friends():
         employee = initialize_employee_from_dict(employee)
         res = recommend_by_friends(employee)
         assert res == ["taub 4"]
+
+def test_sim_engine():
+    mainTest()
 
 
 if __name__ == '__main__':

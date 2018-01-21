@@ -9,7 +9,7 @@ def load_user(id):
     return User.objects.get(user_id=str(id))
 
 
-class Schedule(Document):
+class Schedule(EmbeddedDocument):
     room_id = StringField(max_length=50)
     date = DateTimeField()
     time = IntField()
@@ -22,7 +22,7 @@ class Room(Document):
     floor = IntField()
     maxCapacity = IntField()
     # schedules = ListField(Nested(Schedule))
-    schedules = ListField(Schedule)
+    schedules = EmbeddedDocumentListField(Schedule, default=[])
     access_permission = IntField()
 
 
@@ -33,7 +33,7 @@ class User(UserMixin, Document):
     role = StringField(max_length=50)
     access_permission = IntField()
     friends = ListField(StringField(max_length=9))
-    schedules = ListField(Schedule)
+    schedules = EmbeddedDocumentListField(Schedule, default=[])
     location = StringField(max_length=50)
 
     def get_id(self):

@@ -82,7 +82,7 @@ def upload_weekly_schedule():
     if (session['user_id']):
         flash(session['user_id'])
     else:
-        flash('what the fuck')
+        flash('id was not found')
     # get the 'newfile' field from the form
     new_file = request.files['file']
     # only allow upload of text files
@@ -92,7 +92,7 @@ def upload_weekly_schedule():
     save_path = os.path.join(Config.UPLOAD_DIR, new_file.filename)
     new_file.save(save_path)
     try:
-        add_weekly_schedule_for_employee(session['user_id'], Config.UPLOAD_DIR + new_file.filename)
+        add_weekly_schedule(session['user_id'], Config.UPLOAD_DIR + new_file.filename)
     except:
         flash('import file failed, wrong file')
         return redirect(url_for('weekly_schedule_page'))
@@ -315,6 +315,34 @@ def changePassword():
 
 
 #########################################edit rooms functions######################################################
+
+
+
+@app.route('/addRoom', methods=['GET', 'POST'])
+@login_required
+def addRoom():
+    form_add = RoomAddForm()
+
+    room = None
+    if form_add.validate_on_submit():
+        try:
+            room = Room(room_id=form_add.room_id.data,
+                        floor=form_add.floor.data,
+                        maxCapacity=form_add.maxCapacity.data,
+                        access_permission=form_add.permission.data)
+            room.save()
+            room = Room.objects.get(room_id=form_add.room_id.data)
+            flash("Adding Success")
+        except:
+            flash("Adding Fail\n maybe missing data")
+
+    return render_template('addRoom.html',
+                           form_add=form_add, data=room)
+
+    print(str(select.rooms.choices))
+    return render_template('addRoom.html', select=select,
+                           form_add=form_add)
+
 
 
 @app.route('/editRooms', methods=['GET', 'POST'])
