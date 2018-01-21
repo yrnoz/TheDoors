@@ -1,5 +1,3 @@
 # User_id ,Username ,Role ,Access permission ,Password #
-
 965,Tom,Manager,0,123
-
 111,user,User,5,123

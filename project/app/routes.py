@@ -23,8 +23,8 @@ Dict_hours = {'8:00': 1, '9:00': 2, '10:00': 3, '11:00': 4, '12:00': 5,
 @app.route('/logout')
 def logout():
     logout_user()
-    export_rooms_to_file('rooms_test.csv')
-    export_employees_to_file('employees_test.csv')
+    export_rooms_to_file('rooms.csv')
+    export_employees_to_file('employees.csv')
     return redirect(url_for('login'))
 
 
@@ -41,7 +41,7 @@ def login():
         Room.drop_collection()
 
         import_employees_from_file('employees.csv')
-        import_room_details_from_file('rooms_test.csv')
+        import_room_details_from_file('rooms.csv')
 
         flag = 1
     if form.validate_on_submit():
@@ -193,6 +193,12 @@ def add_sched(rooms, date_time):
         if room.room_id == 'taub 1':
             room.schedules.append(
                 Schedule(date=date_time.replace(hour=10).strftime("%d/%m/%y %H"), occupancy=room.maxCapacity))
+        if room.room_id == 'taub 2':
+            room.schedules.append(
+                Schedule(date=date_time.replace(hour=11).strftime("%d/%m/%y %H"), occupancy=room.maxCapacity))
+        if room.room_id == 'taub 3':
+            room.schedules.append(
+                Schedule(date=date_time.replace(hour=12).strftime("%d/%m/%y %H"), occupancy=room.maxCapacity))
     # for room in rooms:
     #     room.schedules.append(Schedule())
 
@@ -262,7 +268,7 @@ def addEmployee():
                         username=form_add.username.data,
                         password=form_add.password.data,
                         role=form_add.role.data,
-                        access_permission=form_add.permission.data,)
+                        access_permission=form_add.permission.data, )
             user.save()
             user = User.objects.get(user_id=form_add.user_id.data)
             flash("Adding Success")
@@ -271,7 +277,6 @@ def addEmployee():
 
     return render_template('addEmployee.html',
                            form_add=form_add, data=user)
-
 
 
 @app.route('/updateEmployees', methods=['GET', 'POST'])
@@ -404,8 +409,10 @@ def editEmployees():
     if form_update.validate_on_submit():
         try:
             user = User.objects.get(user_id=form_update.user_id.data)
+
             user.update(username=form_update.username.data, access_permission=form_update.permission.data,
                         role=form_update.role.data)
+
             user.save()
             user = User.objects.get(user_id=form_update.user_id.data)
             flash("update Success")
