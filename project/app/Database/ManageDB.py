@@ -137,24 +137,25 @@ def show_employee_page():
 
 # format of input_file: date, duration_time, max_percent_capacity, num_employees, str_id_employee
 # max_percent_capacity is double between 0 to 100. Value of 100 means that you accept maximus capacity in the room
-def add_weekly_schedule(id, input_file):
+def add_weekly_schedule(orderer_id, input_file):
     logging.info('Started add weekly')
-    if not check_id_of_employee(id):
+    if not check_id_of_employee(orderer_id):
         logging.info('Employee does not exist in the system')
         return False
-    employee_permission = find_employee(id).access_permission
+    employee_permission = find_employee(orderer_id).access_permission
     logging.info('YOUR permission %d' % int(employee_permission))
     # employee = find_employee(id)
     # employee_permission = get_access_permission_of_employee_by_id(id)
     with open(input_file) as schedule:
         for line in schedule.readlines():
+            logging.info('add weekly current line: %s' % line)
             count = line.count(',')
             split_line = line.split(',')
             date = split_line[0]
             num_hours = split_line[1]
             guests_ids = None
             if count >= 2:
-                guests_ids = split_line[2:]
+                guests_ids = list(map(lambda x: x.strip(), split_line[2:]))
             guests_len = 0 if not guests_ids else len(guests_ids)
             logging.info('before get valid rooms')
             valid_rooms = get_valid_rooms(employee_permission, date, int(num_hours), 1 + guests_len)
@@ -167,21 +168,21 @@ def add_weekly_schedule(id, input_file):
                     logging.info('valid_room id = %s' % _id)
             date_aux = parse_string_time_to_datetime(date)
             logging.info('After date aux')
-            add_weekly_schedule_employee(id, valid_rooms[0], date_aux)
+            guests_aux = list(guests_ids) if guests_ids else []
+            add_weekly_schedule_employee(orderer_id, valid_rooms[0], date_aux, guests_aux)
             if guests_ids:
+                guests_aux.append(orderer_id)
                 for _id in guests_ids:
+                    guests_aux.remove(_id)
+                    logging.info('guest id: %s' % _id)
                     add_weekly_schedule_employee(_id, valid_rooms[0],
-                                                 date_aux)  # TODO: need a better heuristic to choose room (e.g. least busy, etc)
-                add_weekly_schedule_room(valid_rooms[0], date_aux, [id] + guests_ids)
+                                                 date_aux, guests_aux)  # TODO: need a better heuristic to choose room (e.g. least busy, etc)
+                    guests_aux.append(_id)
+                add_weekly_schedule_room(valid_rooms[0], date_aux, guests_aux)
             else:
-                add_weekly_schedule_room(valid_rooms[0], date_aux, [id])
+                logging.info('no guests')
+                add_weekly_schedule_room(valid_rooms[0], date_aux, [orderer_id])
     return True
-    # anouncments_list = assign_employees_to_room_to_X_hours(date, num_employees, int(duration_hours), employee, id_employee_list, max_capacity)
-    # anouncments_string = ""
-    # for announce in anouncments_list:
-    #    anouncments_string += announce
-    # print anouncments_string
-    # return anouncments_string
 
 
 def get_valid_rooms(orderer_permission, date, num_hours=1, num_employees=1):
@@ -203,10 +204,11 @@ def get_valid_rooms(orderer_permission, date, num_hours=1, num_employees=1):
     # Rooms.objects((Q(access_permission__lte=orderer_permission) & Q(maxCapacity__gte=(o)))
 
 
-def add_weekly_schedule_employee(employee_id, room_id, date, time=1):
+def add_weekly_schedule_employee(employee_id, room_id, date, guests_ids, time=1):
+    logging.info('add weekly employee %s %s ' % (employee_id, room_id))
     assert check_id_of_employee(employee_id)
     logging.info('in add weekly schedule for employee %s' % employee_id)
-    sched = Schedule(room_id=room_id, date=date, time=time)
+    sched = Schedule(room_id=room_id, date=date, time=time, employees_id=guests_ids)
     logging.info('in add weekly schedule for employee %s after sched initialization' % employee_id)
     updated = None
     # updated = Employees.objects(Q(user_id=employee_id) & Q(schedules__date=date)).update_one(set__schedules__S=sched)

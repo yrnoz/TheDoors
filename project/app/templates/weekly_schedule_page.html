@@ -327,7 +327,7 @@
                                 <td>{{ schedule.time }}</td>
                                 <td>{{ schedule.room_id }}</td>
                                 {% if schedule.employees_id %}
-                                    <td>{{ schedule.employees_id }}</td>
+                                    <td>{{ ', '.join(schedule.employees_id) }}</td>
                                 {% else %}
                                     <td>{{ '' }}</td>
                                 {% endif %}
