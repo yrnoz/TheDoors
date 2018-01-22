@@ -231,6 +231,7 @@ def form_room_recommend(form_recommend):
 
                 if count == for_hours:
                     recommendedList.append(((room.room_id, room.floor), factor))
+    recommendedList = list(set(recommendedList))
     recommendedList = sorted(recommendedList, cmp=cmp_room)
     recommendedList = recommendedList[:7]
     return render_template('room_recommendation_page.html',
@@ -329,24 +330,6 @@ def deleteData():
 @login_required
 def user_add_friends():
     return render_template('user_add_friends.html', title='editEmployeesByThem')
-
-
-@app.route('/changePassword', methods=['GET', 'POST'])
-@login_required
-def changePassword():
-    pass_form = changePass()
-    if pass_form.validate_on_submit():
-        user = User.objects.get(user_id=current_user.user_id)
-
-        if user.password != pass_form.old_pass.data:
-            flash('Wrong password')
-        elif pass_form.password.data == pass_form.again.data:
-            user.password = pass_form.password.data
-            user.save()
-            flash('Success')
-        else:
-            flash('Wrong again password')
-    return render_template('changePassword.html', title='editEmployeesByThem', pass_form=pass_form)
 
 
 #########################################edit rooms functions######################################################
@@ -522,3 +505,30 @@ def room_reccomendation():
             return render_template('room_recommendation_page.html', form_recommend=form_recommend)
         return form_room_recommend(form_recommend)
     return render_template('room_recommendation_page.html', form_recommend=form_recommend)
+
+
+@app.route('/changePassword', methods=['GET', 'POST'])
+@login_required
+def changePassword():
+    pass_form = changePass()
+    return render_template('changePassword.html', title='editEmployeesByThem', pass_form=pass_form)
+
+
+@app.route('/changePasswordAction', methods=['GET', 'POST'])
+@login_required
+def changePasswordAction():
+    pass_form = changePass()
+    if pass_form.validate_on_submit():
+        user = User.objects.get(user_id=current_user.user_id)
+
+        if user.password != pass_form.old_pass.data:
+            flash('Wrong password')
+        elif pass_form.password.data == pass_form.again.data:
+            user.password = pass_form.password.data
+            user.save()
+            flash('Success')
+        else:
+            flash('Wrong again password')
+    else:
+        flash('missing data\n please fill al field.')
+    return redirect(url_for('changePassword'))
