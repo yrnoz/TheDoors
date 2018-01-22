@@ -169,7 +169,7 @@ def add_weekly_schedule(orderer_id, input_file):
             date_aux = parse_string_time_to_datetime(date)
             logging.info('After date aux')
             guests_aux = list(guests_ids) if guests_ids else []
-            add_weekly_schedule_employee(orderer_id, valid_rooms[0], date_aux, guests_aux)
+            add_weekly_schedule_employee(orderer_id, valid_rooms[0], date_aux, guests_aux, num_hours)
             if guests_ids:
                 guests_aux.append(orderer_id)
                 for _id in guests_ids:
@@ -178,12 +178,13 @@ def add_weekly_schedule(orderer_id, input_file):
                         logging.info('guest id: %s' % _id)
                         add_weekly_schedule_employee(_id, valid_rooms[0],
                                                      date_aux,
-                                                     guests_aux)  # TODO: need a better heuristic to choose room (e.g. least busy, etc)
+                                                     guests_aux,
+                                                     num_hours)  # TODO: need a better heuristic to choose room (e.g. least busy, etc)
                         guests_aux.append(_id)
-            add_weekly_schedule_room(valid_rooms[0], date_aux, guests_aux)
+            add_weekly_schedule_room(valid_rooms[0], date_aux, guests_aux, num_hours)
         else:
             logging.info('no guests')
-            add_weekly_schedule_room(valid_rooms[0], date_aux, [orderer_id])
+            add_weekly_schedule_room(valid_rooms[0], date_aux, [orderer_id], num_hours)
     return True
 
 
@@ -213,7 +214,7 @@ def add_weekly_schedule_employee(employee_id, room_id, date, guests_ids, time=1)
     sched = Schedule(room_id=room_id, date=date, time=time, employees_id=guests_ids)
     logging.info('in add weekly schedule for employee %s after sched initialization' % employee_id)
     updated = None
-    # updated = Employees.objects(Q(user_id=employee_id) & Q(schedules__date=date)).update_one(set__schedules__S=sched)
+    updated = Employees.objects(Q(user_id=employee_id) & Q(schedules__date=date)).update_one(set__schedules__S=sched)
     logging.info('in add weekly schedule for employee %s after updating schedule' % employee_id)
     if not updated:
         logging.info('in add weekly schedule for employee %s new schedule' % employee_id)
@@ -522,8 +523,7 @@ def check_id_of_employee(id):
     logging.info("checking id %s" % id)
     global Employees
     employee = Employees.objects(user_id=str(id))
-    logging.info("after checking id %s" % id)
-    if employee is None:
+    if not employee:
         return False
     return True
 
