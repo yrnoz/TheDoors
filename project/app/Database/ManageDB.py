@@ -173,15 +173,17 @@ def add_weekly_schedule(orderer_id, input_file):
             if guests_ids:
                 guests_aux.append(orderer_id)
                 for _id in guests_ids:
-                    guests_aux.remove(_id)
-                    logging.info('guest id: %s' % _id)
-                    add_weekly_schedule_employee(_id, valid_rooms[0],
-                                                 date_aux, guests_aux)  # TODO: need a better heuristic to choose room (e.g. least busy, etc)
-                    guests_aux.append(_id)
-                add_weekly_schedule_room(valid_rooms[0], date_aux, guests_aux)
-            else:
-                logging.info('no guests')
-                add_weekly_schedule_room(valid_rooms[0], date_aux, [orderer_id])
+                    if check_id_of_employee(_id):
+                        guests_aux.remove(_id)
+                        logging.info('guest id: %s' % _id)
+                        add_weekly_schedule_employee(_id, valid_rooms[0],
+                                                     date_aux,
+                                                     guests_aux)  # TODO: need a better heuristic to choose room (e.g. least busy, etc)
+                        guests_aux.append(_id)
+            add_weekly_schedule_room(valid_rooms[0], date_aux, guests_aux)
+        else:
+            logging.info('no guests')
+            add_weekly_schedule_room(valid_rooms[0], date_aux, [orderer_id])
     return True
 
 
@@ -517,8 +519,10 @@ def get_password_of_employee_by_id(id):
 
 # input: id output: True - if there is employee with this id False other wise
 def check_id_of_employee(id):
+    logging.info("checking id %s" % id)
     global Employees
-    employee = Employees.objects.get(user_id=str(id))
+    employee = Employees.objects(user_id=str(id))
+    logging.info("after checking id %s" % id)
     if employee is None:
         return False
     return True
