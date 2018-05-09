@@ -4,7 +4,7 @@ python:
 services:
   - mongodb
 script:
-  - python -m pytest --cov=./
+  - python -m pytest --cov=tests/test.py
 notifications:
   email: false
 after_success:
