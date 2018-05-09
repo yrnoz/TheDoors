@@ -1,5 +1,0 @@
-pymongo
-coverage
-codecov
-pytest
-pytest-cov
