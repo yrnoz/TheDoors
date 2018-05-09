@@ -1,10 +1,10 @@
 language: python
 python:
-  - "2.7"
+  - "3.6.3"
 services:
   - mongodb
 script:
-  - python -m pytest --cov=./
+  - python -m pytest --cov=./tests/test.py
 notifications:
   email: false
 after_success:
