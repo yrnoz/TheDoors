@@ -207,3 +207,13 @@ class Manager(User):
         else:
             # User already exist
             return False, "user email already exist"
+
+    def delete_user(self, user_email):
+        user = User.get_by_email(user_email)
+        if user is not None and user.company == self.company:
+            if Order.remove_user(user_email):
+                Friends.remove_user(user_email)
+                Schedule.remove_user(user_email)
+                Database.DATABASE.remove('users', {'email': user_email})
+                return True
+        return False

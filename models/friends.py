@@ -86,3 +86,8 @@ class Friends(object):
             return True
         else:
             return False
+
+    @staticmethod
+    def remove_user(user_email):
+        query = {'$or': [{'user_email_1': user_email}, {'user_email_2': user_email}]}
+        Database.remove('friends', query)

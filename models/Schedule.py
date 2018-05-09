@@ -9,6 +9,7 @@ if a user want to order room,
  order id - that we can find all the participants in this meeting
 """
 from common.database import Database
+from datetime import datetime
 
 
 class Schedule(object):
@@ -73,6 +74,21 @@ class Schedule(object):
             for sched in data:
                 schedules.append(cls(**sched))
         return schedules
+
+    def future_meeting(self):
+        meeting_date = datetime.strptime(self.date, '%d/%m/%y')
+        now = datetime.utcnow()
+        if now < meeting_date:
+            return False
+        else:
+            return True
+
+    @classmethod
+    def remove_user(cls, user_email):
+        schedules = Schedule.get_by_email(user_email)
+        schedules = [sched for sched in schedules if sched.future_meeting()]
+        for sched in schedules:
+            Database.remove('schedules', {'email': sched.email})
 
     @classmethod
     def get_by_email(cls, email, start=None, end=None):

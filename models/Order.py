@@ -1,6 +1,7 @@
 from common.database import Database
 from models.Room import Room
 from models.Schedule import Schedule
+from datetime import datetime
 
 
 class Order(object):
@@ -37,6 +38,15 @@ class Order(object):
             'company': self.company,
             'facility': self.facility
         }
+
+    def future_meeting(self):
+
+        meeting_date = datetime.strptime(self.date, '%d/%m/%y')
+        now = datetime.utcnow()
+        if now < meeting_date:
+            return False
+        else:
+            return True
 
     @classmethod
     def find_by_id(cls, order_id):
@@ -217,3 +227,20 @@ class Order(object):
             for order in data:
                 orders.append(cls(**order))
         return orders
+
+    def remove_participant(self, user_email):
+        self.participants.remove(user_email)
+        Database.update('orders', {'email': user_email}, self.json())
+
+    @staticmethod
+    def remove_user(user_email):
+        orders = Order.find_by_user_email(user_email)
+        orders = [order for order in orders if order.future_meeting()]
+        if len(orders) > 0:
+            return False
+        else:
+            orders = Order.get_order_by_participant(user_email)
+            orders = [order for order in orders if order.future_meeting()]
+            for order in orders:
+                order.remove_participant(user_email)
+            return True
