@@ -1,0 +1,4 @@
+[run]
+omit =
+    App/Main.py
+    App/ScheduleItem.py
