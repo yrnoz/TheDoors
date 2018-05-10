@@ -126,7 +126,6 @@ class User(object):
         if status:
             rooms = Room.available_rooms(date, len(participants), start_time, end_time, min_permission, user.company,
                                          user.facility)
-            print(rooms)
 
             if user is not None:
                 user.create_meeting(start_time, end_time, order_id, room_id, date, participants)

@@ -177,7 +177,6 @@ class Schedule(object):
     @classmethod
     def assign_all(cls, date, participants, start_time, end_time, order_id, room_id):
         participants = set(participants)
-        print('this is the participants ' + str(participants))
         for user_email in participants:
             new_meeting = Schedule(user_email, date, start_time, end_time, order_id, room_id)
             new_meeting.save_to_mongodb()
