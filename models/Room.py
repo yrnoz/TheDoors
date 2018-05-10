@@ -48,6 +48,14 @@ class Room(object):
             'facility': self.facility
         }
 
+    def intersection(self, start_time, end_time):
+        if self.begin_meeting < start_time < self.end_meeting:
+            return True
+        elif self.begin_meeting < end_time < self.end_meeting:
+            return True
+        else:
+            return False
+
     @classmethod
     def get_by_facility(cls, company, facility):
         data = Database.find('rooms', {'$and': [{'company': company}, {'facility': facility}]})
@@ -65,6 +73,14 @@ class Room(object):
             for room in data:
                 rooms.append(cls(**room))
         return rooms
+
+    def avialable_on_time(self, date, start_time, end_time, demand_sits):
+        schedules = self.get_schedules()
+        save_place = 0
+        for schedule in schedules:
+            if schedule.date == date and self.intersection(start_time, end_time, ):
+                save_place += 1
+        return True if demand_sits < self.capacity - save_place else False
 
     @classmethod
     def get_by_capacity(cls, free_space, company, facility, permission):

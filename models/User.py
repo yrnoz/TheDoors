@@ -53,7 +53,6 @@ class User(object):
         except Exception as e:
             return False
 
-
     @classmethod
     def get_by_email(cls, email):
         data = Database.find_one('users', {'email': email})
@@ -106,7 +105,7 @@ class User(object):
 
     def get_orders(self, start=None, end=None):
         # todo
-        return Order.find_by_id(self._id)
+        return Order.find_by_user_email(self.email)
 
     def get_schedule(self, start=None, end=None):
         # todo
@@ -120,8 +119,9 @@ class User(object):
 
         min_permission = User.min_permission(participants)
 
-        status, order_id = Order.new_order(self.email, date, participants, start_time, end_time, company, facility,
-                                           min_permission, floor_constrain, friends_in_room, max_percent)
+        status, order_id, room_id = Order.new_order(self.email, date, participants, start_time, end_time, company,
+                                                    facility,
+                                                    min_permission, floor_constrain, friends_in_room, max_percent)
         user = User.get_by_email(self.email)
         if status:
             rooms = Room.available_rooms(date, len(participants), start_time, end_time, min_permission, user.company,
@@ -130,7 +130,8 @@ class User(object):
             for user in participants:
                 user = User.get_by_email(user)
                 if user is not None:
-                    user.create_meeting(start_time, end_time, order_id, date, participants)
+                    user.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+        return status, order_id
 
     def cancel_meeting(self, meeting_id):
         """

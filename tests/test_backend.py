@@ -2,8 +2,11 @@ import pytest
 import os
 import subprocess
 
+from datetime import datetime
+
 from common.database import Database
 from models.Room import Room
+from models.Schedule import Schedule
 from models.User import Manager, User
 from models.facilities import Facilities
 from models.friends import Friends
@@ -54,31 +57,36 @@ def test_user():
 def test_rooms():
     Database.initialize()
     Database.remove('rooms', {})
-    status, room_id = Room.add_room(2, 30, 1, 3, 'google', 'matam')
+    status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam')
     assert status is True
-    status, room_id = Room.add_room(2, 30, 3, 4, 'google', 'matam')
+    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam')
     assert status is True
     assert Room.remove_room(room_id) is True
-    status, room_id = Room.add_room(2, 30, 3, 4, 'google', 'matam')
+    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam')
     assert status is True
-    assert Room.get_by_id(room_id).company == 'google'
-    assert len(Room.get_by_company('google')) > 0
-    assert len(Room.get_by_facility('google', 'matam')) > 0
-    assert len(Room.get_by_capacity(5, 'google', 'matam', 2)) > 0
-    assert len(Room.get_by_capacity(50, 'google', 'matam', 2)) == 0
-    assert len(Room.get_by_capacity(20, 'google', 'matam', 3)) > 0
-    assert len(Room.get_by_capacity(20, 'google', 'matam', 1)) == 0
-    assert len(Room.available_rooms('11/11/11', 12, 1, 2, 2, 'google', 'matam')) > 0
+    assert Room.get_by_id(room_id).company == 'YAHOO'
+    assert len(Room.get_by_company('YAHOO')) > 0
+    assert len(Room.get_by_facility('YAHOO', 'matam')) > 0
+    assert len(Room.get_by_capacity(5, 'YAHOO', 'matam', 2)) > 0
+    assert len(Room.get_by_capacity(50, 'YAHOO', 'matam', 2)) == 0
+    assert len(Room.get_by_capacity(20, 'YAHOO', 'matam', 3)) > 0
+    assert len(Room.get_by_capacity(20, 'YAHOO', 'matam', 1)) == 0
+    assert len(Room.available_rooms('11/11/11', 12, 1, 2, 2, 'YAHOO', 'matam')) > 0
 
 
-def test_schedules():
-    # todo
-    pass
-
-
-def test_orders():
-    # todo
-    pass
+def test_schedules_orders():
+    user = User.get_by_email('email_1@gmail.com')
+    participants = ['email_1@gmail.com', 'email_2@gmail.com']
+    date = datetime.utcnow().strftime('%d/%m/%y')
+    status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam')
+    assert len(user.get_orders()) > 0
+    schedules = user.get_schedule()
+    assert len(schedules) > 0
+    schedules = Schedule.get_by_email('email_1@gmail.com')
+    for sched in schedules:
+        sched.get_order_id()
+        sched.future_meeting()
+    assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
 
 
 def test_facilities():

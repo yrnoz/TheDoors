@@ -51,8 +51,10 @@ class Order(object):
     @classmethod
     def find_by_id(cls, order_id):
         data = Database.find('orders', {'_id': order_id})
-        if data is not None:
-            return cls(**data)
+        orders = []
+        for order in data:
+            orders.append(cls(**order))
+        return orders
 
     @classmethod
     def find_by_user_email(cls, user_email):
@@ -172,20 +174,24 @@ class Order(object):
 
         # user already have an order on that time
         if cls.already_haev_an_order_on_this_time(user_email, date, start_time, end_time):
-            return False, "user already have an order on that time "
+            return False, "user already have an order on that time ", "failed"
 
         if Schedule.all_participants_are_free(date, participants, start_time, end_time):
-            new_order = cls(user_email, None, date, participants, start_time, end_time, floor_constrain,
+            new_order = cls(user_email, None, date, participants, start_time, end_time, company, facility,
+                            floor_constrain,
                             friends_in_room, max_percent)
             # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
             # todo - this algorithm try to assign the new order into specific room.
             # todo - if it can't do this then it start to chnage other orders.
-            if new_order.try_schedule_naive_algorithm(company, facility, min_permission):
+            status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
+                                                                     len(participants))
+            if status:
                 new_order.save_to_mongodb()
-                return True, new_order._id
-            else:
-                return False, "failed"
-        return False, " problem with some participants"
+                return True, new_order._id, room_id
+        else:
+            return False, "failed", 'failed'
+
+        return False, " problem with some participants", 'failed'
 
     @classmethod
     def participant_cancel(cls, user_email, order_id):
@@ -210,14 +216,15 @@ class Order(object):
         order = cls.find_by_id(order_id)
         return order.user_email
 
-    def try_schedule_naive_algorithm(self, company, facility, min_permission):
+    def try_schedule_naive_algorithm(self, company, facility, min_permission, participant_num):
         orders = Order.find_by_facility(company, facility)
         rooms = Room.available_rooms(self.date, len(self.participants), self.start_time, self.end_time, min_permission,
                                      company, facility)
         result = {}
         for room in rooms:
-            if room.avialable_on_time(self.date, self.start_time, self.end_time):
+            if room.avialable_on_time(self.date, self.start_time, self.end_time, participant_num):
                 return self._id, room._id
+        return False, 'fail'
 
     @classmethod
     def find_by_facility(cls, company, facility):
