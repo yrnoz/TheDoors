@@ -1,2 +1,0 @@
-class Building(object):
-    pass
