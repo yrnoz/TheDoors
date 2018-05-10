@@ -18,12 +18,16 @@ def p():
 
 def test_user():
     Database.initialize()
-    Manager.user_register("email@gmail.com", '123', 'username', '000000026', 'eng', 3, 'google', 'matam')
     Manager.manager_register("mang@yahoo.com", '123', 'username', '000000000', 'eng', 1, 'YAHOO', 'matam')
+
+    Manager.user_register("email@gmail.com", '123', 'username', '000000026', 'eng', 3, 'YAHOO', 'matam')
     Manager.user_register("user@yahoo.com", '123', 'username', '023412349', 'eng', 1, 'YAHOO', 'matam')
     Manager.user_register("user2@yahoo.com", '123', 'username', '123412348', 'eng', 1, 'YAHOO', 'matam')
+    Manager.user_register("email_1@gmail.com", '123', 'username', '000002600', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_2@gmail.com", '123', 'username', '000260000', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_3@gmail.com", '123', 'username', '000000026', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_4@gmail.com", '123', 'username', '026000000', 'eng', 3, 'YAHOO', 'matam')
 
-    assert User.get_by_email("email@gmail.com") is None
     assert User.get_by_id("email@gmail.com") is None
     assert User.get_by_id("000000000") is not None
     assert User.get_by_email("mang@yahoo.com").company == 'YAHOO'
@@ -40,9 +44,7 @@ def test_user():
     assert manager.delete_user('user@yahoo.com') is True
     assert User.get_by_email('user@yahoo.com') is None
     assert manager.delete_user('email_3@gmail.com') is False
-    assert len(manager.get_friends()) == 0
-    user = User.get_by_email('email_1@gmail.com')
-    assert len(user.get_friends()) == 2
+
     assert manager.delete_user('aaaaaaaaaaaaa') is False
     assert User.min_permission(['email_4@gmail.com', "user2@yahoo.com", "mang@yahoo.com"]) == 1
     assert User.min_permission(['email_4@gmail.com', 'email_1@gmail.com']) == 3
@@ -51,10 +53,11 @@ def test_user():
 
 def test_rooms():
     Database.initialize()
+    Database.remove('rooms', {})
     status, room_id = Room.add_room(2, 30, 1, 3, 'google', 'matam')
-    assert status is False
+    assert status is True
     status, room_id = Room.add_room(2, 30, 3, 4, 'google', 'matam')
-    assert status is False
+    assert status is True
     assert Room.remove_room(room_id) is True
     status, room_id = Room.add_room(2, 30, 3, 4, 'google', 'matam')
     assert status is True
@@ -116,19 +119,16 @@ def test_facilities():
 
 def test_friends():
     Database.initialize()
-    Manager.user_register("email_1@gmail.com", '123', 'username', '000002600', 'eng', 3, 'google', 'matam')
-    Manager.user_register("email_2@gmail.com", '123', 'username', '000260000', 'eng', 3, 'google', 'matam')
-    Manager.user_register("email_3@gmail.com", '123', 'username', '000000026', 'eng', 3, 'google', 'matam')
-    Manager.user_register("email_4@gmail.com", '123', 'username', '026000000', 'eng', 3, 'google', 'matam')
 
     user = User.get_by_email("email_1@gmail.com")
 
     user.add_friend('email_2@gmail.com')
-    user.add_friend('email_3@gmail.com')
+    status, string = user.add_friend('email_3@gmail.com')
+    assert status is False
     user.add_friend('email_4@gmail.com')
 
     assert 'email_2@gmail.com' in user.get_friends()
-    assert 'email_3@gmail.com' in user.get_friends()
+    assert 'email_3@gmail.com' not in user.get_friends()
     assert 'email_4@gmail.com' in user.get_friends()
 
     user.remove_friend('email_4@gmail.com')
@@ -137,4 +137,8 @@ def test_friends():
     user = User.get_by_email("email_2@gmail.com")
     assert 'email_1@gmail.com' in user.get_friends()
     assert not Friends.is_friends('email_1@gmail.com', 'email_4@gmail.com')
-    assert Friends.is_friends('email_1@gmail.com', 'email_3@gmail.com')
+    assert Friends.is_friends('email_1@gmail.com', 'email_2@gmail.com')
+    manager = Manager.get_by_email('mang@yahoo.com')
+    assert len(manager.get_friends()) == 0
+    user = User.get_by_email('email_1@gmail.com')
+    assert len(user.get_friends()) > 0
