@@ -29,6 +29,14 @@ def test_user():
     assert User.get_by_email('user@yahoo.com').company == 'YAHOO'
     assert User.get_by_email("user2@yahoo.com").company == 'YAHOO'
 
+    manager = Manager.get_by_email('user@yahoo.com')
+    assert manager is None
+    manager = Manager.get_by_email('mang@yahoo.com')
+    assert manager is not None
+    assert manager.delete_user('user@yahoo.com') is True
+    assert User.get_by_email('user@yahoo.com') is None
+    assert manager.delete_user('email_3@gmail.com') is False
+
     # user.new_order('15/12/18', ['user2@yahoo.com', 'mang@yahoo.com'], 1, 2)
     # order_id = 'user@yahoo.com15/12/1812'
     # user.cancel_order(order_id)

@@ -12,7 +12,7 @@ from models.friends import Friends
 
 class User(object):
     def __init__(self, email, username, password, _id, role, permission, company, facility,
-                 added_date=datetime.utcnow().strftime('%d/%m/%y')):
+                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=False):
         self.email = email
         self.password = password
         self.username = username
@@ -22,6 +22,7 @@ class User(object):
         self.company = company
         self.facility = facility
         self.added_date = added_date
+        self.manager = manager
 
     def save_to_mongodb(self):
         Database.insert(collection='users', data=self.json())
@@ -37,6 +38,7 @@ class User(object):
             'company': self.company,
             'facility': self.facility,
             'added_date': self.added_date,
+            'manager': self.manager
         }
 
     @classmethod
@@ -152,6 +154,25 @@ class User(object):
 
 class Manager(User):
 
+    def __init__(self, email, username, password, _id, role, permission, company, facility,
+                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=True):
+        self.email = email
+        self.password = password
+        self.username = username
+        self._id = _id
+        self.role = role
+        self.permission = permission
+        self.company = company
+        self.facility = facility
+        self.added_date = added_date
+        self.manager = manager
+
+    @classmethod
+    def get_by_email(cls, email):
+        data = Database.find_one('users', {'$and': [{'manager': True}, {'email': email}]})
+        if data is not None:
+            return cls(**data)
+
     @classmethod
     def manager_register(cls, email, password, username, _id, role, permission, company, facility):
         data = Database.find_one('facilities', {'company': company})
@@ -198,7 +219,7 @@ class Manager(User):
             return False, "bad number ID"
         if user is None:
             # User dose'nt exist, create new user
-            new_user = cls(email, password, username, _id, role, permission, company, facility)
+            new_user = User(email, password, username, _id, role, permission, company, facility)
             try:
                 new_user.save_to_mongodb()
             except Exception as e:
@@ -214,6 +235,6 @@ class Manager(User):
             if Order.remove_user(user_email):
                 Friends.remove_user(user_email)
                 Schedule.remove_user(user_email)
-                Database.DATABASE.remove('users', {'email': user_email})
+                Database.remove('users', {'email': user_email})
                 return True
         return False

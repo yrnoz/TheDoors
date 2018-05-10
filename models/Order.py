@@ -232,6 +232,15 @@ class Order(object):
         self.participants.remove(user_email)
         Database.update('orders', {'email': user_email}, self.json())
 
+    @classmethod
+    def get_orders_by_participant(cls, user_email):
+        orders = []
+        data = Database.find('orders', {'participants': {'$in': [user_email]}})
+        if data is not None:
+            for order in data:
+                orders.append(cls(**order))
+        return orders
+
     @staticmethod
     def remove_user(user_email):
         orders = Order.find_by_user_email(user_email)
@@ -239,7 +248,7 @@ class Order(object):
         if len(orders) > 0:
             return False
         else:
-            orders = Order.get_order_by_participant(user_email)
+            orders = Order.get_orders_by_participant(user_email)
             orders = [order for order in orders if order.future_meeting()]
             for order in orders:
                 order.remove_participant(user_email)
