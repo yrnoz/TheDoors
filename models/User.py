@@ -41,6 +41,19 @@ class User(object):
             'manager': self.manager
         }
 
+    def update_user(self, username=None, password=None, role=None, permission=None, facility=None):
+        self.username = username if username is not None else self.username
+        self.password = password if password is not None else self.password
+        self.role = role if role is not None else self.role
+        self.permission = permission if permission is not None else self.permission
+        self.facility = facility if facility is not None else self.facility
+        try:
+            Database.update('users', {'email': self.email}, self.json())
+            return True
+        except Exception as e:
+            return False
+
+
     @classmethod
     def get_by_email(cls, email):
         data = Database.find_one('users', {'email': email})

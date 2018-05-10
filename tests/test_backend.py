@@ -18,7 +18,6 @@ def p():
 
 def test_user():
     Database.initialize()
-    # todo
     Manager.user_register("email@gmail.com", '123', 'username', '000000026', 'eng', 3, 'google', 'matam')
     Manager.manager_register("mang@yahoo.com", '123', 'username', '000000000', 'eng', 1, 'YAHOO', 'matam')
     Manager.user_register("user@yahoo.com", '123', 'username', '023412349', 'eng', 1, 'YAHOO', 'matam')
@@ -47,13 +46,26 @@ def test_user():
     assert manager.delete_user('aaaaaaaaaaaaa') is False
     assert User.min_permission(['email_4@gmail.com', "user2@yahoo.com", "mang@yahoo.com"]) == 1
     assert User.min_permission(['email_4@gmail.com', 'email_1@gmail.com']) == 3
+    assert manager.update_user('manager') is True
 
 
 def test_rooms():
     Database.initialize()
-    # todo
     status, room_id = Room.add_room(2, 30, 1, 3, 'google', 'matam')
+    assert status is False
     status, room_id = Room.add_room(2, 30, 3, 4, 'google', 'matam')
+    assert status is False
+    assert Room.remove_room(room_id) is True
+    status, room_id = Room.add_room(2, 30, 3, 4, 'google', 'matam')
+    assert status is True
+    assert Room.get_by_id(room_id).company == 'google'
+    assert len(Room.get_by_company('google')) > 0
+    assert len(Room.get_by_facility('google', 'matam')) > 0
+    assert len(Room.get_by_capacity(5, 'google', 'matam', 2)) > 0
+    assert len(Room.get_by_capacity(50, 'google', 'matam', 2)) == 0
+    assert len(Room.get_by_capacity(20, 'google', 'matam', 3)) > 0
+    assert len(Room.get_by_capacity(20, 'google', 'matam', 1)) == 0
+    assert len(Room.available_rooms('11/11/11', 12, 1, 2, 2, 'google', 'matam')) > 0
 
 
 def test_schedules():

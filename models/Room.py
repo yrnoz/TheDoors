@@ -154,32 +154,16 @@ class Room(object):
 
         rooms = Room.get_by_capacity(available_spaces, company, facility, permission)
         for room in rooms:
-            if room.permission <= permission:
-                room_schedule = Schedule.get_by_room_and_date(room._id, date)
-                if len(room_schedule) > 0:
-                    # this room already have some reservation
-                    save_space = Schedule.saved_space(room_schedule, begin_meeting, end_meeting, available_spaces)
-                    if room.capacity - save_space >= available_spaces:
-                        available_rooms.append(cls(**room))
-                else:
-                    # this room is empty
-                    available_rooms.append(cls(**room))
+            room_schedule = Schedule.get_by_room_and_date(room._id, date)
+            if len(room_schedule) > 0:
+                # this room already have some reservation
+                save_space = Schedule.saved_space(room_schedule, begin_meeting, end_meeting, available_spaces)
+                if room.capacity - save_space >= available_spaces:
+                    available_rooms.append(room)
+            else:
+                # this room is empty
+                available_rooms.append(room)
         return available_rooms
-
-    @classmethod
-    def company_rooms(cls, company, facility=None):
-        """
-
-        :param company:
-        :param facility:
-        :return: list of the rooms that belongs to this company,
-        optional: if this function get facility it return the rooms of this company in this facility
-        """
-        rooms = []
-        if facility is None:
-            return Room.get_by_company(company)
-        else:
-            return Room.get_by_facility(company, facility)
 
     @classmethod
     def get_by_id(cls, _id):
