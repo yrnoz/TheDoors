@@ -86,7 +86,7 @@ class Order(object):
         return orders
 
     @classmethod
-    def already_haev_an_order_on_this_time(cls, user_email, date, start_time, end_time):
+    def already_have_an_order_on_this_time(cls, user_email, date, start_time, end_time):
         orders = cls.find_by_date_and_time(user_email, date, start_time, end_time)
         return True if len(orders) > 0 else False
 
@@ -173,7 +173,7 @@ class Order(object):
         """
 
         # user already have an order on that time
-        if cls.already_haev_an_order_on_this_time(user_email, date, start_time, end_time):
+        if cls.already_have_an_order_on_this_time(user_email, date, start_time, end_time):
             return False, "user already have an order on that time ", "failed"
 
         if Schedule.all_participants_are_free(date, participants, start_time, end_time):

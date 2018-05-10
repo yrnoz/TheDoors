@@ -98,7 +98,7 @@ class User(object):
                        participants=[]):
         if self.email not in participants:
             participants.append(self.email)
-        Schedule.add_meeting_to_schedule(date, participants, start_time, end_time, order_id, room_id)
+        Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
 
     def remove_friend(self, friend_email):
         return Friends.remove_friend(self.email, friend_email)
@@ -127,10 +127,9 @@ class User(object):
             rooms = Room.available_rooms(date, len(participants), start_time, end_time, min_permission, user.company,
                                          user.facility)
             print(rooms)
-            for user in participants:
-                user = User.get_by_email(user)
-                if user is not None:
-                    user.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+
+            if user is not None:
+                user.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
 
     def cancel_meeting(self, meeting_id):

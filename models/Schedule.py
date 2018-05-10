@@ -142,16 +142,6 @@ class Schedule(object):
                 return False
         return True
 
-    @classmethod
-    def add_meeting_to_schedule(cls, date, participants, start_time, end_time, order_id, room_id):
-        """
-        add this meeting to the schedule of every user in the participants list.
-        :param date: the date of the meeting
-        :param participants: the emails of the peoples that invited to this meeting
-        :param start_time:
-        :param end_time:
-        """
-        cls.assign_all(date, participants, start_time, end_time, order_id, room_id)
 
     @classmethod
     def delete_meeting_from_schedule(cls, date, participants, start_time, end_time):
@@ -187,6 +177,7 @@ class Schedule(object):
     @classmethod
     def assign_all(cls, date, participants, start_time, end_time, order_id, room_id):
         participants = set(participants)
+        print('this is the participants ' + str(participants))
         for user_email in participants:
             new_meeting = Schedule(user_email, date, start_time, end_time, order_id, room_id)
             new_meeting.save_to_mongodb()
