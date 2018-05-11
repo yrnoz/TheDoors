@@ -22,8 +22,7 @@ def p():
 def home():
     # Todo
 
-    return "hello"
-    # return render_template('index.html')
+    return render_template('page-login.html')
 
 
 @app.route('/login', methods=['POST'])
