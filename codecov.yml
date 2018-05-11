@@ -1,2 +1,4 @@
 ignore:
   - "main.py"
+  - "static"
+  - "templates"
