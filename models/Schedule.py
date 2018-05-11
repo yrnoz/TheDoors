@@ -39,42 +39,6 @@ class Schedule(object):
 
         }
 
-    @classmethod
-    def get_by_email_and_date_and_room(cls, email, date, room_id):
-        """
-
-        :param email:
-        :param date:
-        :param room_id:
-
-        :return: list of schedule's object that represent the schedule of the user's email on the given date
-            in the given room_id
-        """
-        schedules = []
-        query = {'$and': [{'email': email}, {'date': date}, {'room_id': room_id}]}
-        data = Database.find('schedules', query)
-        if data is not None:
-            for sched in data:
-                schedules.append(cls(**sched))
-        return schedules
-
-    @classmethod
-    def get_by_email_and_date(cls, email, date):
-        """
-
-        :param email:
-        :param date:
-        :return: list of schedule's object that represent the schedule of the user's email on the given date
-        """
-        schedules = []
-        query = {'$and': [{'email': email}, {'date': date}]}
-
-        data = Database.find('schedules', query)
-        if data is not None:
-            for sched in data:
-                schedules.append(cls(**sched))
-        return schedules
-
     def future_meeting(self):
         meeting_date = datetime.strptime(self.date, '%d/%m/%y')
         now = datetime.utcnow()
@@ -85,39 +49,30 @@ class Schedule(object):
 
     @classmethod
     def remove_user(cls, user_email):
-        schedules = Schedule.get_by_email(user_email)
+        schedules = Schedule.get_schedules(user_email)
         schedules = [sched for sched in schedules if sched.future_meeting()]
         for sched in schedules:
             Database.remove('schedules', {'email': sched.email})
 
     @classmethod
-    def get_by_email(cls, email, start=None, end=None):
+    def get_schedules(cls, user_email, date=None, start_time=None, end_time=None, room_id=None):
         """
 
-        :param email:
         :return: list of schedule's object that represent the schedule of the user's email
         """
+        email_query = {'email': user_email}
+        date_query = {'date': date} if date is not None else {}
+        room_query = {'room_id': room_id} if room_id is not None else {}
+        begin_query = {'begin_meeting': start_time} if start_time is not None else {}
+        end_query = {'end_meeting': end_time} if end_time is not None else {}
+        query = {'$and': [email_query, date_query, room_query, begin_query, end_query]}
+        print(query)
         schedules = []
-        data = Database.find('schedules', {'email': email})
+        data = Database.find('schedules', query)
         if data is not None:
             for sched in data:
                 schedules.append(cls(**sched))
         return schedules
-
-    @classmethod
-    def get_by_start_time(cls, user_email, date, start_time, end_time):
-        """
-       :return:  object that represent the schedule of the user's email on the given date
-       on the given time
-        """
-
-        query = {
-            '$and': [{'email': user_email}, {'date': date}, {'begin_meeting': start_time}, {'end_meeting': end_time}]
-        }
-
-        data = Database.find_one('schedules', query)
-        if data is not None:
-            return cls(**data)
 
     @classmethod
     def get_by_room(cls, room_id):
@@ -136,12 +91,11 @@ class Schedule(object):
     @classmethod
     def all_participants_are_free(cls, date, participants, start_time, end_time):
         for user_email in participants:
-            data = cls.get_by_start_time(user_email, date, start_time, end_time)
-            if data is not None:
+            data = cls.get_schedules(user_email, date, start_time, end_time)
+            if len(data) > 0:
                 # this user is not free on this time
                 return False
         return True
-
 
     @classmethod
     def delete_meeting_from_schedule(cls, date, participants, start_time, end_time):

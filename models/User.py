@@ -107,28 +107,21 @@ class User(object):
         # todo
         return Order.find_by_user_email(self.email)
 
-    def get_schedule(self, start=None, end=None):
-        # todo
-        return Schedule.get_by_email(self.email, start, end)
+    def get_schedule(self, date=None, start_time=None, end_time=None, room_id=None):
+        return Schedule.get_schedules(self.email, date, start_time, end_time, room_id)
 
     def new_order(self, date, participants, start_time, end_time, company, facility, floor_constrain=None,
                   friends_in_room=None, max_percent=None):
         # todo fix this function
-        if self.email not in participants:
-            participants.append(self.email)
-
+        participants.append(self.email)
+        participants = list(set(participants))
         min_permission = User.min_permission(participants)
 
         status, order_id, room_id = Order.new_order(self.email, date, participants, start_time, end_time, company,
                                                     facility,
                                                     min_permission, floor_constrain, friends_in_room, max_percent)
-        user = User.get_by_email(self.email)
         if status:
-            rooms = Room.available_rooms(date, len(participants), start_time, end_time, min_permission, user.company,
-                                         user.facility)
-
-            if user is not None:
-                user.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+            self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
 
     def cancel_meeting(self, meeting_id):

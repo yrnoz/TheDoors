@@ -174,9 +174,13 @@ class Order(object):
 
         # user already have an order on that time
         if cls.already_have_an_order_on_this_time(user_email, date, start_time, end_time):
+            print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+
             return False, "user already have an order on that time ", "failed"
 
         if Schedule.all_participants_are_free(date, participants, start_time, end_time):
+            print('ssssssssssssssssssssssssssssss')
+
             new_order = cls(user_email, None, date, participants, start_time, end_time, company, facility,
                             floor_constrain,
                             friends_in_room, max_percent)
@@ -185,10 +189,12 @@ class Order(object):
             # todo - if it can't do this then it start to chnage other orders.
             status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
                                                                      len(participants))
+            print(room_id)
             if status:
                 new_order.save_to_mongodb()
                 return True, new_order._id, room_id
         else:
+            print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
             return False, "failed", 'failed'
 
         return False, " problem with some participants", 'failed'
@@ -217,10 +223,10 @@ class Order(object):
         return order.user_email
 
     def try_schedule_naive_algorithm(self, company, facility, min_permission, participant_num):
-        orders = Order.find_by_facility(company, facility)
         rooms = Room.available_rooms(self.date, len(self.participants), self.start_time, self.end_time, min_permission,
                                      company, facility)
-        result = {}
+        print('here the rooms available')
+        print(rooms)
         for room in rooms:
             if room.avialable_on_time(self.date, self.start_time, self.end_time, participant_num):
                 return self._id, room._id

@@ -79,10 +79,11 @@ def test_schedules_orders():
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
     status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam')
+    print(string)
     assert len(user.get_orders()) > 0
     schedules = user.get_schedule()
     assert len(schedules) > 0
-    schedules = Schedule.get_by_email('email_1@gmail.com')
+    schedules = Schedule.get_schedules('email_1@gmail.com')
     for sched in schedules:
         sched.get_order_id()
         sched.future_meeting()
