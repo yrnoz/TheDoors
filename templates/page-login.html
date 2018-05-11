@@ -41,18 +41,30 @@
                     <div class="login-content card">
                         <div class="login-form">
                             <h4>Login</h4>
-                            <form>
+                            <form action="{{ url_for('login_user') }}" method="post">
                                 <div class="form-group">
-                                    <label>Email address</label>
-                                    <input type="email" class="form-control" placeholder="Email">
+                                    {% if wrong_password %}
+                                        <p style="color: red">The password or the email that you've entered is
+                                            incorrect. </p>
+                                        <label>Email address</label>
+                                        <input type="email" class="form-control" placeholder="Email" name="email"
+                                               value={{ email }} required>
+                                    {% else %}
+                                        <label>Email address</label>
+                                        <input type="email" class="form-control" placeholder="Email" name="email"
+                                               required>
+                                    {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label>Password</label>
-                                    <input type="password" class="form-control" placeholder="Password">
+                                    <input type="password" class="form-control" placeholder="Password" name="password"
+                                           required>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">Sign in</button>
                                 <div class="register-link m-t-15 text-center">
-                                    <p>Don't have account ? <a href="#"> Sign Up Here</a></p>
+                                    <p>Don't have account ? <a
+                                            href="{{ url_for('manager_register') }}"> Sign
+                                        Up Here</a></p>
                                 </div>
                             </form>
                         </div>

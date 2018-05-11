@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect
 
 from common.database import Database
 import os
@@ -21,11 +21,10 @@ def p():
 @app.route('/')
 def home():
     # Todo
+    return render_template('page-login.html', wrong_password=False)
 
-    return render_template('page-login.html')
 
-
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login_user():
     email = request.form['email']
     password = request.form['password']
@@ -33,8 +32,13 @@ def login_user():
         User.login(email)
     else:
         session['email'] = None
-        return render_template('login.html')
-    return render_template('not sure yet.html')
+        return render_template('page-login.html', wrong_password=True, email=email)
+    return 'hello' + email
+
+
+@app.route('/register', methods=['GET'])
+def manager_register():
+    return render_template('page-register.html')
 
 
 @app.before_first_request
