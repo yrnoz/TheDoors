@@ -21,6 +21,8 @@ def p():
 @app.route('/')
 def home():
     # Todo
+    return render_template('friends_new.html')
+
     return render_template('page-login.html', wrong_password=False)
 
 
@@ -39,6 +41,26 @@ def login_user():
 @app.route('/register', methods=['GET'])
 def manager_register():
     return render_template('page-register.html')
+
+
+@app.route('/simulation', methods=['GET'])
+def route_simulation():
+    return render_template('Simulation.html')
+
+
+@app.route('/analytics', methods=['GET'])
+def route_analytics():
+    return render_template('Analytics.html')
+
+
+@app.route('/employee_datatable', methods=['GET'])
+def route_employee_datatable():
+    return render_template('Employee-datatable.html')
+
+
+@app.route('/rooms_datatable', methods=['GET'])
+def route_rooms_datatable():
+    return render_template('Rooms-datatable.html')
 
 
 @app.before_first_request
