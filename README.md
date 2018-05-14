@@ -15,9 +15,11 @@ instructions for the working with html pages:
 <script src="{{ url_for('static', filename=path for what you need') }}"></script>
 
 * if we need a link between 2 pages:
+
                                 href = Simulation. html
                         -------------chnage to --------------->
                             href="url_for('route_simulation')"
+                            
 were 'route_simulation' is a function in main.py that return the Simulation.html page
 
 * 'static' - this is directory that contain enything that html files needs
