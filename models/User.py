@@ -186,15 +186,15 @@ class Manager(User):
         else:
             Facilities.add_company(company, facility)
             user = cls.get_by_email(email)
-            if not cls.check_id(_id):
-                return False, "bad number ID"
+            # if not cls.check_id(_id):
+            #     return False, "bad number ID"
             if user is None:
                 # User dose'nt exist, create new user
                 new_user = cls(email, password, username, _id, role, permission, company, facility)
                 try:
                     new_user.save_to_mongodb()
                     session['email'] = email
-                    return True
+                    return True, "SUCCESS"
                 except Exception as e:
                     return False, str(e)
             else:
@@ -220,8 +220,8 @@ class Manager(User):
         if not Facilities.is_company_exist(company):
             return False, "company dose'nt exist"
         user = cls.get_by_email(email)
-        if not cls.check_id(_id):
-            return False, "bad number ID"
+        # if not cls.check_id(_id):
+        #     return False, "bad number ID"
         if user is None:
             # User dose'nt exist, create new user
             new_user = User(email, password, username, _id, role, permission, company, facility)

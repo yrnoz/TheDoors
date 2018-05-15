@@ -11,6 +11,8 @@ app.secret_key = 'super secret key'
     which it mean that when we try to go to some url (/index)
     the function under that run"""
 
+MAX_PERMISSION = 100
+
 
 def p():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
@@ -20,14 +22,14 @@ def p():
 
 @app.route('/logout')
 def logout():
-    session['email'] = None
+    User.logout()
     return redirect(url_for('home'))
 
 
 @app.route('/')
 def home():
     # Todo
-    return render_template('friends_new - tab2.html')
+    # return render_template('friends_page.html')
 
     return render_template('page-login.html', wrong_password=False)
 
@@ -38,15 +40,36 @@ def login_user():
     password = request.form['password']
     if User.login_valid(email, password):
         User.login(email)
+        user = Manager.get_by_email(email)
+        if user.manager == True:
+            return redirect(url_for('route_analytics'))
+        else:
+            return redirect(url_for('route_friends_new_user'))
     else:
-        session['email'] = None
+        User.logout()
         return render_template('page-login.html', wrong_password=True, email=email)
     return 'hello' + email
 
 
-@app.route('/register', methods=['GET'])
+@app.route('/register', methods=['GET', 'POST'])
 def manager_register():
-    return render_template('page-register.html')
+    print(request.method)
+    if request.method == 'GET':
+        return render_template('page-register.html')
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        company = request.form['company']
+        facility = request.form['facility']
+        username = request.form['username']
+        status, info = Manager.manager_register(email, password, username, email, 'Manager', MAX_PERMISSION, company,
+                                                facility)
+        if status:
+            User.login(email)
+            return redirect(url_for('route_analytics'))
+        else:
+            print(info)
+            return redirect(url_for('manager_register'))
 
 
 @app.route('/simulation', methods=['GET'])
@@ -71,7 +94,7 @@ def route_rooms_datatable():
 
 @app.route('/edit_friends', methods=['GET'])
 def route_edit_friends():
-    return render_template('friends_new - tab2.html')
+    return render_template('friends_page.html')
 
 
 @app.route('/reserve_room', methods=['GET'])
@@ -81,7 +104,9 @@ def route_reserve_room():
 
 @app.route('/my_reservations', methods=['GET'])
 def route_reservations():
-    return render_template('uc-calender - new.html')
+    return render_template('reservation.html')
+
+
 
 
 @app.before_first_request

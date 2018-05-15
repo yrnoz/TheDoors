@@ -9,24 +9,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static' , filename= 'images/favicon.png') }}">
-    <title>Ela - Bootstrap Admin Dashboard Template</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static' , filename='images/favicon.png' ) }}">
+    <title>The Doors</title>
 
-    <link href="{{ url_for('static' , filename= 'css/lib/chartist/chartist.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static' , filename= 'css/lib/owl.carousel.min.css') }}" rel="stylesheet"/>
-    <link href="{{ url_for('static' , filename= 'css/lib/owl.theme.default.min.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static' , filename='css/lib/chartist/chartist.min.css' ) }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/lib/owl.carousel.min.css' ) }}" rel="stylesheet"/>
+    <link href="{{ url_for('static' , filename='css/lib/owl.theme.default.min.css' ) }}" rel="stylesheet"/>
     <!-- Bootstrap Core CSS -->
-    <link href="{{ url_for('static' , filename= 'css/lib/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/lib/bootstrap/bootstrap.min.css' ) }}" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="{{ url_for('static' , filename= 'css/helper.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static' , filename= 'css/style.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static' , filename= 'css/nouislider.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
-    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
-    <script src="/wp-includes/js/addInput.js" language="Javascript" type="text/javascript"></script>
-
-
-    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
+    <link href="{{ url_for('static' , filename='css/helper.css' ) }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/style.css' ) }}" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
     <!--[if lt IE 9]>
@@ -36,7 +29,6 @@
 </head>
 
 <body class="fix-header fix-sidebar">
-<script src="{{ url_for('static' , filename= 'js/nouislider.min.js') }}"></script>
 <!-- Preloader - style you can find in spinners.css -->
 <div class="preloader">
     <svg class="circular" viewBox="25 25 50 50">
@@ -217,8 +209,10 @@
                                     <div class="message-center">
                                         <!-- Message -->
                                         <a href="#">
-                                            <div class="user-img"><img src="{{ url_for('static' , filename= 'images/users/5.jpg') }}" alt="user"
-                                                                       class="img-circle"> <span
+                                            <div class="user-img"><img
+                                                    src="{{ url_for('static' , filename='images/users/5.jpg' ) }}"
+                                                    alt="user"
+                                                    class="img-circle"> <span
                                                     class="profile-status online pull-right"></span></div>
                                             <div class="mail-contnet">
                                                 <h5>Michael Qin</h5> <span
@@ -227,8 +221,10 @@
                                         </a>
                                         <!-- Message -->
                                         <a href="#">
-                                            <div class="user-img"><img src="{{ url_for('static' , filename= 'images/users/2.jpg') }}" alt="user"
-                                                                       class="img-circle"> <span
+                                            <div class="user-img"><img
+                                                    src="{{ url_for('static' , filename='images/users/2.jpg' ) }}"
+                                                    alt="user"
+                                                    class="img-circle"> <span
                                                     class="profile-status busy pull-right"></span></div>
                                             <div class="mail-contnet">
                                                 <h5>John Doe</h5> <span
@@ -238,8 +234,10 @@
                                         </a>
                                         <!-- Message -->
                                         <a href="#">
-                                            <div class="user-img"><img src="{{ url_for('static' , filename= 'images/users/3.jpg') }}" alt="user"
-                                                                       class="img-circle"> <span
+                                            <div class="user-img"><img
+                                                    src="{{ url_for('static' , filename='images/users/3.jpg' ) }}"
+                                                    alt="user"
+                                                    class="img-circle"> <span
                                                     class="profile-status away pull-right"></span></div>
                                             <div class="mail-contnet">
                                                 <h5>Mr. John</h5> <span class="mail-desc">I am a singer!</span> <span
@@ -248,8 +246,10 @@
                                         </a>
                                         <!-- Message -->
                                         <a href="#">
-                                            <div class="user-img"><img src="{{ url_for('static' , filename= 'images/users/4.jpg') }}" alt="user"
-                                                                       class="img-circle"> <span
+                                            <div class="user-img"><img
+                                                    src="{{ url_for('static' , filename='images/users/4.jpg' ) }}"
+                                                    alt="user"
+                                                    class="img-circle"> <span
                                                     class="profile-status offline pull-right"></span></div>
                                             <div class="mail-contnet">
                                                 <h5>Michael Qin</h5> <span
@@ -269,8 +269,9 @@
                     <!-- Profile -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false"><img src="{{ url_for('static' , filename= 'images/users/5.jpg') }}" alt="user"
-                                                                           class="profile-pic"/></a>
+                           aria-haspopup="true" aria-expanded="false"><img
+                                src="{{ url_for('static' , filename='images/users/5.jpg' ) }}" alt="user"
+                                class="profile-pic"/></a>
                         <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                             <ul class="dropdown-user">
                                 <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
@@ -292,9 +293,9 @@
                 <ul id="sidebarnav">
                     <li class="nav-devider"></li>
                     <li class="nav-label">Actions</li>
-                    <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
-                    <li><a href="{{ url_for('route_reserve_room') }}">Reserve Room</a></li>
-                    <li><a href="{{ url_for('route_reservations') }}">Reservations</a></li>
+                    <li><a href="{{ url_for('route_edit_friends' ) }}">Edit Friends</a></li>
+                    <li><a href="{{ url_for('route_reserve_room' ) }}">Reserve Room</a></li>
+                    <li><a href="{{ url_for('route_reservations' ) }}">Reservations</a></li>
                     </li>
                 </ul>
             </nav>
@@ -308,165 +309,138 @@
         <!-- Bread crumb -->
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h3 class="text-primary">Schedule you Next Meeting:</h3></div>
+                <h3 class="text-primary">Edit Friends</h3></div>
             <div class="col-md-7 align-self-center">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Actions</a></li>
-                    <li class="breadcrumb-item active">Reserve Room</li>
+                    <li class="breadcrumb-item active">Edit Friends</li>
                 </ol>
             </div>
         </div>
         <!-- End Bread crumb -->
         <!-- Container fluid  -->
         <div class="container-fluid">
-
             <!-- Start Page Content -->
 
             <div class="card">
+                <div class="card-body">
 
-                <div class="gtco-section border-bottom">
-                    <div class="gtco-container">
+                    <div class="row">
                         <div class="col-md-12">
                             <div class="col-md-6 animate-box">
                                 <form action="#">
+                                    <ul class="nav nav-tabs customtab2" role="tablist">
+                                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home7"
+                                                                role="tab"><span class="hidden-sm-up"><i
+                                                class="ti-home"></i></span> <span
+                                                class="hidden-xs-down">Add Friend</span></a></li>
+                                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile7"
+                                                                role="tab"><span class="hidden-sm-up"><i
+                                                class="ti-user"></i></span> <span
+                                                class="hidden-xs-down">Remove Friend</span></a></li>
 
-                                    <div class="row form-group">
-                                        <label for="dateofbirth">Date: &nbsp;</label>
-                                        <input type="date" id="dateofbirth" placeholder="Date">
-                                    </div>
+                                    </ul>
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="home7" role="tabpanel">
+                                            <div class="p-20">
 
-                                    <div class="row form-group">
-                                        <div class="col-md-12">
-                                            <div class="row">
+                                                <div class="row form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="sr-only" for="name">Name</label>
+                                                        <input type="text" id="name" class="form-control"
+                                                               placeholder="Name">
+                                                    </div>
 
-                                                <label for="Begin_hour">Begin Hour: &nbsp;</label>
-                                                <select id="begin_hour" name="begin_hour">
-                                                    <option selected>00:00</option>
-                                                    <option>01:00</option>
-                                                    <option>02:00</option>
-                                                    <option>03:00</option>
-                                                    <option>04:00</option>
-                                                    <option>05:00</option>
-                                                    <option>06:00</option>
-                                                    <option>07:00</option>
-                                                    <option>08:00</option>
-                                                    <option>09:00</option>
-                                                    <option>10:00</option>
-                                                    <option>11:00</option>
-                                                    <option>12:00</option>
-                                                    <option>13:00</option>
-                                                    <option>14:00</option>
-                                                    <option>15:00</option>
-                                                    <option>16:00</option>
-                                                    <option>17:00</option>
-                                                    <option>18:00</option>
-                                                    <option>19:00</option>
-                                                    <option>20:00</option>
-                                                    <option>21:00</option>
-                                                    <option>22:00</option>
-                                                    <option>23:00</option>
-                                                </select>
+                                                </div>
 
-                                                <label for="End_hour">&nbsp; &nbsp; End Hour: &nbsp;</label>
-                                                <select id="end_hour" name="end_hour">
-                                                    <option selected>00:00</option>
-                                                    <option>01:00</option>
-                                                    <option>02:00</option>
-                                                    <option>03:00</option>
-                                                    <option>04:00</option>
-                                                    <option>05:00</option>
-                                                    <option>06:00</option>
-                                                    <option>07:00</option>
-                                                    <option>08:00</option>
-                                                    <option>09:00</option>
-                                                    <option>10:00</option>
-                                                    <option>11:00</option>
-                                                    <option>12:00</option>
-                                                    <option>13:00</option>
-                                                    <option>14:00</option>
-                                                    <option>15:00</option>
-                                                    <option>16:00</option>
-                                                    <option>17:00</option>
-                                                    <option>18:00</option>
-                                                    <option>19:00</option>
-                                                    <option>20:00</option>
-                                                    <option>21:00</option>
-                                                    <option>22:00</option>
-                                                    <option>23:00</option>
-                                                </select>
+                                                <div class="row form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="sr-only" for="email">Email</label>
+                                                        <input type="text" id="email" class="form-control"
+                                                               placeholder="E-mail">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="sr-only" for="office">Office</label>
+                                                        <input type="text" id="office" class="form-control"
+                                                               placeholder="Office">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <input type="button" id="more_friends" onclick="add_friends();"
+                                                           value="Add friends"/>
+                                                </div>
+
+                                                <script>
+                                                    function add_friends() {
+                                                        var table = document.getElementById("customers");
+                                                        var row = table.insertRow(1);
+                                                        var cell1 = row.insertCell(0);
+                                                        var cell2 = row.insertCell(1);
+                                                        var cell3 = row.insertCell(2);
+                                                        var cell4 = row.insertCell(3);
+                                                        cell1.innerHTML = document.getElementById('name').value;
+                                                        cell2.innerHTML = document.getElementById('email').value;
+                                                        cell3.innerHTML = document.getElementById('office').value;
+                                                        cell4.innerHTML = '<button type="button" onClick="deleteRow(this)" >'
+                                                            + 'Remove</button>';
+                                                        document.getElementById('name').value = ''
+                                                        document.getElementById('email').value = ''
+                                                        document.getElementById('office').value = ''
+                                                        alert("Your friend was added succefully!!");
+                                                    }
+
+                                                </script>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="tab-pane  p-20" id="profile7" role="tabpanel">
+                                            <table id="customers" width="600">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>E-mail</th>
+                                                    <th>Office</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>Ilana Levitan</td>
+                                                    <td>ilanalev1996@gmail.com</td>
+                                                    <td>Israel</td>
+                                                    <td><input type="button" value="Remove" onclick="deleteRow(this)">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Aviad Rozenknof</td>
+                                                    <td>aviad111@gmail.com</td>
+                                                    <td>Sweden</td>
+                                                    <td><input type="button" value="Remove" onclick="deleteRow(this)">
+                                                    </td>
+                                                </tr>
+                                            </table>
 
-                                    <br></br>
+                                            <script>
+                                                function deleteRow(r) {
+                                                    var i = r.parentNode.parentNode.rowIndex;
+                                                    document.getElementById("customers").deleteRow(i);
+                                                }
+                                            </script>
 
-                                    <div data-role="rangeslider">
-                                        <label for="range-1a">percent ocupency in room:</label>
-                                        <input type="range" name="range-1a" id="range-1a" min="0" max="100" value="40"
-                                               data-popup-enabled="true" data-show-value="true">
-                                        <label for="range-1b">percent ocupency in room:</label>
-                                        <input type="range" name="range-1b" id="range-1b" min="0" max="100" value="80"
-                                               data-popup-enabled="true" data-show-value="true">
-                                    </div>
+                                        </div>
 
-
-                                    <br></br>
-
-                                    <div data-role="rangeslider">
-                                        <label for="range-1a">Number of friends:</label>
-                                        <input type="range" name="range-1a" id="range-1a" min="0" max="5" value="2"
-                                               data-popup-enabled="true" data-show-value="true">
-                                        <label for="range-1b">Number of friends:</label>
-                                        <input type="range" name="range-1b" id="range-1b" min="0" max="5" value="3"
-                                               data-popup-enabled="true" data-show-value="true">
-                                    </div>
-
-                                    <br></br>
-                                    <div>
-                                        <input type="checkbox" id="subscribeNews" name="subscribe" value="newsletter">
-                                        <label for="subscribeNews">Accessible for people with disabilities</label>
                                     </div>
 
                                 </form>
-
                             </div>
                         </div>
                     </div>
 
+
                 </div>
+            </div>
+            <div class="row">
 
-                <form method="POST">
-                    <div id="dynamicInput">
-                        <br><input hidden type="text" name="myInputs[]">
-                    </div>
-                    <input type="button" value="Add Another friend" onClick="addInput('dynamicInput');">
-                </form>
-                <script>
-                    var counter = 1;
-                    var limit = 10;
-
-                    function addInput(divName) {
-                        if (counter == limit) {
-                            alert("You have reached the limit of adding " + counter + " inputs");
-                        }
-                        else {
-                            var newdiv = document.createElement('div');
-                            newdiv.innerHTML = "E-mail " + (counter) + " <br><input type='text' name='myInputs[]'>";
-                            document.getElementById(divName).appendChild(newdiv);
-                            counter++;
-                        }
-                    }
-                </script>
-
-
-                <br></br>
-                <p align="center">
-                    <button type="button">Submit</button>
-                </p>
-
-                <p align="center">
-                    <label for="announce">The final room will be send to you in the meeting day at 7:00.</label>
-                </p>
 
             </div>
 
@@ -484,34 +458,34 @@
 </div>
 <!-- End Wrapper -->
 <!-- All Jquery -->
-<script src="{{ url_for('static' , filename= 'js/lib/jquery/jquery.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/jquery/jquery.min.js' ) }}"></script>
 <!-- Bootstrap tether Core JavaScript -->
-<script src="{{ url_for('static' , filename= 'js/lib/bootstrap/js/popper.min.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/bootstrap/js/popper.min.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/bootstrap/js/bootstrap.min.js' ) }}"></script>
 <!-- slimscrollbar scrollbar JavaScript -->
-<script src="{{ url_for('static' , filename= 'js/jquery.slimscroll.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/jquery.slimscroll.js' ) }}"></script>
 <!--Menu sidebar -->
-<script src="{{ url_for('static' , filename= 'js/sidebarmenu.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/sidebarmenu.js' ) }}"></script>
 <!--stickey kit -->
-<script src="{{ url_for('static' , filename= 'js/lib/sticky-kit-master/dist/sticky-kit.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/sticky-kit-master/dist/sticky-kit.min.js' ) }}"></script>
 
 
-<script src="{{ url_for('static' , filename= 'js/lib/datamap/d3.min.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/datamap/topojson.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/datamap/datamaps.world.min.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/datamap/datamap-init.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/datamap/d3.min.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/datamap/topojson.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/datamap/datamaps.world.min.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/datamap/datamap-init.js' ) }}"></script>
 
-<script src="{{ url_for('static' , filename= 'js/lib/weather/jquery.simpleWeather.min.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/weather/weather-init.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/owl-carousel/owl.carousel.min.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/owl-carousel/owl.carousel-init.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/weather/jquery.simpleWeather.min.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/weather/weather-init.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/owl-carousel/owl.carousel.min.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/owl-carousel/owl.carousel-init.js' ) }}"></script>
 
 
-<script src="{{ url_for('static' , filename= 'js/lib/chartist/chartist.min.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/chartist/chartist-plugin-tooltip.min.js') }}"></script>
-<script src="{{ url_for('static' , filename= 'js/lib/chartist/chartist-init.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/chartist/chartist.min.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/chartist/chartist-plugin-tooltip.min.js' ) }}"></script>
+<script src="{{ url_for('static' , filename='js/lib/chartist/chartist-init.js' ) }}"></script>
 <!--Custom JavaScript -->
-<script src="{{ url_for('static' , filename= 'js/custom.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/custom.min.js' ) }}"></script>
 
 </body>
 

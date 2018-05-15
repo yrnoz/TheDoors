@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static' , filename='images/favicon.png') }}">
-    <title>Ela - Bootstrap Admin Dashboard Template</title>
+    <title>The Doors</title>
 
     <link href="{{ url_for('static' , filename='css/lib/chartist/chartist.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static' , filename='css/lib/owl.carousel.min.css') }}" rel="stylesheet"/>
@@ -270,11 +270,8 @@
                                 class="profile-pic"/></a>
                         <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                             <ul class="dropdown-user">
-                                <li><a href="#"><i class="ti-user"></i> Profile</a></li>
-                                <li><a href="#"><i class="ti-wallet"></i> Balance</a></li>
-                                <li><a href="#"><i class="ti-email"></i> Inbox</a></li>
                                 <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
-                                <li><a href="#"><i class="fa fa-power-off"></i> Logout</a></li>
+                                <li><a href="{{ url_for('logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
                             </ul>
                         </div>
                     </li>
@@ -312,7 +309,6 @@
                     <li><a href="ui-alert.html">Add/Remove Friends</a></li>
                     <li><a href="ui-button.html">Reserve Room</a></li>
                     <li><a href="ui-dropdown.html">Reservations</a></li>
-                    <li><a href="ui-progressbar.html">LOGOUT</a></li>
                     </li>
                 </ul>
             </nav>
