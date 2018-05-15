@@ -40,11 +40,10 @@ def login_user():
     password = request.form['password']
     if User.login_valid(email, password):
         User.login(email)
-        user = Manager.get_by_email(email)
-        if user.manager == True:
+        if Manager.get_by_email(email) is not None:
             return redirect(url_for('route_analytics'))
-        else:
-            return redirect(url_for('route_friends_new_user'))
+        elif User.get_by_email(email) is not None:
+            return redirect(url_for('route_edit_friends'))
     else:
         User.logout()
         return render_template('page-login.html', wrong_password=True, email=email)
@@ -94,19 +93,23 @@ def route_rooms_datatable():
 
 @app.route('/edit_friends', methods=['GET'])
 def route_edit_friends():
-    return render_template('friends_page.html')
+    email = session['email']
+    user = User.get_by_email(email)
+    return render_template('friends_page.html', manager=user.manager)
 
 
 @app.route('/reserve_room', methods=['GET'])
 def route_reserve_room():
-    return render_template('order.html')
+    email = session['email']
+    user = User.get_by_email(email)
+    return render_template('order.html', manager=user.manager)
 
 
 @app.route('/my_reservations', methods=['GET'])
 def route_reservations():
-    return render_template('reservation.html')
-
-
+    email = session['email']
+    user = User.get_by_email(email)
+    return render_template('reservation.html', manager=user.manager)
 
 
 @app.before_first_request

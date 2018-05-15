@@ -23,7 +23,7 @@
     <link href="{{ url_for('static' , filename= 'css/nouislider.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
     <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
-    <script src="/wp-includes/js/addInput.js" language="Javascript" type="text/javascript"></script>
+    {#    <script src="/wp-includes/js/addInput.js" language="Javascript" type="text/javascript"></script>#}
 
 
     <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
@@ -217,8 +217,10 @@
                                     <div class="message-center">
                                         <!-- Message -->
                                         <a href="#">
-                                            <div class="user-img"><img src="{{ url_for('static' , filename= 'images/users/5.jpg') }}" alt="user"
-                                                                       class="img-circle"> <span
+                                            <div class="user-img"><img
+                                                    src="{{ url_for('static' , filename= 'images/users/5.jpg') }}"
+                                                    alt="user"
+                                                    class="img-circle"> <span
                                                     class="profile-status online pull-right"></span></div>
                                             <div class="mail-contnet">
                                                 <h5>Michael Qin</h5> <span
@@ -227,8 +229,10 @@
                                         </a>
                                         <!-- Message -->
                                         <a href="#">
-                                            <div class="user-img"><img src="{{ url_for('static' , filename= 'images/users/2.jpg') }}" alt="user"
-                                                                       class="img-circle"> <span
+                                            <div class="user-img"><img
+                                                    src="{{ url_for('static' , filename= 'images/users/2.jpg') }}"
+                                                    alt="user"
+                                                    class="img-circle"> <span
                                                     class="profile-status busy pull-right"></span></div>
                                             <div class="mail-contnet">
                                                 <h5>John Doe</h5> <span
@@ -238,8 +242,10 @@
                                         </a>
                                         <!-- Message -->
                                         <a href="#">
-                                            <div class="user-img"><img src="{{ url_for('static' , filename= 'images/users/3.jpg') }}" alt="user"
-                                                                       class="img-circle"> <span
+                                            <div class="user-img"><img
+                                                    src="{{ url_for('static' , filename= 'images/users/3.jpg') }}"
+                                                    alt="user"
+                                                    class="img-circle"> <span
                                                     class="profile-status away pull-right"></span></div>
                                             <div class="mail-contnet">
                                                 <h5>Mr. John</h5> <span class="mail-desc">I am a singer!</span> <span
@@ -248,8 +254,10 @@
                                         </a>
                                         <!-- Message -->
                                         <a href="#">
-                                            <div class="user-img"><img src="{{ url_for('static' , filename= 'images/users/4.jpg') }}" alt="user"
-                                                                       class="img-circle"> <span
+                                            <div class="user-img"><img
+                                                    src="{{ url_for('static' , filename= 'images/users/4.jpg') }}"
+                                                    alt="user"
+                                                    class="img-circle"> <span
                                                     class="profile-status offline pull-right"></span></div>
                                             <div class="mail-contnet">
                                                 <h5>Michael Qin</h5> <span
@@ -269,8 +277,9 @@
                     <!-- Profile -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false"><img src="{{ url_for('static' , filename= 'images/users/5.jpg') }}" alt="user"
-                                                                           class="profile-pic"/></a>
+                           aria-haspopup="true" aria-expanded="false"><img
+                                src="{{ url_for('static' , filename= 'images/users/5.jpg') }}" alt="user"
+                                class="profile-pic"/></a>
                         <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                             <ul class="dropdown-user">
                                 <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
@@ -291,6 +300,29 @@
             <nav class="sidebar-nav">
                 <ul id="sidebarnav">
                     <li class="nav-devider"></li>
+                    {% if manager %}
+                        <li class="nav-label">Home</li>
+                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                                class="hide-menu">Dashboard <span
+                                class="label label-rouded label-primary pull-right">2</span></span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ url_for('route_simulation') }}">Simulation </a>
+                                </li>
+                                <li><a href="{{ url_for('route_analytics') }}">Analytics </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                                class="hide-menu">Manager Tools <span
+                                class="label label-rouded label-primary pull-right">2</span></span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
+                                </li>
+                                <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
                     <li class="nav-label">Actions</li>
                     <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
                     <li><a href="{{ url_for('route_reserve_room') }}">Reserve Room</a></li>

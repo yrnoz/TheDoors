@@ -305,6 +305,7 @@
             <nav class="sidebar-nav">
                 <ul id="sidebarnav">
                     <li class="nav-devider"></li>
+                    {% if manager %}
                     <li class="nav-label">Home</li>
                     <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
                             class="hide-menu">Dashboard <span
@@ -326,6 +327,7 @@
                             </li>
                         </ul>
                     </li>
+                    {% endif %}
                     <li class="nav-label">Actions</li>
                     <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
                     <li><a href="{{ url_for('route_reserve_room') }}">Reserve Room</a></li>
