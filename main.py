@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, url_for
 
 from common.database import Database
 import os
@@ -18,10 +18,16 @@ def p():
     p.terminate()
 
 
+@app.route('/logout')
+def logout():
+    session['email'] = None
+    return redirect(url_for('home'))
+
+
 @app.route('/')
 def home():
     # Todo
-    return render_template('friends_new.html')
+    return render_template('friends_new - tab2.html')
 
     return render_template('page-login.html', wrong_password=False)
 
@@ -61,6 +67,21 @@ def route_employee_datatable():
 @app.route('/rooms_datatable', methods=['GET'])
 def route_rooms_datatable():
     return render_template('Rooms-datatable.html')
+
+
+@app.route('/edit_friends', methods=['GET'])
+def route_edit_friends():
+    return render_template('friends_new - tab2.html')
+
+
+@app.route('/reserve_room', methods=['GET'])
+def route_reserve_room():
+    return render_template('order.html')
+
+
+@app.route('/my_reservations', methods=['GET'])
+def route_reservations():
+    return render_template('uc-calender - new.html')
 
 
 @app.before_first_request
