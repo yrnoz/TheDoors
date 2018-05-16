@@ -14,6 +14,18 @@ app.secret_key = 'super secret key'
 MAX_PERMISSION = 100
 
 
+def add_user(request):
+    pass
+
+
+def remove_user(request):
+    pass
+
+
+def import_users(request):
+    pass
+
+
 def p():
     p = subprocess.Popen('mongod', stdout=open(os.devnull, "w"))
     yield p
@@ -30,6 +42,12 @@ def logout():
 def home():
     # Todo
     # return render_template('friends_page.html')
+    if session['email'] is not None:
+        user = User.get_by_email(session['email'])
+        if user.manager:
+            return redirect(url_for('route_analytics'))
+        else:
+            return redirect(url_for('route_edit_friends'))
 
     return render_template('page-login.html', wrong_password=False)
 
@@ -73,43 +91,62 @@ def manager_register():
 
 @app.route('/simulation', methods=['GET'])
 def route_simulation():
-    return render_template('Simulation.html')
+    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
+        return render_template('Simulation.html')
 
 
 @app.route('/analytics', methods=['GET'])
 def route_analytics():
-    return render_template('Analytics.html')
+    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
+        return render_template('Analytics.html')
 
 
-@app.route('/employee_datatable', methods=['GET'])
+@app.route('/employee_datatable', methods=['GET', 'POST'])
 def route_employee_datatable():
-    return render_template('Employee-datatable.html')
+    manager = Manager.get_by_email(session['email'])
+    if session['email'] is not None and manager is not None:
+        users = manager.get_employees()
+        if request.method == 'GET':
+            return render_template('Employee-datatable.html', users=users)
+        elif request.method == 'POST':
+            if request.form['type'] == 'add_user':
+                add_user(request)
+            elif request.form['type'] == 'remove_user':
+                remove_user(request)
+            elif request.form['type'] == 'import_users':
+                import_users(request)
+            return render_template('Employee-datatable.html', users=users)
 
 
 @app.route('/rooms_datatable', methods=['GET'])
 def route_rooms_datatable():
-    return render_template('Rooms-datatable.html')
+    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
+        return render_template('Rooms-datatable.html')
 
 
 @app.route('/edit_friends', methods=['GET'])
 def route_edit_friends():
-    email = session['email']
-    user = User.get_by_email(email)
-    return render_template('friends_page.html', manager=user.manager)
+    if session['email'] is not None:
+        email = session['email']
+        user = User.get_by_email(email)
+        return render_template('friends_page.html', manager=user.manager)
 
 
 @app.route('/reserve_room', methods=['GET'])
 def route_reserve_room():
-    email = session['email']
-    user = User.get_by_email(email)
-    return render_template('order.html', manager=user.manager)
+    if session['email'] is not None:
+        if request.method == 'GET':
+            email = session['email']
+            user = User.get_by_email(email)
+            return render_template('order.html', manager=user.manager)
 
 
 @app.route('/my_reservations', methods=['GET'])
 def route_reservations():
-    email = session['email']
-    user = User.get_by_email(email)
-    return render_template('reservation.html', manager=user.manager)
+    if session['email'] is not None:
+        email = session['email']
+        user = User.get_by_email(email)
+        return render_template('reservation.html', manager=user.manager)
 
 
 @app.before_first_request

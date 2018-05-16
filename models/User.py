@@ -60,6 +60,17 @@ class User(object):
             return cls(**data)
 
     @classmethod
+    def get_by_company(cls, company):
+        users = []
+        data = Database.find('users', {'company': company})
+        if data is not None:
+            for user in data:
+                users.append(cls(**user))
+        print(len(users))
+        print(users)
+        return set(users)
+
+    @classmethod
     def get_by_id(cls, _id):
         data = Database.find_one('users', {'_id': _id})
         if data is not None:
@@ -178,9 +189,13 @@ class Manager(User):
         if data is not None:
             return cls(**data)
 
+    def get_employees(self):
+        return User.get_by_company(self.company)
+
     @classmethod
     def manager_register(cls, email, password, username, _id, role, permission, company, facility):
         data = Database.find_one('facilities', {'company': company})
+        role = 'Manager'
         if data is not None:
             return False, "company already exist"
         else:
@@ -190,7 +205,7 @@ class Manager(User):
             #     return False, "bad number ID"
             if user is None:
                 # User dose'nt exist, create new user
-                new_user = cls(email, password, username, _id, role, permission, company, facility)
+                new_user = cls(email, username, password, _id, role, permission, company, facility)
                 try:
                     new_user.save_to_mongodb()
                     session['email'] = email
@@ -224,7 +239,7 @@ class Manager(User):
         #     return False, "bad number ID"
         if user is None:
             # User dose'nt exist, create new user
-            new_user = User(email, password, username, _id, role, permission, company, facility)
+            new_user = User(email, username, password, _id, role, permission, company, facility)
             try:
                 new_user.save_to_mongodb()
             except Exception as e:

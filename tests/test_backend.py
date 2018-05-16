@@ -21,35 +21,35 @@ def p():
 
 def test_user():
     Database.initialize()
-    Manager.manager_register("mang@yahoo.com", '123', 'username', '000000000', 'eng', 1, 'YAHOO', 'matam')
+    Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
-    Manager.user_register("email@gmail.com", '123', 'username', '000000026', 'eng', 3, 'YAHOO', 'matam')
-    Manager.user_register("user@yahoo.com", '123', 'username', '023412349', 'eng', 1, 'YAHOO', 'matam')
-    Manager.user_register("user2@yahoo.com", '123', 'username', '123412348', 'eng', 1, 'YAHOO', 'matam')
-    Manager.user_register("email_1@gmail.com", '123', 'username', '000002600', 'eng', 3, 'YAHOO', 'matam')
-    Manager.user_register("email_2@gmail.com", '123', 'username', '000260000', 'eng', 3, 'YAHOO', 'matam')
-    Manager.user_register("email_3@gmail.com", '123', 'username', '000000026', 'eng', 3, 'YAHOO', 'matam')
-    Manager.user_register("email_4@gmail.com", '123', 'username', '026000000', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("user@yahoo.com", '123', 'yosi', '023412349', 'eng', 1, 'YAHOO', 'matam')
+    Manager.user_register("user2@yahoo.com", '123', 'dave', '123412348', 'eng', 1, 'YAHOO', 'matam')
+    Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_2@gmail.com", '123', 'avi', '000260000', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_3@gmail.com", '123', 'yin', '000000026', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
 
     assert User.get_by_id("email@gmail.com") is None
     assert User.get_by_id("000000000") is not None
-    assert User.get_by_email("mang@yahoo.com").company == 'YAHOO'
+    assert User.get_by_email("admin@yahoo.com").company == 'YAHOO'
     assert User.get_by_email('user@yahoo.com').company == 'YAHOO'
     assert User.get_by_email("user2@yahoo.com").company == 'YAHOO'
 
-    assert User.login_valid('email_4@gmail.com', 'username') is True
+    assert User.login_valid('email_4@gmail.com', '123') is True
     assert User.login_valid('email_4@gmail.com', 'username__') is False
 
     manager = Manager.get_by_email('user@yahoo.com')
     assert manager is None
-    manager = Manager.get_by_email('mang@yahoo.com')
+    manager = Manager.get_by_email('admin@yahoo.com')
     assert manager is not None
     assert manager.delete_user('user@yahoo.com') is True
     assert User.get_by_email('user@yahoo.com') is None
     assert manager.delete_user('email_3@gmail.com') is False
 
     assert manager.delete_user('aaaaaaaaaaaaa') is False
-    assert User.min_permission(['email_4@gmail.com', "user2@yahoo.com", "mang@yahoo.com"]) == 1
+    assert User.min_permission(['email_4@gmail.com', "user2@yahoo.com", "admin@yahoo.com"]) == 1
     assert User.min_permission(['email_4@gmail.com', 'email_1@gmail.com']) == 3
     assert manager.update_user('manager') is True
 
@@ -147,7 +147,7 @@ def test_friends():
     assert 'email_1@gmail.com' in user.get_friends()
     assert not Friends.is_friends('email_1@gmail.com', 'email_4@gmail.com')
     assert Friends.is_friends('email_1@gmail.com', 'email_2@gmail.com')
-    manager = Manager.get_by_email('mang@yahoo.com')
+    manager = Manager.get_by_email('admin@yahoo.com')
     assert len(manager.get_friends()) == 0
     user = User.get_by_email('email_1@gmail.com')
     assert len(user.get_friends()) > 0
