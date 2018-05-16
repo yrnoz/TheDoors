@@ -370,26 +370,9 @@
 
                                                 <div class="row form-group">
                                                     <div class="col-md-12">
-                                                        <label class="sr-only" for="name">Name</label>
-                                                        <input type="text" id="name" class="form-control"
-                                                               placeholder="Name">
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="row form-group">
-                                                    <div class="col-md-12">
                                                         <label class="sr-only" for="email">Email</label>
                                                         <input type="text" id="email" class="form-control"
                                                                placeholder="E-mail">
-                                                    </div>
-                                                </div>
-
-                                                <div class="row form-group">
-                                                    <div class="col-md-12">
-                                                        <label class="sr-only" for="office">Office</label>
-                                                        <input type="text" id="office" class="form-control"
-                                                               placeholder="Office">
                                                     </div>
                                                 </div>
 
@@ -427,20 +410,15 @@
                                                     <th>E-mail</th>
                                                     <th>Office</th>
                                                 </tr>
-                                                <tr>
-                                                    <td>Ilana Levitan</td>
-                                                    <td>ilanalev1996@gmail.com</td>
-                                                    <td>Israel</td>
-                                                    <td><input type="button" value="Remove" onclick="deleteRow(this)">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Aviad Rozenknof</td>
-                                                    <td>aviad111@gmail.com</td>
-                                                    <td>Sweden</td>
-                                                    <td><input type="button" value="Remove" onclick="deleteRow(this)">
-                                                    </td>
-                                                </tr>
+                                                <tbody>
+                                                {% for user in friends %}
+                                                    <tr>
+                                                        <td style="color:black;">{{ user.username }}</td>
+                                                        <td style="color:black;">{{ user.email }}</td>
+                                                        <td style="color:black;">{{ user.facility }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
                                             </table>
 
                                             <script>

@@ -66,8 +66,8 @@ class User(object):
         if data is not None:
             for user in data:
                 users.append(cls(**user))
-        print(len(users))
-        print(users)
+        # print(len(users))
+        # print(users)
         return set(users)
 
     @classmethod
@@ -95,7 +95,18 @@ class User(object):
         session['email'] = None
 
     def get_friends(self):
-        return Friends.get_friends(self.email)
+        friends = Friends.get_friends(self.email)
+        res = []
+        for friend_email in friends:
+            res.append(User.get_by_email(friend_email))
+        return res
+
+    def get_friends_emails(self):
+        friends = Friends.get_friends(self.email)
+        res = []
+        for friend_email in friends:
+            res.append(friend_email)
+        return res
 
     def add_friend(self, friend_email):
         friend = User.get_by_email(friend_email)

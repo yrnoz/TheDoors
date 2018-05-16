@@ -129,25 +129,30 @@ def test_facilities():
 def test_friends():
     Database.initialize()
 
-    user = User.get_by_email("email_1@gmail.com")
+    user1 = User.get_by_email("email_1@gmail.com")
+    user2= User.get_by_email('email_2@gmail.com')
+    user3 = User.get_by_email('email_3@gmail.com')
+    user4 = User.get_by_email('email_4@gmail.com')
 
-    user.add_friend('email_2@gmail.com')
-    status, string = user.add_friend('email_3@gmail.com')
+    user1.add_friend('email_2@gmail.com')
+    status, string = user1.add_friend('email_3@gmail.com')
     assert status is False
-    user.add_friend('email_4@gmail.com')
+    user1.add_friend('email_4@gmail.com')
 
-    assert 'email_2@gmail.com' in user.get_friends()
-    assert 'email_3@gmail.com' not in user.get_friends()
-    assert 'email_4@gmail.com' in user.get_friends()
+    assert user2.email in user1.get_friends_emails()
+    assert user3 not in user1.get_friends_emails()
+    assert user4.email in user1.get_friends_emails()
 
-    user.remove_friend('email_4@gmail.com')
-    assert 'email_4@gmail.com' not in user.get_friends()
+    user1.remove_friend('email_4@gmail.com')
+    assert 'email_4@gmail.com' not in user1.get_friends_emails()
 
-    user = User.get_by_email("email_2@gmail.com")
-    assert 'email_1@gmail.com' in user.get_friends()
+    assert 'email_1@gmail.com' in user2.get_friends_emails()
     assert not Friends.is_friends('email_1@gmail.com', 'email_4@gmail.com')
     assert Friends.is_friends('email_1@gmail.com', 'email_2@gmail.com')
+
     manager = Manager.get_by_email('admin@yahoo.com')
     assert len(manager.get_friends()) == 0
-    user = User.get_by_email('email_1@gmail.com')
-    assert len(user.get_friends()) > 0
+
+    assert len(user1.get_friends()) > 0
+
+    manager.add_friend('email_1@gmail.com')

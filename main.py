@@ -42,14 +42,15 @@ def logout():
 def home():
     # Todo
     # return render_template('friends_page.html')
-    if session['email'] is not None:
-        user = User.get_by_email(session['email'])
-        if user.manager:
-            return redirect(url_for('route_analytics'))
-        else:
-            return redirect(url_for('route_edit_friends'))
-
-    return render_template('page-login.html', wrong_password=False)
+    try:
+        if session['email'] is not None:
+            user = User.get_by_email(session['email'])
+            if user.manager:
+                return redirect(url_for('route_analytics'))
+            else:
+                return redirect(url_for('route_edit_friends'))
+    except Exception as e:
+      return render_template ('page-login.html', wrong_password=False)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -129,7 +130,10 @@ def route_edit_friends():
     if session['email'] is not None:
         email = session['email']
         user = User.get_by_email(email)
-        return render_template('friends_page.html', manager=user.manager)
+        friends = user.get_friends()
+        for friend in friends:
+            print friend
+        return render_template('friends_page.html', manager=user.manager, friends=friends)
 
 
 @app.route('/reserve_room', methods=['GET'])
