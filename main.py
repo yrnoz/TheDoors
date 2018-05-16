@@ -14,15 +14,22 @@ app.secret_key = 'super secret key'
 MAX_PERMISSION = 100
 
 
-def add_user(request):
+def add_user(request, manager):
+    email = request.form['email']
+    password = request.form['password']
+    username = request.form['username']
+    _id = request.form['id']
+    permission = request.form['permission']
+    facility = request.form['facility']
+    role = request.form['role']
+    manager.user_register(email, password, username, _id, role, permission, manager.company, facility)
+
+
+def remove_user(request, manager):
     pass
 
 
-def remove_user(request):
-    pass
-
-
-def import_users(request):
+def import_users(request, manager):
     pass
 
 
@@ -50,7 +57,7 @@ def home():
             else:
                 return redirect(url_for('route_edit_friends'))
     except Exception as e:
-      return render_template ('page-login.html', wrong_password=False)
+        return render_template('page-login.html', wrong_password=False)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -106,17 +113,20 @@ def route_analytics():
 def route_employee_datatable():
     manager = Manager.get_by_email(session['email'])
     if session['email'] is not None and manager is not None:
-        users = manager.get_employees()
+        roles = manager.get_roles()
+        facilities = manager.get_facilities()
         if request.method == 'GET':
-            return render_template('Employee-datatable.html', users=users)
+            users = manager.get_employees()
+            return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
         elif request.method == 'POST':
             if request.form['type'] == 'add_user':
-                add_user(request)
+                add_user(request, manager)
             elif request.form['type'] == 'remove_user':
-                remove_user(request)
+                remove_user(request, manager)
             elif request.form['type'] == 'import_users':
-                import_users(request)
-            return render_template('Employee-datatable.html', users=users)
+                import_users(request, manager)
+            users = manager.get_employees()
+            return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
 
 
 @app.route('/rooms_datatable', methods=['GET'])
@@ -131,8 +141,6 @@ def route_edit_friends():
         email = session['email']
         user = User.get_by_email(email)
         friends = user.get_friends()
-        for friend in friends:
-            print friend
         return render_template('friends_page.html', manager=user.manager, friends=friends)
 
 

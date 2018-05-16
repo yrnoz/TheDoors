@@ -430,16 +430,17 @@
                                                                     <label class="control-label">Name</label>
                                                                     <input name="username" type="text" id="Name"
                                                                            class="form-control"
-                                                                           placeholder="John Doe">
+                                                                           placeholder="John Doe" required>
                                                                 </div>
                                                             </div>
                                                             <!--/span-->
                                                             <div class="col-md-6">
                                                                 <div class="form-group has-danger">
                                                                     <label class="control-label">Email</label>
-                                                                    <input name="email" type="text" id="Email"
+                                                                    <input name="email" type="email" id="Email"
                                                                            class="form-control form-control-danger"
-                                                                           placeholder="someone@email.com"></div>
+                                                                           placeholder="someone@email.com" required>
+                                                                </div>
                                                             </div>
                                                             <!--/span-->
                                                         </div>
@@ -450,17 +451,24 @@
                                                                     <label class="control-label">Password</label>
                                                                     <input name="password" type="text" id="password"
                                                                            class="form-control form-control-danger"
-                                                                           placeholder="password"></div>
+                                                                           placeholder="password" required></div>
                                                             </div>
                                                             <!--/span-->
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Facility</label>
-                                                                    <input name="facility" type="text"
-                                                                           class="form-control"
-                                                                           placeholder="facility">
+                                                                    <select name="facility"
+                                                                            class="form-control custom-select"
+                                                                            data-placeholder="Choose a Category"
+                                                                            tabindex="1">
+                                                                        {% for facility in facilities %}
+                                                                            <option value="{{ facility }}">{{ facility }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
                                                                 </div>
                                                             </div>
+
+
                                                             <!--/span-->
                                                         </div>
                                                         <!--/row-->
@@ -472,10 +480,9 @@
                                                                             class="form-control custom-select"
                                                                             data-placeholder="Choose a Category"
                                                                             tabindex="1">
-                                                                        <option value="Category 1">SE</option>
-                                                                        <option value="Category 2">EE</option>
-                                                                        <option value="Category 3">QA</option>
-                                                                        <option value="Category 4">Manager</option>
+                                                                        {% for role in roles %}
+                                                                            <option value="{{ role }}">{{ role }}</option>
+                                                                        {% endfor %}
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -485,7 +492,7 @@
                                                                     <label class="control-label">Permission</label>
                                                                     <input name="permission" type="text" id="permission"
                                                                            class="form-control form-control-danger"
-                                                                           placeholder="permission"></div>
+                                                                           placeholder="permission" required></div>
                                                             </div>
                                                             <!--/span-->
                                                         </div>

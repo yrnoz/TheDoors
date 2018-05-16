@@ -12,7 +12,7 @@ from models.friends import Friends
 
 class User(object):
     def __init__(self, email, username, password, _id, role, permission, company, facility,
-                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=False):
+                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=False, roles=[]):
         self.email = email
         self.password = password
         self.username = username
@@ -23,6 +23,7 @@ class User(object):
         self.facility = facility
         self.added_date = added_date
         self.manager = manager
+        self.roles = roles
 
     def save_to_mongodb(self):
         Database.insert(collection='users', data=self.json())
@@ -38,7 +39,8 @@ class User(object):
             'company': self.company,
             'facility': self.facility,
             'added_date': self.added_date,
-            'manager': self.manager
+            'manager': self.manager,
+            'roles': self.roles
         }
 
     def update_user(self, username=None, password=None, role=None, permission=None, facility=None):
@@ -182,7 +184,8 @@ class User(object):
 class Manager(User):
 
     def __init__(self, email, username, password, _id, role, permission, company, facility,
-                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=True):
+                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=True,
+                 roles=['Software Engineer', 'Architect Engineer', 'Electrical Engineer', 'Programmer']):
         self.email = email
         self.password = password
         self.username = username
@@ -193,6 +196,7 @@ class Manager(User):
         self.facility = facility
         self.added_date = added_date
         self.manager = manager
+        self.roles = roles
 
     @classmethod
     def get_by_email(cls, email):
@@ -269,3 +273,14 @@ class Manager(User):
                 Database.remove('users', {'email': user_email})
                 return True
         return False
+
+    def get_facilities(self):
+        return Facilities.get_facilities(self.company)
+
+    def get_roles(self):
+        return self.roles
+
+    def add_roles(self, new_role):
+        self.roles.append(new_role)
+        self.roles = list(set(self.roles))
+        Database.update('users', {'email': self.email}, self.json())
