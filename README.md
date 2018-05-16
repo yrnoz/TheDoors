@@ -24,7 +24,7 @@ were 'route_simulation' is a function in main.py that return the Simulation.html
 
 * 'static' - this is directory that contain enything that html files needs
 
-* Give a name to every input field ---->  <input type="email" name="email"  value={{ email }} required>
+* Give a name to every input field ---->  input type="email" name="email"  value={{ email }} required
 
 the 'required' keyword make this field to be required
 and this part 'value={{ email }}' give a default value to this field
