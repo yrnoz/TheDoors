@@ -284,3 +284,6 @@ class Manager(User):
         self.roles.append(new_role)
         self.roles = list(set(self.roles))
         Database.update('users', {'email': self.email}, self.json())
+
+    def add_facility(self, facility):
+        Facilities.add_facility(self.company, facility)

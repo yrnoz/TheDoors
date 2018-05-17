@@ -22,6 +22,10 @@ def add_user(request, manager):
     permission = request.form['permission']
     facility = request.form['facility']
     role = request.form['role']
+    if facility not in manager.get_facilities():
+        manager.add_facility(facility)
+    if role not in manager.get_roles():
+        manager.add_roles(role)
     manager.user_register(email, password, username, _id, role, permission, manager.company, facility)
 
 
@@ -109,14 +113,19 @@ def route_analytics():
         return render_template('Analytics.html')
 
 
+def get_user_roles_facilities(manager):
+    roles = manager.get_roles()
+    facilities = manager.get_facilities()
+    users = manager.get_employees()
+    return users, roles, facilities
+
+
 @app.route('/employee_datatable', methods=['GET', 'POST'])
 def route_employee_datatable():
     manager = Manager.get_by_email(session['email'])
     if session['email'] is not None and manager is not None:
-        roles = manager.get_roles()
-        facilities = manager.get_facilities()
         if request.method == 'GET':
-            users = manager.get_employees()
+            users, roles, facilities = get_user_roles_facilities(manager)
             return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
         elif request.method == 'POST':
             if request.form['type'] == 'add_user':
@@ -125,7 +134,7 @@ def route_employee_datatable():
                 remove_user(request, manager)
             elif request.form['type'] == 'import_users':
                 import_users(request, manager)
-            users = manager.get_employees()
+            users, roles, facilities = get_user_roles_facilities(manager)
             return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
 
 
