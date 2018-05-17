@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 
 from common.database import Database
 import os
@@ -14,14 +14,14 @@ app.secret_key = 'super secret key'
 MAX_PERMISSION = 100
 
 
-def add_user(request, manager):
-    email = request.form['email']
-    password = request.form['password']
-    username = request.form['username']
-    _id = request.form['id']
-    permission = request.form['permission']
-    facility = request.form['facility']
-    role = request.form['role']
+def add_user(req, manager):
+    email = req.form['email']
+    password = req.form['password']
+    username = req.form['username']
+    _id = req.form['id']
+    permission = req.form['permission']
+    facility = req.form['facility']
+    role = req.form['role']
     if facility not in manager.get_facilities():
         manager.add_facility(facility)
     if role not in manager.get_roles():
@@ -29,8 +29,9 @@ def add_user(request, manager):
     manager.user_register(email, password, username, _id, role, permission, manager.company, facility)
 
 
-def remove_user(request, manager):
-    pass
+def remove_user(req, manager):
+    email = req.form['email']
+    return manager.delete_user(email)
 
 
 def import_users(request, manager):
@@ -82,7 +83,6 @@ def login_user():
 
 @app.route('/register', methods=['GET', 'POST'])
 def manager_register():
-    print(request.method)
     if request.method == 'GET':
         return render_template('page-register.html')
     if request.method == 'POST':
@@ -131,7 +131,10 @@ def route_employee_datatable():
             if request.form['type'] == 'add_user':
                 add_user(request, manager)
             elif request.form['type'] == 'remove_user':
-                remove_user(request, manager)
+                if remove_user(request, manager):
+                    flash("Deleted Successfully")
+                else:
+                    flash("Delete Failed")
             elif request.form['type'] == 'import_users':
                 import_users(request, manager)
             users, roles, facilities = get_user_roles_facilities(manager)

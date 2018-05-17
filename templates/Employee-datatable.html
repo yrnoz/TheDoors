@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,7 +23,9 @@
     <script src="https:**oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https:**oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 </head>
+
 
 <body class="fix-header fix-sidebar">
 <!-- Preloader - style you can find in spinners.css -->
@@ -209,14 +212,7 @@
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Facility</label>
-                                                                    {#                                                                    <select name="facility"#}
-                                                                    {#                                                                            class="form-control custom-select"#}
-                                                                    {#                                                                            data-placeholder="Choose a Category"#}
-                                                                    {#                                                                            tabindex="1">#}
-                                                                    {#                                                                        {% for facility in facilities %}#}
-                                                                    {#                                                                            <option value="{{ facility }}">{{ facility }}</option>#}
-                                                                    {#                                                                        {% endfor %}#}
-                                                                    {#                                                                    </select>#}
+
 
                                                                     <input name="facility" type="text" list="facilities"
                                                                            class="form-control custom-select"
@@ -305,7 +301,7 @@
                                                             <div class="col-md-9">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Import</label>
-                                                                    <input type="text" id="firstName"
+                                                                    <input type="file" id="firstName"
                                                                            class="form-control"
                                                                            placeholder="Employees.CSV">
                                                                 </div>
@@ -331,7 +327,7 @@
                                                 <h4 class="m-b-0 text-white">Remove Employee</h4>
                                             </div>
                                             <div class="card-body">
-                                                <form action="#">
+                                                <form action="{{ url_for('route_employee_datatable') }}" method="post">
                                                     <div class="form-body">
                                                         <h3 class="card-title m-t-15">Person Info</h3>
                                                         <hr>
@@ -339,9 +335,15 @@
                                                             <div class="col-md-9">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Email</label>
-                                                                    <input type="text" id="firstName"
-                                                                           class="form-control"
-                                                                           placeholder="someone@mail.com">
+                                                                    <select name="email"
+                                                                            class="form-control custom-select"
+                                                                            data-placeholder="Choose a Category"
+                                                                            tabindex="1">
+                                                                        {% for user in users %}
+                                                                            <option value="{{ user.email }}">{{ user.email }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                    <input name="type" value="remove_user" hidden>
                                                                 </div>
                                                             </div>
                                                         </div>
