@@ -217,7 +217,7 @@
                                                                     <input name="facility" type="text" list="facilities"
                                                                            class="form-control custom-select"
                                                                            data-placeholder="Choose a Category"
-                                                                           tabindex="1"/>
+                                                                           tabindex="1" required/>
 
                                                                     <datalist id="facilities">
                                                                         {% for facility in facilities %}
@@ -252,7 +252,8 @@
                                                             <div class="col-md-6">
                                                                 <div class="form-group has-danger">
                                                                     <label class="control-label">Permission</label>
-                                                                    <input name="permission" type="text" id="permission"
+                                                                    <input name="permission" type="number"
+                                                                           id="permission"
                                                                            class="form-control form-control-danger"
                                                                            placeholder="permission" required></div>
                                                             </div>

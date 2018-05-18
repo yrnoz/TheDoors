@@ -304,3 +304,26 @@ class Manager(User):
                 email, name, role, permission, facility, id = line[:-1].split(
                     ",")  # get the parameters we need from the line
                 self.user_register(email, 'password', name, id, role, permission, self.company, facility)
+
+    def add_room(self, permission, capacity, room_num, floor, facility, disabled_access):
+        Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
+
+    def import_rooms(self, file):
+        """
+        :param file:the format is like this:
+        "Room ID","Floor","Facility","Permission level","Capacity","Disabled access"
+
+        """
+
+        with open(file) as details:  # open the file
+            for line in filter(lambda x: x.strip(), details.readlines()):
+                if line.find('Permission level') != -1:
+                    continue
+                line = line.replace('"', "")
+                print(line)
+                room_id, floor, facility, permission, capacity, dsiabled_access = line[:-1].split(
+                    ",")  # get the parameters we need from the line
+                self.add_room(permission, capacity, room_id, floor, facility, dsiabled_access)
+
+    def get_rooms(self):
+        return Room.get_by_company(self.company)

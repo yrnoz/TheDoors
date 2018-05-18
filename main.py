@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 from common.database import Database
 import os
 import subprocess
+
+from models.Room import Room
 from models.User import User, Manager
 
 app = Flask(__name__)
@@ -118,8 +120,14 @@ def route_simulation():
 
 @app.route('/analytics', methods=['GET'])
 def route_analytics():
-    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
-        return render_template('Analytics.html')
+    manager = Manager.get_by_email(session['email'])
+    if session['email'] is not None and manager is not None:
+        employees_no = len(manager.get_employees())
+        facility_no = len(manager.get_facilities())
+        rooms_no = len(Room.get_by_company(manager.company))
+        meetings_no = 7  # todo
+        return render_template('Analytics.html', employees_no=employees_no, rooms_no=rooms_no, facility_no=facility_no,
+                               meetings_no=meetings_no)
 
 
 def get_user_roles_facilities(manager):
@@ -145,17 +153,62 @@ def route_employee_datatable():
                 else:
                     flash("Delete Failed")
             elif request.form['type'] == 'import_users':
-                print(request.form)
-                print(request.files)
                 import_users(request, manager)
             users, roles, facilities = get_user_roles_facilities(manager)
             return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
 
 
-@app.route('/rooms_datatable', methods=['GET'])
+def get_rooms_facilities(manager):
+    rooms = manager.get_rooms()
+    facilities = manager.get_facilities()
+    return rooms, facilities
+
+
+def add_room(request, manager):
+    permission = request.form['permission']
+    floor = request.form['floor']
+    facility = request.form['facility']
+    disabled_access = request.form['disabled_access']
+    capacity = request.form['capacity']
+    room_num = request.form['room_name']
+    if facility not in manager.get_facilities():
+        manager.add_facility(facility)
+    manager.add_room(permission, capacity, room_num, floor, facility, disabled_access)
+
+
+def remove_room():
+    room_to_remove = request.form['room_id']
+    Room.remove_room(room_to_remove)
+
+
+def import_rooms(request, manager):
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    manager.import_rooms(filename)
+
+
+@app.route('/rooms_datatable', methods=['GET', 'POST'])
 def route_rooms_datatable():
-    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
-        return render_template('Rooms-datatable.html')
+    manager = Manager.get_by_email(session['email'])
+    if session['email'] is not None and manager is not None:
+
+        if request.method == 'GET':
+            rooms, facilities = get_rooms_facilities(manager)
+            return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
+        elif request.method == 'POST':
+            if request.form['type'] == 'add_room':
+                add_room(request, manager)
+            elif request.form['type'] == 'remove_room':
+                if remove_room():
+                    flash("Deleted Successfully")
+                else:
+                    flash("Delete Failed")
+            elif request.form['type'] == 'import_rooms':
+                import_rooms(request, manager)
+            rooms, facilities = get_rooms_facilities(manager)
+            return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
 
 
 @app.route('/edit_friends', methods=['GET'])

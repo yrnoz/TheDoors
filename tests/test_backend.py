@@ -57,12 +57,12 @@ def test_user():
 def test_rooms():
     Database.initialize()
     Database.remove('rooms', {})
-    status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam')
+    status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam', True)
     assert status is True
-    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam')
+    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', False)
     assert status is True
     assert Room.remove_room(room_id) is True
-    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam')
+    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', True)
     assert status is True
     assert Room.get_by_id(room_id).company == 'YAHOO'
     assert len(Room.get_by_company('YAHOO')) > 0
@@ -130,7 +130,7 @@ def test_friends():
     Database.initialize()
 
     user1 = User.get_by_email("email_1@gmail.com")
-    user2= User.get_by_email('email_2@gmail.com')
+    user2 = User.get_by_email('email_2@gmail.com')
     user3 = User.get_by_email('email_3@gmail.com')
     user4 = User.get_by_email('email_4@gmail.com')
 
