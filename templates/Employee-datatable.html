@@ -294,22 +294,24 @@
                                                 <h4 class="m-b-0 text-white">Import Employee</h4>
                                             </div>
                                             <div class="card-body">
-                                                <form action="#">
+                                                <form action="{{ url_for('route_employee_datatable') }}" method="post"
+                                                      enctype=multipart/form-data>
                                                     <div class="form-body">
                                                         <hr>
                                                         <div class="row p-t-20">
                                                             <div class="col-md-9">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Import</label>
-                                                                    <input type="file" id="firstName"
-                                                                           class="form-control"
-                                                                           placeholder="Employees.CSV">
+                                                                    <input type="file" id="firstName" name="file"
+                                                                           class="form-control" accept=".csv"
+                                                                           placeholder="Employees.CSV" required>
+                                                                    <input name="type" value="import_users" hidden>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-actions">
-                                                        <button type="submit" class="btn btn-success"><i
+                                                        <button type="submit" class="btn btn-success" value="Upload"><i
                                                                 class="fa fa-check"></i> Import
                                                         </button>
                                                     </div>

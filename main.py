@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash
+from werkzeug.utils import secure_filename
 
 from common.database import Database
 import os
@@ -10,6 +11,10 @@ app.secret_key = 'super secret key'
 """Here we write the routes function.
     which it mean that when we try to go to some url (/index)
     the function under that run"""
+UPLOAD_FOLDER = 'C:/Users/elyasafb/PycharmProjects/TheDoors/uploads'
+ALLOWED_EXTENSIONS = set(['csv'])
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 MAX_PERMISSION = 100
 
@@ -35,7 +40,11 @@ def remove_user(req, manager):
 
 
 def import_users(request, manager):
-    pass
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    manager.import_employee(filename)
 
 
 def p():
@@ -136,6 +145,8 @@ def route_employee_datatable():
                 else:
                     flash("Delete Failed")
             elif request.form['type'] == 'import_users':
+                print(request.form)
+                print(request.files)
                 import_users(request, manager)
             users, roles, facilities = get_user_roles_facilities(manager)
             return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)

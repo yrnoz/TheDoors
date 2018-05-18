@@ -249,7 +249,8 @@ class Manager(User):
     def user_register(cls, email, password, username, _id, role, permission, company, facility):
         if not Facilities.is_company_exist(company):
             return False, "company dose'nt exist"
-        user = cls.get_by_email(email)
+        user = User.get_by_email(email)
+        print(email)
         # if not cls.check_id(_id):
         #     return False, "bad number ID"
         if user is None:
@@ -287,3 +288,19 @@ class Manager(User):
 
     def add_facility(self, facility):
         Facilities.add_facility(self.company, facility)
+
+    def import_employee(self, file):
+        """
+        :param file:the format is like this:
+        Email,	Name,	Role,	Permission level,	Facility,	ID
+        """
+
+        with open(file) as details:  # open the file
+            for line in filter(lambda x: x.strip(), details.readlines()):
+                if line.find('@') == -1:
+                    continue
+                line = line.replace('"', "")
+                print(line)
+                email, name, role, permission, facility, id = line[:-1].split(
+                    ",")  # get the parameters we need from the line
+                self.user_register(email, 'password', name, id, role, permission, self.company, facility)
