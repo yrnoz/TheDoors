@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Order(object):
     def __init__(self, user_email, _id, date, participants, start_time, end_time, company,
-                 facility, min_permission, max_permission, min_friends, max_friends, is_accessible):
+                 facility, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
 
 
 
@@ -17,8 +17,8 @@ class Order(object):
         self.participants = participants
         self.start_time = start_time
         self.end_time = end_time
-        self.min_permission = min_permission
-        self.max_permission= max_permission
+        self.min_occupancy = min_occupancy
+        self.max_occupancy= max_occupancy
         self.min_friends=min_friends
         self.max_friends = max_friends
         self.is_accessible = is_accessible
@@ -36,9 +36,10 @@ class Order(object):
             'participants': self.participants,
             'start_time': self.start_time,
             'end_time': self.end_time,
-            'min_permission' :self.min_permission,
-            'max_permission': self.max_permission,
+            'min_occupancy' :self.min_occupancy,
+            'max_occupancy': self.max_occupancy,
             'min_friends': self.min_friends,
+            'max_friends': self.max_friends,
             'is_accessible': self.is_accessible,
             '_id': self._id,
             'company': self.company,
@@ -160,7 +161,7 @@ class Order(object):
         return orders
 
     @classmethod
-    def new_order(cls, user_email, date, participants, start_time, end_time, company, facility, min_permission, max_permission,
+    def new_order(cls, user_email, date, participants, start_time, end_time, company, facility, min_permission, min_occupancy, max_occupancy,
                   min_friends, max_friends, is_accessible):
         """
 
@@ -187,7 +188,7 @@ class Order(object):
         if Schedule.all_participants_are_free(date, participants, start_time, end_time):
             print('ssssssssssssssssssssssssssssss')
 
-            new_order = cls(user_email, date, participants, start_time, end_time, company, facility, min_permission, max_permission,
+            new_order = cls(user_email, date, participants, start_time, end_time, company, facility, min_permission, min_occupancy,max_occupancy,
                   min_friends, max_friends, is_accessible)
             # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
             # todo - this algorithm try to assign the new order into specific room.

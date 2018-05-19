@@ -158,12 +158,23 @@ class Room(object):
     def get_schedules(self):
         return Schedule.get_by_room(self._id)
 
+
     @classmethod
-    def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility):
+    def check_room_space(cls, min_occupancy, max_occupancy, room_capacity, current_capacity, available_spaces):
+        percent_occupancy = (current_capacity + available_spaces) * 100 / room_capacity
+        if room_capacity - current_capacity >= available_spaces and percent_occupancy >= min_occupancy and percent_occupancy <= max_occupancy:
+            return True
+        return False
+
+
+
+    @classmethod
+    def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility,min_occupancy, max_occupancy,
+                  min_friends, max_friends, is_accessible):
         """
 
         :param date:
-        :param available_spaces:
+        :param available_spaces: the participent in the room
         :param begin_meeting:
         :param end_meeting:
         :return: a list of all the room that have enough  space >= available_spaces  for a meeting on the given time
@@ -176,7 +187,8 @@ class Room(object):
             if len(room_schedule) > 0:
                 # this room already have some reservation
                 save_space = Schedule.saved_space(room_schedule, begin_meeting, end_meeting, available_spaces)
-                if room.capacity - save_space >= available_spaces:
+                is_room_space_ok=cls.check_room_restrictions(min_occupancy, max_occupancy, room.capacity, save_space, available_spaces)
+                if is_room_space_ok:
                     available_rooms.append(room)
             else:
                 # this room is empty
