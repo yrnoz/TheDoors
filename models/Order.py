@@ -6,7 +6,10 @@ from datetime import datetime
 
 class Order(object):
     def __init__(self, user_email, _id, date, participants, start_time, end_time, company,
-                 facility, floor_constrain=None, friends_in_room=None, max_percent=None):
+                 facility, min_permission, max_permission, min_friends, max_friends, is_accessible):
+
+
+
 
         _id = user_email + date + str(start_time) + str(end_time)
         self.user_email = user_email
@@ -14,9 +17,11 @@ class Order(object):
         self.participants = participants
         self.start_time = start_time
         self.end_time = end_time
-        self.floor_constrain = floor_constrain
-        self.friends_in_room = friends_in_room
-        self.max_percent = max_percent
+        self.min_permission = min_permission
+        self.max_permission= max_permission
+        self.min_friends=min_friends
+        self.max_friends = max_friends
+        self.is_accessible = is_accessible
         self._id = _id
         self.company = company
         self.facility = facility
@@ -31,9 +36,10 @@ class Order(object):
             'participants': self.participants,
             'start_time': self.start_time,
             'end_time': self.end_time,
-            'floor_constrain': self.floor_constrain,
-            'friends_in_room': self.friends_in_room,
-            'max_percent': self.max_percent,
+            'min_permission' :self.min_permission,
+            'max_permission': self.max_permission,
+            'min_friends': self.min_friends,
+            'is_accessible': self.is_accessible,
             '_id': self._id,
             'company': self.company,
             'facility': self.facility
@@ -154,8 +160,8 @@ class Order(object):
         return orders
 
     @classmethod
-    def new_order(cls, user_email, date, participants, start_time, end_time, company, facility, min_permission,
-                  floor_constrain=None, friends_in_room=None, max_percent=None):
+    def new_order(cls, user_email, date, participants, start_time, end_time, company, facility, min_permission, max_permission,
+                  min_friends, max_friends, is_accessible):
         """
 
         :param user_email:
@@ -181,9 +187,8 @@ class Order(object):
         if Schedule.all_participants_are_free(date, participants, start_time, end_time):
             print('ssssssssssssssssssssssssssssss')
 
-            new_order = cls(user_email, None, date, participants, start_time, end_time, company, facility,
-                            floor_constrain,
-                            friends_in_room, max_percent)
+            new_order = cls(user_email, date, participants, start_time, end_time, company, facility, min_permission, max_permission,
+                  min_friends, max_friends, is_accessible)
             # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
             # todo - this algorithm try to assign the new order into specific room.
             # todo - if it can't do this then it start to chnage other orders.
