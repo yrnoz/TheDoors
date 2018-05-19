@@ -134,8 +134,7 @@ class User(object):
     def get_schedule(self, date=None, start_time=None, end_time=None, room_id=None):
         return Schedule.get_schedules(self.email, date, start_time, end_time, room_id)
 
-    def new_order(self, date, participants, start_time, end_time, company, facility, floor_constrain=None,
-                  friends_in_room=None, max_percent=None):
+    def new_order(self, date, participants, start_time, end_time, company, facility, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
         # todo fix this function
         participants.append(self.email)
         participants = list(set(participants))
@@ -143,7 +142,7 @@ class User(object):
 
         status, order_id, room_id = Order.new_order(self.email, date, participants, start_time, end_time, company,
                                                     facility,
-                                                    min_permission, floor_constrain, friends_in_room, max_percent)
+                                                    min_permission, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible)
         if status:
             self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id

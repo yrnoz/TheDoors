@@ -185,7 +185,7 @@ class Room(object):
         return is_accessible == False or room.disabled_access
 
     @classmethod
-    def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility,min_occupancy, max_occupancy,
+    def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility, min_occupancy, max_occupancy,
                   min_friends, max_friends, is_accessible):
         """
 

@@ -28,6 +28,7 @@ class Order(object):
 
     def save_to_mongodb(self):
         Database.insert(collection='orders', data=self.json())
+        #need to be option to save to user
 
     def json(self):
         return {
@@ -161,6 +162,11 @@ class Order(object):
         return orders
 
     @classmethod
+    def bactracking_algorithm(cls, all_conflict_orders):
+        print "do backtracking"
+
+
+    @classmethod
     def new_order(cls, user_email, date, participants, start_time, end_time, company, facility, min_permission, min_occupancy, max_occupancy,
                   min_friends, max_friends, is_accessible):
         """
@@ -195,15 +201,26 @@ class Order(object):
             # todo - if it can't do this then it start to chnage other orders.
             status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
                                                                      len(participants))
+
             print(room_id)
             if status:
                 new_order.save_to_mongodb()
                 return True, new_order._id, room_id
+            else:
+                all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
+                cls.remove_conflict_schedule(all_conflict_orders)
+                cls.bactracking_algorithm(all_conflict_orders)
+
         else:
             print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
             return False, "failed", 'failed'
 
         return False, " problem with some participants", 'failed'
+
+    @classmethod
+    def remove_conflict_schedule(cls, all_conflict_orders):
+        for order in all_conflict_orders:
+            cls.delete_order(order._id)
 
     @classmethod
     def participant_cancel(cls, user_email, order_id):
@@ -230,7 +247,9 @@ class Order(object):
 
     def try_schedule_naive_algorithm(self, company, facility, min_permission, participant_num):
         rooms = Room.available_rooms(self.date, len(self.participants), self.start_time, self.end_time, min_permission,
-                                     company, facility)
+                                     company, facility, self.min_occupancy, self.max_occupancy,
+                                    self.min_friends, self.max_friends, self.is_accessible)
+
         print('here the rooms available')
         print(rooms)
         for room in rooms:
@@ -246,6 +265,19 @@ class Order(object):
             for order in data:
                 orders.append(cls(**order))
         return orders
+
+    @classmethod
+    def find_by_date_and_time(cls, date, begin_hour, end_hour):
+        orders = []
+        query = {
+            '$and': [{'date': date},{'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]
+        }
+        data = Database.find('orders', query)
+        if data is not None:
+            for order in data:
+                orders.append(cls(**order))
+        return orders
+
 
     def remove_participant(self, user_email):
         self.participants.remove(user_email)
