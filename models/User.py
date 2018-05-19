@@ -12,7 +12,7 @@ from models.friends import Friends
 
 class User(object):
     def __init__(self, email, username, password, _id, role, permission, company, facility,
-                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=False):
+                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=False, roles=[]):
         self.email = email
         self.password = password
         self.username = username
@@ -23,6 +23,7 @@ class User(object):
         self.facility = facility
         self.added_date = added_date
         self.manager = manager
+        self.roles = roles
 
     def save_to_mongodb(self):
         Database.insert(collection='users', data=self.json())
@@ -38,7 +39,8 @@ class User(object):
             'company': self.company,
             'facility': self.facility,
             'added_date': self.added_date,
-            'manager': self.manager
+            'manager': self.manager,
+            'roles': self.roles
         }
 
     def update_user(self, username=None, password=None, role=None, permission=None, facility=None):
@@ -58,6 +60,17 @@ class User(object):
         data = Database.find_one('users', {'email': email})
         if data is not None:
             return cls(**data)
+
+    @classmethod
+    def get_by_company(cls, company):
+        users = []
+        data = Database.find('users', {'company': company})
+        if data is not None:
+            for user in data:
+                users.append(cls(**user))
+        # print(len(users))
+        # print(users)
+        return set(users)
 
     @classmethod
     def get_by_id(cls, _id):
@@ -84,7 +97,18 @@ class User(object):
         session['email'] = None
 
     def get_friends(self):
-        return Friends.get_friends(self.email)
+        friends = Friends.get_friends(self.email)
+        res = []
+        for friend_email in friends:
+            res.append(User.get_by_email(friend_email))
+        return res
+
+    def get_friends_emails(self):
+        friends = Friends.get_friends(self.email)
+        res = []
+        for friend_email in friends:
+            res.append(friend_email)
+        return res
 
     def add_friend(self, friend_email):
         friend = User.get_by_email(friend_email)
@@ -160,7 +184,8 @@ class User(object):
 class Manager(User):
 
     def __init__(self, email, username, password, _id, role, permission, company, facility,
-                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=True):
+                 added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=True,
+                 roles=['Software Engineer', 'Architect Engineer', 'Electrical Engineer', 'Programmer']):
         self.email = email
         self.password = password
         self.username = username
@@ -171,6 +196,7 @@ class Manager(User):
         self.facility = facility
         self.added_date = added_date
         self.manager = manager
+        self.roles = roles
 
     @classmethod
     def get_by_email(cls, email):
@@ -178,9 +204,13 @@ class Manager(User):
         if data is not None:
             return cls(**data)
 
+    def get_employees(self):
+        return User.get_by_company(self.company)
+
     @classmethod
     def manager_register(cls, email, password, username, _id, role, permission, company, facility):
         data = Database.find_one('facilities', {'company': company})
+        role = 'Manager'
         if data is not None:
             return False, "company already exist"
         else:
@@ -190,7 +220,7 @@ class Manager(User):
             #     return False, "bad number ID"
             if user is None:
                 # User dose'nt exist, create new user
-                new_user = cls(email, password, username, _id, role, permission, company, facility)
+                new_user = cls(email, username, password, _id, role, permission, company, facility)
                 try:
                     new_user.save_to_mongodb()
                     session['email'] = email
@@ -219,12 +249,13 @@ class Manager(User):
     def user_register(cls, email, password, username, _id, role, permission, company, facility):
         if not Facilities.is_company_exist(company):
             return False, "company dose'nt exist"
-        user = cls.get_by_email(email)
+        user = User.get_by_email(email)
+        print(email)
         # if not cls.check_id(_id):
         #     return False, "bad number ID"
         if user is None:
             # User dose'nt exist, create new user
-            new_user = User(email, password, username, _id, role, permission, company, facility)
+            new_user = User(email, username, password, _id, role, permission, company, facility)
             try:
                 new_user.save_to_mongodb()
             except Exception as e:
@@ -243,3 +274,56 @@ class Manager(User):
                 Database.remove('users', {'email': user_email})
                 return True
         return False
+
+    def get_facilities(self):
+        return Facilities.get_facilities(self.company)
+
+    def get_roles(self):
+        return self.roles
+
+    def add_roles(self, new_role):
+        self.roles.append(new_role)
+        self.roles = list(set(self.roles))
+        Database.update('users', {'email': self.email}, self.json())
+
+    def add_facility(self, facility):
+        Facilities.add_facility(self.company, facility)
+
+    def import_employee(self, file):
+        """
+        :param file:the format is like this:
+        Email,	Name,	Role,	Permission level,	Facility,	ID
+        """
+
+        with open(file) as details:  # open the file
+            for line in filter(lambda x: x.strip(), details.readlines()):
+                if line.find('@') == -1:
+                    continue
+                line = line.replace('"', "")
+                print(line)
+                email, name, role, permission, facility, id = line[:-1].split(
+                    ",")  # get the parameters we need from the line
+                self.user_register(email, 'password', name, id, role, permission, self.company, facility)
+
+    def add_room(self, permission, capacity, room_num, floor, facility, disabled_access):
+        Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
+
+    def import_rooms(self, file):
+        """
+        :param file:the format is like this:
+        "Room ID","Floor","Facility","Permission level","Capacity","Disabled access"
+
+        """
+
+        with open(file) as details:  # open the file
+            for line in filter(lambda x: x.strip(), details.readlines()):
+                if line.find('Permission level') != -1:
+                    continue
+                line = line.replace('"', "")
+                print(line)
+                room_id, floor, facility, permission, capacity, dsiabled_access = line[:-1].split(
+                    ",")  # get the parameters we need from the line
+                self.add_room(permission, capacity, room_id, floor, facility, dsiabled_access)
+
+    def get_rooms(self):
+        return Room.get_by_company(self.company)

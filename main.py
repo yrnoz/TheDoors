@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+from werkzeug.utils import secure_filename
 
 from common.database import Database
 import os
 import subprocess
+
+from models.Room import Room
 from models.User import User, Manager
 
 app = Flask(__name__)
@@ -10,8 +13,40 @@ app.secret_key = 'super secret key'
 """Here we write the routes function.
     which it mean that when we try to go to some url (/index)
     the function under that run"""
+UPLOAD_FOLDER = 'C:/Users/elyasafb/PycharmProjects/TheDoors/uploads'
+ALLOWED_EXTENSIONS = set(['csv'])
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 MAX_PERMISSION = 100
+
+
+def add_user(req, manager):
+    email = req.form['email']
+    password = req.form['password']
+    username = req.form['username']
+    _id = req.form['id']
+    permission = req.form['permission']
+    facility = req.form['facility']
+    role = req.form['role']
+    if facility not in manager.get_facilities():
+        manager.add_facility(facility)
+    if role not in manager.get_roles():
+        manager.add_roles(role)
+    manager.user_register(email, password, username, _id, role, permission, manager.company, facility)
+
+
+def remove_user(req, manager):
+    email = req.form['email']
+    return manager.delete_user(email)
+
+
+def import_users(request, manager):
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    manager.import_employee(filename)
 
 
 def p():
@@ -30,8 +65,15 @@ def logout():
 def home():
     # Todo
     # return render_template('friends_page.html')
-
-    return render_template('page-login.html', wrong_password=False)
+    try:
+        if session['email'] is not None:
+            user = User.get_by_email(session['email'])
+            if user.manager:
+                return redirect(url_for('route_analytics'))
+            else:
+                return redirect(url_for('route_edit_friends'))
+    except Exception as e:
+        return render_template('page-login.html', wrong_password=False)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -52,7 +94,6 @@ def login_user():
 
 @app.route('/register', methods=['GET', 'POST'])
 def manager_register():
-    print(request.method)
     if request.method == 'GET':
         return render_template('page-register.html')
     if request.method == 'POST':
@@ -73,43 +114,127 @@ def manager_register():
 
 @app.route('/simulation', methods=['GET'])
 def route_simulation():
-    return render_template('Simulation.html')
+    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
+        return render_template('Simulation.html')
 
 
 @app.route('/analytics', methods=['GET'])
 def route_analytics():
-    return render_template('Analytics.html')
+    manager = Manager.get_by_email(session['email'])
+    if session['email'] is not None and manager is not None:
+        employees_no = len(manager.get_employees())
+        facility_no = len(manager.get_facilities())
+        rooms_no = len(Room.get_by_company(manager.company))
+        meetings_no = 7  # todo
+        return render_template('Analytics.html', employees_no=employees_no, rooms_no=rooms_no, facility_no=facility_no,
+                               meetings_no=meetings_no)
 
 
-@app.route('/employee_datatable', methods=['GET'])
+def get_user_roles_facilities(manager):
+    roles = manager.get_roles()
+    facilities = manager.get_facilities()
+    users = manager.get_employees()
+    return users, roles, facilities
+
+
+@app.route('/employee_datatable', methods=['GET', 'POST'])
 def route_employee_datatable():
-    return render_template('Employee-datatable.html')
+    manager = Manager.get_by_email(session['email'])
+    if session['email'] is not None and manager is not None:
+        if request.method == 'GET':
+            users, roles, facilities = get_user_roles_facilities(manager)
+            return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
+        elif request.method == 'POST':
+            if request.form['type'] == 'add_user':
+                add_user(request, manager)
+            elif request.form['type'] == 'remove_user':
+                if remove_user(request, manager):
+                    flash("Deleted Successfully")
+                else:
+                    flash("Delete Failed")
+            elif request.form['type'] == 'import_users':
+                import_users(request, manager)
+            users, roles, facilities = get_user_roles_facilities(manager)
+            return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
 
 
-@app.route('/rooms_datatable', methods=['GET'])
+def get_rooms_facilities(manager):
+    rooms = manager.get_rooms()
+    facilities = manager.get_facilities()
+    return rooms, facilities
+
+
+def add_room(request, manager):
+    permission = request.form['permission']
+    floor = request.form['floor']
+    facility = request.form['facility']
+    disabled_access = request.form['disabled_access']
+    capacity = request.form['capacity']
+    room_num = request.form['room_name']
+    if facility not in manager.get_facilities():
+        manager.add_facility(facility)
+    manager.add_room(permission, capacity, room_num, floor, facility, disabled_access)
+
+
+def remove_room():
+    room_to_remove = request.form['room_id']
+    Room.remove_room(room_to_remove)
+
+
+def import_rooms(request, manager):
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    manager.import_rooms(filename)
+
+
+@app.route('/rooms_datatable', methods=['GET', 'POST'])
 def route_rooms_datatable():
-    return render_template('Rooms-datatable.html')
+    manager = Manager.get_by_email(session['email'])
+    if session['email'] is not None and manager is not None:
+
+        if request.method == 'GET':
+            rooms, facilities = get_rooms_facilities(manager)
+            return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
+        elif request.method == 'POST':
+            if request.form['type'] == 'add_room':
+                add_room(request, manager)
+            elif request.form['type'] == 'remove_room':
+                if remove_room():
+                    flash("Deleted Successfully")
+                else:
+                    flash("Delete Failed")
+            elif request.form['type'] == 'import_rooms':
+                import_rooms(request, manager)
+            rooms, facilities = get_rooms_facilities(manager)
+            return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
 
 
 @app.route('/edit_friends', methods=['GET'])
 def route_edit_friends():
-    email = session['email']
-    user = User.get_by_email(email)
-    return render_template('friends_page.html', manager=user.manager)
+    if session['email'] is not None:
+        email = session['email']
+        user = User.get_by_email(email)
+        friends = user.get_friends()
+        return render_template('friends_page.html', manager=user.manager, friends=friends)
 
 
 @app.route('/reserve_room', methods=['GET'])
 def route_reserve_room():
-    email = session['email']
-    user = User.get_by_email(email)
-    return render_template('order.html', manager=user.manager)
+    if session['email'] is not None:
+        if request.method == 'GET':
+            email = session['email']
+            user = User.get_by_email(email)
+            return render_template('order.html', manager=user.manager)
 
 
 @app.route('/my_reservations', methods=['GET'])
 def route_reservations():
-    email = session['email']
-    user = User.get_by_email(email)
-    return render_template('reservation.html', manager=user.manager)
+    if session['email'] is not None:
+        email = session['email']
+        user = User.get_by_email(email)
+        return render_template('reservation.html', manager=user.manager)
 
 
 @app.before_first_request

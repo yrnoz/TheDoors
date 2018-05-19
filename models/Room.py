@@ -27,13 +27,14 @@ the format is like that:
 
 
 class Room(object):
-    def __init__(self, permission, capacity, _id, floor, company, facility):
+    def __init__(self, permission, capacity, _id, floor, company, facility, disabled_access):
         self.permission = permission
         self.capacity = capacity
         self._id = _id
         self.floor = floor
         self.company = company
         self.facility = facility
+        self.disabled_access = disabled_access
 
     def save_to_mongodb(self):
         Database.insert(collection='rooms', data=self.json())
@@ -45,7 +46,8 @@ class Room(object):
             '_id': self._id,
             'permission': self.permission,
             'company': self.company,
-            'facility': self.facility
+            'facility': self.facility,
+            'disabled_access': self.disabled_access
         }
 
     def intersection(self, start_time, end_time):
@@ -122,10 +124,10 @@ class Room(object):
         return rooms
 
     @classmethod
-    def add_room(cls, permission, capacity, room_num, floor, company, facility):
+    def add_room(cls, permission, capacity, room_num, floor, company, facility, disabled_access=False):
         _id = company + " " + facility + ' ' + str(room_num)
         if not cls.is_room_exist(_id):
-            new_room = cls(permission, capacity, _id, floor, company, facility)
+            new_room = cls(permission, capacity, _id, floor, company, facility, disabled_access)
             Database.insert('rooms', new_room.json())
             return True, _id
         else:
