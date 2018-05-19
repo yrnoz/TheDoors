@@ -174,7 +174,15 @@ class Room(object):
             return True
         return False
 
+    @classmethod
+    def check_accessible(cls, room_id, is_accessible):
+        """
 
+                :param room_id:
+                :param is_accessible: does the room need to be accessible to disabled
+                """
+        room = Room.get_by_id(room_id)
+        return is_accessible == False or room.disabled_access
 
     @classmethod
     def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility,min_occupancy, max_occupancy,
@@ -197,7 +205,8 @@ class Room(object):
                 save_space = Schedule.saved_space(room_schedule, begin_meeting, end_meeting, available_spaces)
                 is_room_space_ok=cls.check_room_space(min_occupancy, max_occupancy, room.capacity, save_space, available_spaces)
                 is_num_friends_ok = cls.check_room_friends(room._id, date, begin_meeting, end_meeting, min_friends, max_friends)
-                if is_room_space_ok and is_num_friends_ok:
+                is_accessible_ok = cls.check_accessible(room._id, is_accessible)
+                if is_room_space_ok and is_num_friends_ok and is_accessible_ok:
                     available_rooms.append(room)
             else:
                 # this room is empty
