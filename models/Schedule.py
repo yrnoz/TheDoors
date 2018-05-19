@@ -14,7 +14,7 @@ from datetime import datetime
 
 class Schedule(object):
 
-    def __init__(self, email, date, begin_meeting, end_meeting, order_id, room_id=None, _id=None):
+    def __init__(self, email, date, begin_meeting, end_meeting, order_id, participants, room_id=None, _id=None):
         _id = email + date + room_id + ' start: ' + str(begin_meeting) + ' end: ' + str(end_meeting)
         self.email = email
         self._id = _id
@@ -23,6 +23,7 @@ class Schedule(object):
         self.order_id = order_id
         self.begin_meeting = begin_meeting
         self.end_meeting = end_meeting
+        self.participants = participants
 
     def save_to_mongodb(self):
         Database.insert(collection='schedules', data=self.json())
@@ -36,7 +37,7 @@ class Schedule(object):
             'order_id': self.order_id,
             'begin_meeting': self.begin_meeting,
             'end_meeting': self.end_meeting,
-
+            'participants': self.participants,
         }
 
     def future_meeting(self):
@@ -144,7 +145,7 @@ class Schedule(object):
         for schedule in room_schedule:
             if not schedule.is_available(begin_meeting, end_meeting):
                 # there is a meeting on the the given time, so save_place++
-                save_place += 1
+                save_place += schedule.participants
         return save_place
 
     @classmethod
@@ -160,8 +161,29 @@ class Schedule(object):
                 schedules.append(cls(**sched))
         return schedules
 
+    @classmethod
+    def get_by_room_and_date_and_hour(cls, _id, date, begin_hour, end_hour):
+        schedules = []
+        query = {'$and': [{'date': date}, {'room_id': _id}  , {'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]}
+        data = Database.find('schedules', query)
+        if data is not None:
+            for sched in data:
+                schedules.append(cls(**sched))
+        return schedules
+
+
+
+    @classmethod
+    def get_participants_by_room_date_and_hour(cls, _id, date, start_time, end_time):
+        schedule = Schedule.get_by_room_and_date_and_hour(date, start_time, end_time)
+        return schedule.participants
+
+
     def get_order_id(self):
         return self.order_id
+
+    def get_participants(self):
+        return self.participants
 
     @classmethod
     def cancel_meeting(cls, meeting_id):

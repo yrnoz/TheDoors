@@ -167,6 +167,14 @@ class Room(object):
         return False
 
 
+    @classmethod
+    def check_room_friends(cls, room_id, date, start_time, end_time, min_friends, max_friends):
+        participants = Schedule.get_participants_by_room_date_and_hour(room_id, date, start_time, end_time)
+        if len(participants) >= min_friends and len(participants)<= max_friends:
+            return True
+        return False
+
+
 
     @classmethod
     def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility,min_occupancy, max_occupancy,
@@ -187,8 +195,9 @@ class Room(object):
             if len(room_schedule) > 0:
                 # this room already have some reservation
                 save_space = Schedule.saved_space(room_schedule, begin_meeting, end_meeting, available_spaces)
-                is_room_space_ok=cls.check_room_restrictions(min_occupancy, max_occupancy, room.capacity, save_space, available_spaces)
-                if is_room_space_ok:
+                is_room_space_ok=cls.check_room_space(min_occupancy, max_occupancy, room.capacity, save_space, available_spaces)
+                is_num_friends_ok = cls.check_room_friends(room._id, date, begin_meeting, end_meeting, min_friends, max_friends)
+                if is_room_space_ok and is_num_friends_ok:
                     available_rooms.append(room)
             else:
                 # this room is empty

@@ -260,6 +260,15 @@ class Order(object):
                 orders.append(cls(**order))
         return orders
 
+
+    @classmethod
+    def get_all_participants_in_order(cls, user_email, date, start_time, end_time):
+        order = cls.find_by_date_and_time(user_email, date, start_time, end_time)
+        if len(order > 0):
+            return order.participants
+        return []
+
+
     @staticmethod
     def remove_user(user_email):
         orders = Order.find_by_user_email(user_email)
