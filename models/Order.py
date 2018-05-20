@@ -161,9 +161,6 @@ class Order(object):
             orders.append(cls(**order))
         return orders
 
-    @classmethod
-    def bactracking_algorithm(cls, all_conflict_orders):
-        print "do backtracking"
 
 
     @classmethod
@@ -313,3 +310,31 @@ class Order(object):
             for order in orders:
                 order.remove_participant(user_email)
             return True
+
+
+''''
+way to do bactracking:
+
+from itertools import permutations
+
+def b3(orders, index_order, rooms, num_rooms):
+    if index_order > len(orders)-1:
+        return True
+    for i in range(num_rooms):
+        if orders[index_order]<= rooms[i]:
+            rooms[i] = rooms[i] - orders[index_order]
+            return b3(orders, index_order+1, rooms, num_rooms)
+    return False
+
+
+
+
+orders = [3,2,4,5,6]
+rooms = [10,8,6]
+perm = permutations(rooms)
+for i in list(perm):
+    total = b3(orders, 0, list(i), 3)
+    if total:
+        break
+print total
+'''

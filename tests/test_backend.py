@@ -18,7 +18,7 @@ def p():
     yield p
     p.terminate()
 
-
+""""
 def test_user():
     Database.initialize()
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
@@ -73,12 +73,14 @@ def test_rooms():
     assert len(Room.get_by_capacity(20, 'YAHOO', 'matam', 1)) == 0
     assert len(Room.available_rooms('11/11/11', 12, 1, 2, 2, 'YAHOO', 'matam')) > 0
 
+"""
 
 def test_schedules_orders():
+    print "hi"
     user = User.get_by_email('email_1@gmail.com')
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
-    status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam')
+    status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam' , 0, 100, 0, 5, False)
     print(string)
     assert len(user.get_orders()) > 0
     schedules = user.get_schedule()
@@ -89,7 +91,7 @@ def test_schedules_orders():
         sched.future_meeting()
     assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
 
-
+'''
 def test_facilities():
     Database.initialize()
     # add company
@@ -156,3 +158,5 @@ def test_friends():
     assert len(user1.get_friends()) > 0
 
     manager.add_friend('email_1@gmail.com')
+
+'''''
