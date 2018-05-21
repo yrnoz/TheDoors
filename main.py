@@ -1,6 +1,7 @@
+import errno
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from werkzeug.utils import secure_filename
-
+import sys
 from common.database import Database
 import os
 import subprocess
@@ -13,7 +14,8 @@ app.secret_key = 'super secret key'
 """Here we write the routes function.
     which it mean that when we try to go to some url (/index)
     the function under that run"""
-UPLOAD_FOLDER = os.getcwd() + 'uploads'
+UPLOAD_FOLDER = sys.argv[0].replace('main.py', "uploads")
+
 ALLOWED_EXTENSIONS = set(['csv'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -41,9 +43,20 @@ def remove_user(req, manager):
     return manager.delete_user(email)
 
 
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+
 def import_users(request, manager):
     file = request.files['file']
     filename = secure_filename(file.filename)
+    mkdir_p(UPLOAD_FOLDER)
     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     manager.import_employee(filename)
@@ -184,6 +197,7 @@ def remove_room():
 def import_rooms(request, manager):
     file = request.files['file']
     filename = secure_filename(file.filename)
+    mkdir_p(UPLOAD_FOLDER)
     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     manager.import_rooms(filename)
@@ -244,4 +258,5 @@ def initialize_database():
 
 
 if __name__ == '__main__':
+    print(UPLOAD_FOLDER)
     app.run()
