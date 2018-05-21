@@ -54,8 +54,9 @@ def test_user():
     assert User.min_permission(['email_4@gmail.com', 'email_1@gmail.com']) == 3
     assert manager.update_user('manager') is True
     print(os.getcwd() + '/rooms.csv')
-    manager.import_rooms(os.getcwd() + '\\rooms.csv')
-    manager.import_employee(os.getcwd() + '\\employee.csv')
+    # this 2 lines should failed on your's computer
+    manager.import_rooms(os.getcwd() + '\\tests\\rooms.csv')
+    manager.import_employee(os.getcwd() + '\\tests\\employee.csv')
 
 
 def test_rooms():
