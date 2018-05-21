@@ -55,8 +55,9 @@ def test_user():
     assert manager.update_user('manager') is True
     print(os.getcwd() + '/rooms.csv')
     # this 2 lines should failed on your's computer
-    manager.import_rooms(os.getcwd() + '\\tests\\rooms.csv')
-    manager.import_employee(os.getcwd() + '\\tests\\employee.csv')
+    print(os.path.join(os.path.dirname(__file__), '\\employee.csv'))
+    manager.import_rooms(os.path.join(os.path.dirname(__file__), '\\rooms.csv'))
+    manager.import_employee(os.path.join(os.path.dirname(__file__), '\\employee.csv'))
 
 
 def test_rooms():
