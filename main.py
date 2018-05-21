@@ -13,7 +13,7 @@ app.secret_key = 'super secret key'
 """Here we write the routes function.
     which it mean that when we try to go to some url (/index)
     the function under that run"""
-UPLOAD_FOLDER = 'C:/Users/elyasafb/PycharmProjects/TheDoors/uploads'
+UPLOAD_FOLDER = os.getcwd() + 'uploads'
 ALLOWED_EXTENSIONS = set(['csv'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
