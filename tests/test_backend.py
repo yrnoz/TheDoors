@@ -144,6 +144,10 @@ def test_friends():
     user3 = User.get_by_email('email_3@gmail.com')
     user4 = User.get_by_email('email_4@gmail.com')
 
+    emails=["email_1@gmail.com", 'email_2@gmail.com', 'email_3@gmail.com', 'email_4@gmail.com', "user2@yahoo.com"]
+    permission=User.min_permission(emails)
+    assert permission==1
+
     user1.add_friend('email_2@gmail.com')
     status, string = user1.add_friend('email_3@gmail.com')
     assert status is False
@@ -166,3 +170,6 @@ def test_friends():
     assert len(user1.get_friends()) > 0
 
     manager.add_friend('email_1@gmail.com')
+
+    assert user2 is not None
+    assert manager.delete_user( 'email_2@gmail.com') is True
