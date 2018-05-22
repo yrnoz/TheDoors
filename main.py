@@ -241,14 +241,21 @@ def route_rooms_datatable():
             # return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
 
 
-@app.route('/edit_friends', methods=['GET'])
+@app.route('/edit_friends', methods=['GET', 'POST'])
 def route_edit_friends():
     if session['email'] is not None:
         email = session['email']
         user = User.get_by_email(email)
-        friends = user.get_friends()
-        return render_template('friends_page.html', manager=user.manager, friends=friends)
-
+        if request.method == 'GET':
+            friends = user.get_friends()
+            possible_friends= User.get_by_company(user.company)
+            possible_friends = filter(lambda x: x.email not in user.get_friends_emails(), possible_friends)
+            return render_template('friends_page.html', manager=user.manager, friends=friends, possible_friends=possible_friends )
+        elif request.method == 'POST':
+            if request.form['type'] == 'add_friend':
+                user.add_friend(request.form['email'])
+            if request.form['type'] == 'remove_friend':
+                user.remove_friend(request.form['email'])
 
 @app.route('/reserve_room', methods=['GET'])
 def route_reserve_room():
