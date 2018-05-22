@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
 
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -28,6 +28,7 @@
 
 
 <body class="fix-header fix-sidebar">
+
 <!-- Preloader - style you can find in spinners.css -->
 <div class="preloader">
     <svg class="circular" viewBox="25 25 50 50">
@@ -79,6 +80,31 @@
     <!-- End Left Sidebar  -->
     <!-- Page wrapper  -->
     <div class="page-wrapper">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+{#        {% with messages = get_flashed_messages() %}#}
+{#            {% if messages %}#}
+{#                <script>#}
+{#                    var messages = {{ messages | safe}};#}
+{#                    for (var i = 0; i < messages.length; i++) {#}
+{#                        alert(messages[i]);#}
+{#                    }#}
+{#                </script>#}
+{#            {% endif %}#}
+{#        {% endwith %}#}
+
         <!-- Bread crumb -->
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
@@ -100,17 +126,24 @@
                         <h4 class="card-title">Employees</h4>
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs customtab2" role="tablist">
-                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#export" role="tab"><span
-                                    class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Export Employees</span></a>
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#export"
+                                                    role="tab"><span
+                                    class="hidden-sm-up"><i class="ti-home"></i></span> <span
+                                    class="hidden-xs-down">Export Employees</span></a>
                             </li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#import" role="tab"><span
-                                    class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Import Employees</span></a>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#import"
+                                                    role="tab"><span
+                                    class="hidden-sm-up"><i class="ti-user"></i></span> <span
+                                    class="hidden-xs-down">Import Employees</span></a>
                             </li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#add" role="tab"><span
-                                    class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Add Employee</span></a>
+                                    class="hidden-sm-up"><i class="ti-email"></i></span> <span
+                                    class="hidden-xs-down">Add Employee</span></a>
                             </li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#remove" role="tab"><span
-                                    class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Remove Employee</span></a>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#remove"
+                                                    role="tab"><span
+                                    class="hidden-sm-up"><i class="ti-email"></i></span> <span
+                                    class="hidden-xs-down">Remove Employee</span></a>
                             </li>
                         </ul>
                         <!-- Tab panes -->
@@ -175,7 +208,8 @@
                                                 <h4 class="m-b-0 text-white">Add Employee</h4>
                                             </div>
                                             <div class="card-body">
-                                                <form action="{{ url_for('route_employee_datatable') }}" method="post">
+                                                <form action="{{ url_for('route_employee_datatable') }}"
+                                                      method="post">
                                                     <div class="form-body">
                                                         <h3 class="card-title m-t-15">Person Info</h3>
                                                         <hr>
@@ -214,7 +248,8 @@
                                                                     <label class="control-label">Facility</label>
 
 
-                                                                    <input name="facility" type="text" list="facilities"
+                                                                    <input name="facility" type="text"
+                                                                           list="facilities"
                                                                            class="form-control custom-select"
                                                                            data-placeholder="Choose a Category"
                                                                            tabindex="1" required/>
@@ -295,7 +330,8 @@
                                                 <h4 class="m-b-0 text-white">Import Employee</h4>
                                             </div>
                                             <div class="card-body">
-                                                <form action="{{ url_for('route_employee_datatable') }}" method="post"
+                                                <form action="{{ url_for('route_employee_datatable') }}"
+                                                      method="post"
                                                       enctype=multipart/form-data>
                                                     <div class="form-body">
                                                         <hr>
@@ -312,7 +348,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-actions">
-                                                        <button type="submit" class="btn btn-success" value="Upload"><i
+                                                        <button type="submit" class="btn btn-success"
+                                                                value="Upload"><i
                                                                 class="fa fa-check"></i> Import
                                                         </button>
                                                     </div>
@@ -330,7 +367,8 @@
                                                 <h4 class="m-b-0 text-white">Remove Employee</h4>
                                             </div>
                                             <div class="card-body">
-                                                <form action="{{ url_for('route_employee_datatable') }}" method="post">
+                                                <form action="{{ url_for('route_employee_datatable') }}"
+                                                      method="post">
                                                     <div class="form-body">
                                                         <h3 class="card-title m-t-15">Person Info</h3>
                                                         <hr>
@@ -402,5 +440,4 @@
 <script src="{{ url_for('static' , filename='js/lib/datatables/cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ url_for('static' , filename='js/lib/datatables/datatables-init.js') }}"></script>
 </body>
-
 </html>

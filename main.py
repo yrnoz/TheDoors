@@ -35,7 +35,7 @@ def add_user(req, manager):
         manager.add_facility(facility)
     if role not in manager.get_roles():
         manager.add_roles(role)
-    manager.user_register(email, password, username, _id, role, permission, manager.company, facility)
+    return manager.user_register(email, password, username, _id, role, permission, manager.company, facility)
 
 
 def remove_user(req, manager):
@@ -54,12 +54,16 @@ def mkdir_p(path):
 
 
 def import_users(request, manager):
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    mkdir_p(UPLOAD_FOLDER)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    manager.import_employee(filename)
+    try:
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        mkdir_p(UPLOAD_FOLDER)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        manager.import_employee(filename)
+        flash('Import successfully')
+    except Exception as e:
+        flash('Import fail:\n' + str(e))
 
 
 def p():
@@ -159,7 +163,11 @@ def route_employee_datatable():
             return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
         elif request.method == 'POST':
             if request.form['type'] == 'add_user':
-                add_user(request, manager)
+                status, info = add_user(request, manager)
+                if status:
+                    flash('Added successfully')
+                else:
+                    flash('Failed:\n' + info)
             elif request.form['type'] == 'remove_user':
                 if remove_user(request, manager):
                     flash("Deleted Successfully")
@@ -167,8 +175,7 @@ def route_employee_datatable():
                     flash("Delete Failed")
             elif request.form['type'] == 'import_users':
                 import_users(request, manager)
-            users, roles, facilities = get_user_roles_facilities(manager)
-            return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
+            return redirect(url_for('route_employee_datatable'))
 
 
 def get_rooms_facilities(manager):
@@ -186,7 +193,7 @@ def add_room(request, manager):
     room_num = request.form['room_name']
     if facility not in manager.get_facilities():
         manager.add_facility(facility)
-    manager.add_room(permission, capacity, room_num, floor, facility, disabled_access)
+    return manager.add_room(permission, capacity, room_num, floor, facility, disabled_access)
 
 
 def remove_room():
@@ -195,12 +202,16 @@ def remove_room():
 
 
 def import_rooms(request, manager):
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    mkdir_p(UPLOAD_FOLDER)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    manager.import_rooms(filename)
+    try:
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        mkdir_p(UPLOAD_FOLDER)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        manager.import_rooms(filename)
+        flash('Import successfully')
+    except Exception as e:
+        flash('Import fail:\n' + str(e))
 
 
 @app.route('/rooms_datatable', methods=['GET', 'POST'])
@@ -213,7 +224,11 @@ def route_rooms_datatable():
             return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
         elif request.method == 'POST':
             if request.form['type'] == 'add_room':
-                add_room(request, manager)
+                status, info = add_room(request, manager)
+                if status:
+                    flash("Added Successfully")
+                else:
+                    flash('Fail:\n' + info)
             elif request.form['type'] == 'remove_room':
                 if remove_room():
                     flash("Deleted Successfully")
@@ -221,8 +236,9 @@ def route_rooms_datatable():
                     flash("Delete Failed")
             elif request.form['type'] == 'import_rooms':
                 import_rooms(request, manager)
-            rooms, facilities = get_rooms_facilities(manager)
-            return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
+            # rooms, facilities = get_rooms_facilities(manager)
+            return redirect(url_for('route_rooms_datatable'))
+            # return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
 
 
 @app.route('/edit_friends', methods=['GET'])

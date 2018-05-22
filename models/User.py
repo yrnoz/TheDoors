@@ -217,8 +217,8 @@ class Manager(User):
         else:
             Facilities.add_company(company, facility)
             user = cls.get_by_email(email)
-            # if not cls.check_id(_id):
-            #     return False, "bad number ID"
+            if not cls.check_id(_id):
+                return False, "bad number ID"
             if user is None:
                 # User dose'nt exist, create new user
                 new_user = cls(email, username, password, _id, role, permission, company, facility)
@@ -252,8 +252,8 @@ class Manager(User):
             return False, "company dose'nt exist"
         user = User.get_by_email(email)
         print(email)
-        # if not cls.check_id(_id):
-        #     return False, "bad number ID"
+        if not cls.check_id(_id):
+            return False, "bad number ID"
         if user is None:
             # User dose'nt exist, create new user
             new_user = User(email, username, password, _id, role, permission, company, facility)
@@ -261,7 +261,7 @@ class Manager(User):
                 new_user.save_to_mongodb()
             except Exception as e:
                 return False, str(e)
-            return True
+            return True, ''
         else:
             # User already exist
             return False, "user email already exist"
@@ -305,10 +305,11 @@ class Manager(User):
                 email, name, role, permission, facility, id = line[:-1].split(
                     ",")  # get the parameters we need from the line
                 self.add_facility(facility)
+                self.add_roles(role)
                 self.user_register(email, 'password', name, id, role, permission, self.company, facility)
 
     def add_room(self, permission, capacity, room_num, floor, facility, disabled_access):
-        Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
+        return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
 
     def import_rooms(self, file):
         """
