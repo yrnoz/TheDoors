@@ -6,6 +6,15 @@ class Database(object):
     DATABASE = None
 
     @staticmethod
+    def dropAll():
+        Database.DATABASE['users'].drop()
+        Database.DATABASE['orders'].drop()
+        Database.DATABASE['schedules'].drop()
+        Database.DATABASE['rooms'].drop()
+        Database.DATABASE['facilities'].drop()
+        Database.DATABASE['friends'].drop()
+
+    @staticmethod
     def initialize():
         client = pymongo.MongoClient(Database.URI)
         Database.DATABASE = client["TheDoors"]
@@ -24,7 +33,6 @@ class Database(object):
 
     @staticmethod
     def find_one(collection, query):
-        print Database.DATABASE[collection].find_one(query)
         return Database.DATABASE[collection].find_one(query)
 
     @staticmethod
@@ -34,4 +42,3 @@ class Database(object):
     @staticmethod
     def count(collection):
         return Database.DATABASE[collection].count()
-

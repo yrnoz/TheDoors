@@ -25,7 +25,7 @@
     <!--[if lt IE 9]>
     <script src="https:**oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https:**oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
+    <![endif]-->
 </head>
 
 <body class="fix-header fix-sidebar">
@@ -37,6 +37,42 @@
 </div>
 <!-- Main wrapper  -->
 <div id="main-wrapper">
+        <!-- header header  -->
+        <div class="header">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <div class="navbar-collapse">
+                    <!-- toggle and nav items -->
+                    <ul class="navbar-nav mr-auto mt-md-0">
+                        <!-- This is  -->
+
+                        <!-- End Messages -->
+                    </ul>
+                    <!-- User profile and search -->
+                    <ul class="navbar-nav my-lg-0">
+
+                        <!-- Search -->
+
+                        <!-- Comment -->
+                        <!-- End Comment -->
+                        <!-- Messages -->
+                        <!-- End Messages -->
+                        <!-- Profile -->
+                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false"><img
+                                src="{{ url_for('static' , filename='images/users/5.jpg') }}" alt="user"
+                                class="profile-pic"/></a>
+                        <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+                            <ul class="dropdown-user">
+                                <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
+                                <li><a href="{{ url_for('logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
     <!-- Left Sidebar  -->
     <div class="left-sidebar">
         <!-- Sidebar scroll-->
@@ -67,9 +103,9 @@
                         </ul>
                     </li>
                     <li class="nav-label">Actions</li>
-                    <li><a href="#">Add/Remove Friends</a></li>
-                    <li><a href="#">Reserve Room</a></li>
-                    <li><a href="#">Reservations</a></li>
+                    <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
+                    <li><a href="{{ url_for('route_reserve_room') }}">Reserve Room</a></li>
+                    <li><a href="{{ url_for('route_reservations') }}">Reservations</a></li>
                     </li>
                 </ul>
             </nav>
@@ -80,6 +116,19 @@
     <!-- End Left Sidebar  -->
     <!-- Page wrapper  -->
     <div class="page-wrapper">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <!-- Bread crumb -->
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
@@ -102,59 +151,53 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="col-md-6 animate-box">
-                                <form action="#">
-                                    <ul class="nav nav-tabs customtab2" role="tablist">
-                                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home7"
-                                                                role="tab"><span class="hidden-sm-up"><i
-                                                class="ti-home"></i></span> <span
-                                                class="hidden-xs-down">Add Friend</span></a></li>
-                                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile7"
-                                                                role="tab"><span class="hidden-sm-up"><i
-                                                class="ti-user"></i></span> <span
-                                                class="hidden-xs-down">Remove Friend</span></a></li>
 
-                                    </ul>
-                                    <!-- Tab panes -->
-                                    <div class="tab-content">
-                                        <div class="tab-pane active" id="home7" role="tabpanel">
-                                            <div class="p-20">
+                                <ul class="nav nav-tabs customtab2" role="tablist">
+                                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home7"
+                                                            role="tab"><span class="hidden-sm-up"><i
+                                            class="ti-home"></i></span> <span
+                                            class="hidden-xs-down">Add Friend</span></a></li>
+                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile7"
+                                                            role="tab"><span class="hidden-sm-up"><i
+                                            class="ti-user"></i></span> <span
+                                            class="hidden-xs-down">Remove Friend</span></a></li>
+
+                                </ul>
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="home7" role="tabpanel">
+                                        <div class="p-20">
+                                            <form action="{{ url_for('route_edit_friends') }}" method="post">
 
                                                 <div class="row form-group">
+
                                                     <div class="col-md-12">
                                                         <label class="sr-only" for="email">Email</label>
-                                                        <input type="text" id="email" class="form-control"
-                                                               placeholder="E-mail">
+
+                                                        <select name="email"
+                                                                class="form-control custom-select"
+                                                                data-placeholder="Choose a Category"
+                                                                tabindex="1">
+                                                            {% for user in possible_friends %}
+                                                            <option value="{{ user.email }}">{{ user.email }}
+                                                            </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <input name="type" value="add_friend" hidden>
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <input type="button" id="more_friends" onclick="add_friends();"
-                                                           value="Add friends"/>
+                                                    <button type="submit" class="btn btn-success"><i
+                                                            class="fa fa-check"></i> Add friend
+                                                    </button>
                                                 </div>
-
-                                                <script>
-                                                    function add_friends() {
-                                                        var table = document.getElementById("customers");
-                                                        var row = table.insertRow(1);
-                                                        var cell1 = row.insertCell(0);
-                                                        var cell2 = row.insertCell(1);
-                                                        var cell3 = row.insertCell(2);
-                                                        var cell4 = row.insertCell(3);
-                                                        cell1.innerHTML = document.getElementById('name').value;
-                                                        cell2.innerHTML = document.getElementById('email').value;
-                                                        cell3.innerHTML = document.getElementById('office').value;
-                                                        cell4.innerHTML = '<button type="button" onClick="deleteRow(this)" >'
-                                                            + 'Remove</button>';
-                                                        document.getElementById('name').value = ''
-                                                        document.getElementById('email').value = ''
-                                                        document.getElementById('office').value = ''
-                                                        alert("Your friend was added succefully!!");
-                                                    }
-
-                                                </script>
-                                            </div>
+                                            </form>
                                         </div>
-                                        <div class="tab-pane  p-20" id="profile7" role="tabpanel">
+                                    </div>
+                                    <div class="tab-pane  p-20" id="profile7" role="tabpanel">
+
+                                        <form action="{{ url_for('route_edit_friends') }}" method="post">
                                             <table id="customers" width="600">
                                                 <tr>
                                                     <th>Name</th>
@@ -163,26 +206,30 @@
                                                 </tr>
                                                 <tbody>
                                                 {% for user in friends %}
-                                                    <tr>
-                                                        <td style="color:black;">{{ user.username }}</td>
-                                                        <td style="color:black;">{{ user.email }}</td>
-                                                        <td style="color:black;">{{ user.facility }}</td>
-                                                    </tr>
+                                                <tr>
+                                                    <td style="color:black;">{{ user.username }}</td>
+                                                    <td style="color:black;">{{ user.email }}</td>
+                                                    <td style="color:black;">{{ user.facility }}</td>
+                                                    <td><input type="button" value="Remove" onclick="deleteRow(this)">
+                                                    </td>
+
+                                                </tr>
                                                 {% endfor %}
                                                 </tbody>
+                                                <input name="type" value="remove_friend" hidden>
                                             </table>
+                                        </form>
 
-                                            <script>
+                                        <script>
                                                 function deleteRow(r) {
                                                     var i = r.parentNode.parentNode.rowIndex;
                                                     document.getElementById("customers").deleteRow(i);
                                                 }
-                                            </script>
 
-                                        </div>
 
+                                        </script>
                                     </div>
-
+                                </div>
                                 </form>
                             </div>
                         </div>

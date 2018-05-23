@@ -12,15 +12,16 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static' , filename= 'images/favicon.png') }}">
     <title>The Doors</title>
 
-    <link href="{{ url_for('static' , filename= 'css/lib/chartist/chartist.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static' , filename= 'css/lib/owl.carousel.min.css') }}" rel="stylesheet"/>
-    <link href="{{ url_for('static' , filename= 'css/lib/owl.theme.default.min.css') }}" rel="stylesheet"/>
+   <link href="{{ url_for('static' , filename='css/lib/chartist/chartist.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/lib/owl.carousel.min.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static' , filename='css/lib/owl.theme.default.min.css') }}" rel="stylesheet"/>
     <!-- Bootstrap Core CSS -->
-    <link href="{{ url_for('static' , filename= 'css/lib/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/lib/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="{{ url_for('static' , filename= 'css/helper.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static' , filename= 'css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/helper.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' ,filename= 'css/style.css') }}" rel="stylesheet">
     <link href="{{ url_for('static' , filename= 'css/nouislider.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename= 'css/nouislider.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
     <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
     {#    <script src="/wp-includes/js/addInput.js" language="Javascript" type="text/javascript"></script>#}
@@ -45,6 +46,42 @@
 </div>
 <!-- Main wrapper  -->
 <div id="main-wrapper">
+        <!-- header header  -->
+        <div class="header">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <div class="navbar-collapse">
+                    <!-- toggle and nav items -->
+                    <ul class="navbar-nav mr-auto mt-md-0">
+                        <!-- This is  -->
+
+                        <!-- End Messages -->
+                    </ul>
+                    <!-- User profile and search -->
+                    <ul class="navbar-nav my-lg-0">
+
+                        <!-- Search -->
+
+                        <!-- Comment -->
+                        <!-- End Comment -->
+                        <!-- Messages -->
+                        <!-- End Messages -->
+                        <!-- Profile -->
+                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false"><img
+                                src="{{ url_for('static' , filename='images/users/5.jpg') }}" alt="user"
+                                class="profile-pic"/></a>
+                        <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+                            <ul class="dropdown-user">
+                                <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
+                                <li><a href="{{ url_for('logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
     <!-- Left Sidebar  -->
     <div class="left-sidebar">
         <!-- Sidebar scroll-->
@@ -75,9 +112,9 @@
                         </ul>
                     </li>
                     <li class="nav-label">Actions</li>
-                    <li><a href="#">Add/Remove Friends</a></li>
-                    <li><a href="#">Reserve Room</a></li>
-                    <li><a href="#">Reservations</a></li>
+                    <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
+                    <li><a href="{{ url_for('route_reserve_room') }}">Reserve Room</a></li>
+                    <li><a href="{{ url_for('route_reservations') }}">Reservations</a></li>
                     </li>
                 </ul>
             </nav>
@@ -88,6 +125,19 @@
     <!-- End Left Sidebar  -->
     <!-- Page wrapper  -->
     <div class="page-wrapper">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <!-- Bread crumb -->
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
@@ -124,14 +174,7 @@
 
                                                 <label for="Begin_hour">Begin Hour: &nbsp;</label>
                                                 <select id="begin_hour" name="begin_hour">
-                                                    <option selected>00:00</option>
-                                                    <option>01:00</option>
-                                                    <option>02:00</option>
-                                                    <option>03:00</option>
-                                                    <option>04:00</option>
-                                                    <option>05:00</option>
-                                                    <option>06:00</option>
-                                                    <option>07:00</option>
+                                                    <option selected>08:00</option>
                                                     <option>08:00</option>
                                                     <option>09:00</option>
                                                     <option>10:00</option>
@@ -144,24 +187,11 @@
                                                     <option>17:00</option>
                                                     <option>18:00</option>
                                                     <option>19:00</option>
-                                                    <option>20:00</option>
-                                                    <option>21:00</option>
-                                                    <option>22:00</option>
-                                                    <option>23:00</option>
                                                 </select>
 
                                                 <label for="End_hour">&nbsp; &nbsp; End Hour: &nbsp;</label>
                                                 <select id="end_hour" name="end_hour">
-                                                    <option selected>00:00</option>
-                                                    <option>01:00</option>
-                                                    <option>02:00</option>
-                                                    <option>03:00</option>
-                                                    <option>04:00</option>
-                                                    <option>05:00</option>
-                                                    <option>06:00</option>
-                                                    <option>07:00</option>
-                                                    <option>08:00</option>
-                                                    <option>09:00</option>
+                                                    <option selected>18:00</option>
                                                     <option>10:00</option>
                                                     <option>11:00</option>
                                                     <option>12:00</option>

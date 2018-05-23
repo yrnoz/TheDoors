@@ -37,6 +37,42 @@
 </div>
 <!-- Main wrapper  -->
 <div id="main-wrapper">
+        <!-- header header  -->
+        <div class="header">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <div class="navbar-collapse">
+                    <!-- toggle and nav items -->
+                    <ul class="navbar-nav mr-auto mt-md-0">
+                        <!-- This is  -->
+
+                        <!-- End Messages -->
+                    </ul>
+                    <!-- User profile and search -->
+                    <ul class="navbar-nav my-lg-0">
+
+                        <!-- Search -->
+
+                        <!-- Comment -->
+                        <!-- End Comment -->
+                        <!-- Messages -->
+                        <!-- End Messages -->
+                        <!-- Profile -->
+                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false"><img
+                                src="{{ url_for('static' , filename='images/users/5.jpg') }}" alt="user"
+                                class="profile-pic"/></a>
+                        <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+                            <ul class="dropdown-user">
+                                <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
+                                <li><a href="{{ url_for('logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
     <!-- Left Sidebar  -->
     <div class="left-sidebar">
         <!-- Sidebar scroll-->
@@ -77,6 +113,19 @@
     <!-- End Left Sidebar  -->
     <!-- Page wrapper  -->
     <div class="page-wrapper">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <!-- Bread crumb -->
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">

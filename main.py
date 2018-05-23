@@ -1,6 +1,7 @@
+import errno
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from werkzeug.utils import secure_filename
-
+import sys
 from common.database import Database
 import os
 import subprocess
@@ -13,7 +14,8 @@ app.secret_key = 'super secret key'
 """Here we write the routes function.
     which it mean that when we try to go to some url (/index)
     the function under that run"""
-UPLOAD_FOLDER = 'C:/Users/elyasafb/PycharmProjects/TheDoors/uploads'
+UPLOAD_FOLDER = sys.argv[0].replace('main.py', "uploads")
+
 ALLOWED_EXTENSIONS = set(['csv'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -33,7 +35,7 @@ def add_user(req, manager):
         manager.add_facility(facility)
     if role not in manager.get_roles():
         manager.add_roles(role)
-    manager.user_register(email, password, username, _id, role, permission, manager.company, facility)
+    return manager.user_register(email, password, username, _id, role, permission, manager.company, facility)
 
 
 def remove_user(req, manager):
@@ -41,12 +43,27 @@ def remove_user(req, manager):
     return manager.delete_user(email)
 
 
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+
 def import_users(request, manager):
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    manager.import_employee(filename)
+    try:
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        mkdir_p(UPLOAD_FOLDER)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        manager.import_employee(filename)
+        flash('Import successfully')
+    except Exception as e:
+        flash('Import fail:\n' + str(e))
 
 
 def p():
@@ -74,6 +91,7 @@ def home():
                 return redirect(url_for('route_edit_friends'))
     except Exception as e:
         return render_template('page-login.html', wrong_password=False)
+    return render_template('page-login.html', wrong_password=False)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -146,7 +164,11 @@ def route_employee_datatable():
             return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
         elif request.method == 'POST':
             if request.form['type'] == 'add_user':
-                add_user(request, manager)
+                status, info = add_user(request, manager)
+                if status:
+                    flash('Added successfully')
+                else:
+                    flash('Failed:\n' + info)
             elif request.form['type'] == 'remove_user':
                 if remove_user(request, manager):
                     flash("Deleted Successfully")
@@ -154,8 +176,7 @@ def route_employee_datatable():
                     flash("Delete Failed")
             elif request.form['type'] == 'import_users':
                 import_users(request, manager)
-            users, roles, facilities = get_user_roles_facilities(manager)
-            return render_template('Employee-datatable.html', users=users, roles=roles, facilities=facilities)
+            return redirect(url_for('route_employee_datatable'))
 
 
 def get_rooms_facilities(manager):
@@ -173,7 +194,7 @@ def add_room(request, manager):
     room_num = request.form['room_name']
     if facility not in manager.get_facilities():
         manager.add_facility(facility)
-    manager.add_room(permission, capacity, room_num, floor, facility, disabled_access)
+    return manager.add_room(permission, capacity, room_num, floor, facility, disabled_access)
 
 
 def remove_room():
@@ -182,11 +203,16 @@ def remove_room():
 
 
 def import_rooms(request, manager):
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    manager.import_rooms(filename)
+    try:
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        mkdir_p(UPLOAD_FOLDER)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        manager.import_rooms(filename)
+        flash('Import successfully')
+    except Exception as e:
+        flash('Import fail:\n' + str(e))
 
 
 @app.route('/rooms_datatable', methods=['GET', 'POST'])
@@ -199,7 +225,11 @@ def route_rooms_datatable():
             return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
         elif request.method == 'POST':
             if request.form['type'] == 'add_room':
-                add_room(request, manager)
+                status, info = add_room(request, manager)
+                if status:
+                    flash("Added Successfully")
+                else:
+                    flash('Fail:\n' + info)
             elif request.form['type'] == 'remove_room':
                 if remove_room():
                     flash("Deleted Successfully")
@@ -207,18 +237,26 @@ def route_rooms_datatable():
                     flash("Delete Failed")
             elif request.form['type'] == 'import_rooms':
                 import_rooms(request, manager)
-            rooms, facilities = get_rooms_facilities(manager)
-            return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
+            # rooms, facilities = get_rooms_facilities(manager)
+            return redirect(url_for('route_rooms_datatable'))
+            # return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
 
 
-@app.route('/edit_friends', methods=['GET'])
+@app.route('/edit_friends', methods=['GET', 'POST'])
 def route_edit_friends():
     if session['email'] is not None:
         email = session['email']
         user = User.get_by_email(email)
-        friends = user.get_friends()
-        return render_template('friends_page.html', manager=user.manager, friends=friends)
-
+        if request.method == 'GET':
+            friends = user.get_friends()
+            possible_friends= User.get_by_company(user.company)
+            possible_friends = filter(lambda x: x.email not in user.get_friends_emails(), possible_friends)
+            return render_template('friends_page.html', manager=user.manager, friends=friends, possible_friends=possible_friends )
+        elif request.method == 'POST':
+            if request.form['type'] == 'add_friend':
+                user.add_friend(request.form['email'])
+            if request.form['type'] == 'remove_friend':
+                user.remove_friend(request.form['email'])
 
 @app.route('/reserve_room', methods=['GET'])
 def route_reserve_room():
@@ -244,4 +282,6 @@ def initialize_database():
 
 
 if __name__ == '__main__':
+    print(UPLOAD_FOLDER)
+    app.debug = True
     app.run()

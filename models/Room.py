@@ -127,10 +127,13 @@ class Room(object):
     def add_room(cls, permission, capacity, room_num, floor, company, facility, disabled_access=False):
         _id = company + " " + facility + ' ' + str(room_num)
         if not cls.is_room_exist(_id):
+            print('not exist' + _id)
             new_room = cls(permission, capacity, _id, floor, company, facility, disabled_access)
             Database.insert('rooms', new_room.json())
             return True, _id
         else:
+            print(' exist' + _id)
+
             # room already exist
             return False, _id
 

@@ -134,7 +134,8 @@ class User(object):
     def get_schedule(self, date=None, start_time=None, end_time=None, room_id=None):
         return Schedule.get_schedules(self.email, date, start_time, end_time, room_id)
 
-    def new_order(self, date, participants, start_time, end_time, company, facility, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
+    def new_order(self, date, participants, start_time, end_time, company, facility, min_occupancy, max_occupancy,
+                  min_friends, max_friends, is_accessible):
         # todo fix this function
         participants.append(self.email)
         participants = list(set(participants))
@@ -142,7 +143,8 @@ class User(object):
 
         status, order_id, room_id = Order.new_order(self.email, date, participants, start_time, end_time, company,
                                                     facility,
-                                                    min_permission, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible)
+                                                    min_permission, min_occupancy, max_occupancy, min_friends,
+                                                    max_friends, is_accessible)
         if status:
             self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
@@ -215,8 +217,8 @@ class Manager(User):
         else:
             Facilities.add_company(company, facility)
             user = cls.get_by_email(email)
-            # if not cls.check_id(_id):
-            #     return False, "bad number ID"
+            if not cls.check_id(_id):
+                return False, "bad number ID"
             if user is None:
                 # User dose'nt exist, create new user
                 new_user = cls(email, username, password, _id, role, permission, company, facility)
@@ -250,8 +252,8 @@ class Manager(User):
             return False, "company dose'nt exist"
         user = User.get_by_email(email)
         print(email)
-        # if not cls.check_id(_id):
-        #     return False, "bad number ID"
+        if not cls.check_id(_id):
+            return False, "bad number ID"
         if user is None:
             # User dose'nt exist, create new user
             new_user = User(email, username, password, _id, role, permission, company, facility)
@@ -259,7 +261,7 @@ class Manager(User):
                 new_user.save_to_mongodb()
             except Exception as e:
                 return False, str(e)
-            return True
+            return True, ''
         else:
             # User already exist
             return False, "user email already exist"
@@ -302,10 +304,12 @@ class Manager(User):
                 print(line)
                 email, name, role, permission, facility, id = line[:-1].split(
                     ",")  # get the parameters we need from the line
+                self.add_facility(facility)
+                self.add_roles(role)
                 self.user_register(email, 'password', name, id, role, permission, self.company, facility)
 
     def add_room(self, permission, capacity, room_num, floor, facility, disabled_access):
-        Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
+        return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
 
     def import_rooms(self, file):
         """
@@ -322,6 +326,7 @@ class Manager(User):
                 print(line)
                 room_id, floor, facility, permission, capacity, dsiabled_access = line[:-1].split(
                     ",")  # get the parameters we need from the line
+                self.add_facility(facility)
                 self.add_room(permission, capacity, room_id, floor, facility, dsiabled_access)
 
     def get_rooms(self):
