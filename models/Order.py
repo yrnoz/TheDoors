@@ -5,15 +5,16 @@ from datetime import datetime
 
 
 class Order(object):
-    def __init__(self, user_email, _id, date, participants, start_time, end_time, company,
-                 facility, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
+    def __init__(self, user_email, date, participants, start_time, end_time, company,
+                 facility , min_permission, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
 
-        #_id = user_email + date + str(start_time) + str(end_time)
+        _id = user_email + date + str(start_time) + str(end_time)
         self.user_email = user_email
         self.date = date
         self.participants = participants
         self.start_time = start_time
         self.end_time = end_time
+        self.min_permission = min_permission
         self.min_occupancy = min_occupancy
         self.max_occupancy = max_occupancy
         self.min_friends = min_friends
@@ -34,6 +35,7 @@ class Order(object):
             'participants': self.participants,
             'start_time': self.start_time,
             'end_time': self.end_time,
+            'min_permission' : self.min_permission,
             'min_occupancy': self.min_occupancy,
             'max_occupancy': self.max_occupancy,
             'min_friends': self.min_friends,
