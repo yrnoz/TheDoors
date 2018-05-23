@@ -248,15 +248,21 @@ def route_edit_friends():
         email = session['email']
         user = User.get_by_email(email)
         if request.method == 'GET':
+            friends = user.get_friends_emails()
+            possible_friends = [friend.email for friend in User.get_by_company(user.company) if
+                                friend.email not in friends and friend.email != email]
+            for f in possible_friends:
+                print(f)
             friends = user.get_friends()
-            possible_friends= User.get_by_company(user.company)
-            possible_friends = filter(lambda x: x.email not in user.get_friends_emails(), possible_friends)
-            return render_template('friends_page.html', manager=user.manager, friends=friends, possible_friends=possible_friends )
+            return render_template('friends_page.html', manager=user.manager, friends=friends,
+                                   possible_friends=possible_friends)
         elif request.method == 'POST':
             if request.form['type'] == 'add_friend':
                 user.add_friend(request.form['email'])
             if request.form['type'] == 'remove_friend':
                 user.remove_friend(request.form['email'])
+        return redirect(url_for('route_edit_friends'))
+
 
 @app.route('/reserve_room', methods=['GET'])
 def route_reserve_room():
