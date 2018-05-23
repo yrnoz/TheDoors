@@ -91,6 +91,7 @@ def home():
                 return redirect(url_for('route_edit_friends'))
     except Exception as e:
         return render_template('page-login.html', wrong_password=False)
+    return render_template('page-login.html', wrong_password=False)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -282,4 +283,5 @@ def initialize_database():
 
 if __name__ == '__main__':
     print(UPLOAD_FOLDER)
+    app.debug = True
     app.run()
