@@ -23,11 +23,11 @@
     <link href="{{ url_for('static' , filename= 'css/nouislider.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static' , filename= 'css/nouislider.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
-    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
-    {#    <script src="/wp-includes/js/addInput.js" language="Javascript" type="text/javascript"></script>#}
+    <!--<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>-->
+    <!--{#    <script src="/wp-includes/js/addInput.js" language="Javascript" type="text/javascript"></script>#}-->
 
 
-    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
+    <!--<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>-->
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
     <!--[if lt IE 9]>
@@ -125,175 +125,228 @@
     <!-- End Left Sidebar  -->
     <!-- Page wrapper  -->
     <div class="page-wrapper">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-warning alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        {{ message }}
-                    </div>
-
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <!-- Bread crumb -->
-        <div class="row page-titles">
-            <div class="col-md-5 align-self-center">
-                <h3 class="text-primary">Schedule you Next Meeting:</h3></div>
-            <div class="col-md-7 align-self-center">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Actions</a></li>
-                    <li class="breadcrumb-item active">Reserve Room</li>
-                </ol>
+            <!-- Bread crumb -->
+            <div class="row page-titles">
+                <div class="col-md-5 align-self-center">
+                    <h3 class="text-primary">Schedule you Next Meeting:</h3> </div>
+                <div class="col-md-7 align-self-center">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Reserve room</li>
+                    </ol>
+                </div>
             </div>
-        </div>
-        <!-- End Bread crumb -->
-        <!-- Container fluid  -->
-        <div class="container-fluid">
+            <!-- End Bread crumb -->
+            <!-- Container fluid  -->
 
-            <!-- Start Page Content -->
+                <!-- Start Page Content -->
 
-            <div class="card">
-
-                <div class="gtco-section border-bottom">
-                    <div class="gtco-container">
-                        <div class="col-md-12">
-                            <div class="col-md-6 animate-box">
-                                <form action="#">
-
-                                    <div class="row form-group">
-                                        <label for="dateofbirth">Date: &nbsp;</label>
-                                        <input type="date" id="dateofbirth" placeholder="Date">
-                                    </div>
-
-                                    <div class="row form-group">
-                                        <div class="col-md-12">
-                                            <div class="row">
-
-                                                <label for="Begin_hour">Begin Hour: &nbsp;</label>
-                                                <select id="begin_hour" name="begin_hour">
-                                                    <option selected>08:00</option>
-                                                    <option>08:00</option>
-                                                    <option>09:00</option>
-                                                    <option>10:00</option>
-                                                    <option>11:00</option>
-                                                    <option>12:00</option>
-                                                    <option>13:00</option>
-                                                    <option>14:00</option>
-                                                    <option>15:00</option>
-                                                    <option>16:00</option>
-                                                    <option>17:00</option>
-                                                    <option>18:00</option>
-                                                    <option>19:00</option>
-                                                </select>
-
-                                                <label for="End_hour">&nbsp; &nbsp; End Hour: &nbsp;</label>
-                                                <select id="end_hour" name="end_hour">
-                                                    <option selected>18:00</option>
-                                                    <option>10:00</option>
-                                                    <option>11:00</option>
-                                                    <option>12:00</option>
-                                                    <option>13:00</option>
-                                                    <option>14:00</option>
-                                                    <option>15:00</option>
-                                                    <option>16:00</option>
-                                                    <option>17:00</option>
-                                                    <option>18:00</option>
-                                                    <option>19:00</option>
-                                                    <option>20:00</option>
-                                                    <option>21:00</option>
-                                                    <option>22:00</option>
-                                                    <option>23:00</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <br></br>
-
-                                    <div data-role="rangeslider">
-                                        <label for="range-1a">percent ocupency in room:</label>
-                                        <input type="range" name="range-1a" id="range-1a" min="0" max="100" value="40"
-                                               data-popup-enabled="true" data-show-value="true">
-                                        <label for="range-1b">percent ocupency in room:</label>
-                                        <input type="range" name="range-1b" id="range-1b" min="0" max="100" value="80"
-                                               data-popup-enabled="true" data-show-value="true">
-                                    </div>
+                <div class="card">
 
 
-                                    <br></br>
+					<div class="gtco-section border-bottom">
+		<div class="gtco-container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="col-md-6 animate-box">
+					<form action="#">
+						<div class="row form-group">
 
-                                    <div data-role="rangeslider">
-                                        <label for="range-1a">Number of friends:</label>
-                                        <input type="range" name="range-1a" id="range-1a" min="0" max="5" value="2"
-                                               data-popup-enabled="true" data-show-value="true">
-                                        <label for="range-1b">Number of friends:</label>
-                                        <input type="range" name="range-1b" id="range-1b" min="0" max="5" value="3"
-                                               data-popup-enabled="true" data-show-value="true">
-                                    </div>
 
-                                    <br></br>
-                                    <div>
-                                        <input type="checkbox" id="subscribeNews" name="subscribe" value="newsletter">
-                                        <label for="subscribeNews">Accessible for people with disabilities</label>
-                                    </div>
+								<label for="dateofbirth">Date: &nbsp;</label>
 
-                                </form>
+								<input type="date" id="dateofbirth" placeholder="Date">
+
+
+                        </div>
+						<div class="row form-group">
+							<div class="col-md-12">
+								<br></br>
+								<span>
+								<label for="Begin_hour">Begin Hour: &nbsp;</label>
+								<select id="begin_hour" name="begin_hour">
+								  <option selected>00:00</option>
+								  <option>07:00</option>
+								  <option>08:00</option>
+								  <option>09:00</option>
+								  <option>10:00</option>
+								  <option>11:00</option>
+								  <option>12:00</option>
+								  <option>13:00</option>
+								  <option>14:00</option>
+								  <option>15:00</option>
+								  <option>16:00</option>
+								</select>
+
+								<label for="End_hour">&nbsp; &nbsp; End Hour: &nbsp;</label>
+								<select id="end_hour" name="end_hour">
+								  <option selected>00:00</option>
+								  <option>10:00</option>
+								  <option>11:00</option>
+								  <option>12:00</option>
+								  <option>13:00</option>
+								  <option>14:00</option>
+								  <option>15:00</option>
+								  <option>16:00</option>
+								  <option>17:00</option>
+								  <option>18:00</option>
+								  <option>19:00</option>
+								  <option>20:00</option>
+								  <option>21:00</option>
+								  <option>22:00</option>
+								  <option>23:00</option>
+								</select>
+							  </span>
+							</div>
+						</div>
+
+						<br></br>
+
+
+
+						<div class="row form-group">
+							<div class="col-md-12">
+								<label for="percent">Minimum occupency percent in room: </label>
+
+								<div class="""slidecontainer">
+								  <input type="range" min="0" max="100" value="50"  id="myRange1">
+								  <p>Value: <span id="demo1"></span></p>
+								</div>
+
+								<script>
+									var slider = document.getElementById("myRange1");
+									var output = document.getElementById("demo1");
+									output.innerHTML = slider.value;
+
+									slider.oninput = function() {
+									  output.innerHTML = this.value;
+									}
+								</script>
+
+								<label for="percent">Maximum occupency percent in room: </label>
+								<div class="""slidecontainer">
+								  <input type="range" min="0" max="100" value="50"  id="myRange2">
+								  <p>Value: <span id="demo2"></span></p>
+								</div>
+								<script>
+									var slider2 = document.getElementById("myRange2");
+									var output2 = document.getElementById("demo2");
+									output2.innerHTML = slider2.value;
+
+									slider2.oninput = function() {
+									  output2.innerHTML = this.value;
+									}
+								</script>
+
+							</div>
+						</div>
+
+						<br></br>
+
+						<div class="row form-group">
+							<div class="col-md-12">
+								<label for="percent">Minimum Number of friends: </label>
+
+								<div class="""slidecontainer">
+								  <input type="range" min="0" max="5" value="2"  id="myRange3">
+								  <p>Value: <span id="demo3"></span></p>
+								</div>
+
+								<script>
+									var slider3 = document.getElementById("myRange3");
+									var output3 = document.getElementById("demo3");
+									output3.innerHTML = slider3.value;
+
+									slider3.oninput = function() {
+									  output3.innerHTML = this.value;
+									}
+								</script>
+
+							</div>
+                            <div class="col-md-12">
+                                <label for="percent">Maximum Number of friends: </label>
+
+                                <div class="""slidecontainer">
+                                  <input type="range" min="0" max="5" value="2"  id="myRange4">
+                                  <p>Value: <span id="demo4"></span></p>
+                                </div>
+
+                                <script>
+                                    var slider4 = document.getElementById("myRange4");
+                                    var output4 = document.getElementById("demo4");
+                                    output4.innerHTML = slider4.value;
+
+                                    slider4.oninput = function() {
+                                      output4.innerHTML = this.value;
+                                    }
+                                </script>
 
                             </div>
+						</div>
+
+						<br></br>
+						<div>
+                            <input type="checkbox" id="subscribeNews" name="subscribe" value="newsletter">
+                            <label for="subscribeNews">Accessible for people with disabilities</label>
                         </div>
-                    </div>
+
+					</form>
+
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <form method="POST">
+        <div id="dynamicInput">
+            <br><input hidden type="text" name="myInputs[]">
+        </div>
+        <input type="button" class="btn btn-primary btn-block m-b-10" value="Add friend" onClick="addInput('dynamicInput');">
+    </form>
+    <script>
+        var counter = 1;
+        var limit = 10;
+
+        function addInput(divName) {
+            if (counter == limit) {
+                alert("You have reached the limit of adding " + counter + " inputs");
+            }
+            else {
+                var newdiv = document.createElement('div');
+                newdiv.innerHTML = " <br><h4>Friend " + (counter)+ " Email:</h4>" +
+                                "<input type=\"text\" class=\"form-control input-default \" style=\"width:300px;\">";
+                document.getElementById(divName).appendChild(newdiv);
+                counter++;
+            }
+        }
+    </script>
+	<br>
+    <br>
+	<!--</div>-->
+
+				<p align="center">
+					<label for="announce" style="color:black;">The final room will be send to you in the meeting day at 7:00.</label>
+				</p>
+
+				<p align="center">
+					<button type="button" class="btn btn-primary btn-md m-b-10 m-l-5">Submit</button>
+				</p>
+
 
                 </div>
 
-                <form method="POST">
-                    <div id="dynamicInput">
-                        <br><input hidden type="text" name="myInputs[]">
-                    </div>
-                    <input type="button" value="Add Another friend" onClick="addInput('dynamicInput');">
-                </form>
-                <script>
-                    var counter = 1;
-                    var limit = 10;
 
-                    function addInput(divName) {
-                        if (counter == limit) {
-                            alert("You have reached the limit of adding " + counter + " inputs");
-                        }
-                        else {
-                            var newdiv = document.createElement('div');
-                            newdiv.innerHTML = "E-mail " + (counter) + " <br><input type='text' name='myInputs[]'>";
-                            document.getElementById(divName).appendChild(newdiv);
-                            counter++;
-                        }
-                    }
-                </script>
+                    <!-- /# column -->
+                </div>
+                <!-- /# row -->
 
 
-                <br></br>
-                <p align="center">
-                    <button type="button">Submit</button>
-                </p>
-
-                <p align="center">
-                    <label for="announce">The final room will be send to you in the meeting day at 7:00.</label>
-                </p>
-
-            </div>
-
-
-            <!-- /# column -->
+            <!-- End Container fluid  -->
+            <!-- footer -->
+            <!-- End footer -->
         </div>
-        <!-- /# row -->
-
-
-        <!-- End Container fluid  -->
-        <!-- footer -->
-        <!-- End footer -->
-    </div>
-    <!-- End Page wrapper  -->
+        <!-- End Page wrapper  -->
 </div>
 <!-- End Wrapper -->
 <!-- All Jquery -->
