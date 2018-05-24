@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Order(object):
     def __init__(self, _id, user_email, date, participants, start_time, end_time, company,
-                 facility , min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
+                 facility, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
 
         _id = user_email + date + str(start_time) + str(end_time)
         self.user_email = user_email
@@ -14,7 +14,7 @@ class Order(object):
         self.participants = participants
         self.start_time = start_time
         self.end_time = end_time
-        #self.min_permission = min_permission
+        # self.min_permission = min_permission
         self.min_occupancy = min_occupancy
         self.max_occupancy = max_occupancy
         self.min_friends = min_friends
@@ -25,9 +25,9 @@ class Order(object):
         self.facility = facility
 
     def save_to_mongodb(self):
-         Database.insert(collection='orders', data=self.json())
+        Database.insert(collection='orders', data=self.json())
 
-        # need to be option to save to user
+    # need to be option to save to user
 
     def json(self):
         return {
@@ -36,7 +36,7 @@ class Order(object):
             'participants': self.participants,
             'start_time': self.start_time,
             'end_time': self.end_time,
-            #'min_permission' : self.min_permission,
+            # 'min_permission' : self.min_permission,
             'min_occupancy': self.min_occupancy,
             'max_occupancy': self.max_occupancy,
             'min_friends': self.min_friends,
@@ -139,7 +139,6 @@ class Order(object):
         query = {
             '$and': [{'date': date}, {'user_email': user_email}, intersection]
         }
-
 
         data = Database.find('orders', query)
         for order in data:
@@ -249,22 +248,22 @@ class Order(object):
             # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
             # todo - this algorithm try to assign the new order into specific room.
             # todo - if it can't do this then it start to chnage other orders.
-            min_permission = 3 ##change it
-            #status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
-             #                                                  #      len(participants))
+            min_permission = 3  ##change it
+            # status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
+            #                                                  #      len(participants))
 
             status, room_id = new_order.try_schedule_simple_algorithm(company, facility, min_permission,
-                                                                     len(participants))
+                                                                      len(participants))
 
             print(room_id)
             if status:
                 new_order.save_to_mongodb()
                 return True, new_order._id, room_id
             else:
-                print "error"
-                #all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
-                #cls.remove_conflict_schedule(all_conflict_orders)
-                #cls.bactracking_algorithm(all_conflict_orders)
+                pass
+                # all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
+                # cls.remove_conflict_schedule(all_conflict_orders)
+                # cls.bactracking_algorithm(all_conflict_orders)
 
         else:
             print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
@@ -312,7 +311,6 @@ class Order(object):
                 return self._id, room._id
         return False, 'fail'
 
-
     def try_schedule_simple_algorithm(self, company, facility, min_permission, participant_num):
         rooms = Room.available_rooms(self.date, participant_num, self.start_time, self.end_time, min_permission,
                                      company, facility, self.min_occupancy, self.max_occupancy,
@@ -324,7 +322,6 @@ class Order(object):
             if room.avialable_on_time(self.date, self.start_time, self.end_time, participant_num):
                 return self._id, room._id
         return False, 'fail'
-
 
     @classmethod
     def find_by_facility(cls, company, facility):
