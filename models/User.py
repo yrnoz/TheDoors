@@ -141,9 +141,9 @@ class User(object):
         participants = list(set(participants))
         min_permission = User.min_permission(participants)
 
-        status, order_id, room_id = Order.new_order(self.email, date, participants, start_time, end_time, company,
+        status, order_id, room_id = Order.new_order(1,self.email, date, participants, start_time, end_time, company,
                                                     facility,
-                                                    min_permission, min_occupancy, max_occupancy, min_friends,
+                                                     min_occupancy, max_occupancy, min_friends,
                                                     max_friends, is_accessible)
         if status:
             self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
