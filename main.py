@@ -251,9 +251,8 @@ def route_edit_friends():
             friends = user.get_friends_emails()
             possible_friends = [friend.email for friend in User.get_by_company(user.company) if
                                 friend.email not in friends and friend.email != email]
-            for f in possible_friends:
-                print(f)
             friends = user.get_friends()
+            print(str(user.manager) + '   ' + user.email)
             return render_template('friends_page.html', manager=user.manager, friends=friends,
                                    possible_friends=possible_friends)
         elif request.method == 'POST':

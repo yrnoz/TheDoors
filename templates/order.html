@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static' , filename= 'images/favicon.png') }}">
     <title>The Doors</title>
 
-   <link href="{{ url_for('static' , filename='css/lib/chartist/chartist.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/lib/chartist/chartist.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static' , filename='css/lib/owl.carousel.min.css') }}" rel="stylesheet"/>
     <link href="{{ url_for('static' , filename='css/lib/owl.theme.default.min.css') }}" rel="stylesheet"/>
     <!-- Bootstrap Core CSS -->
@@ -46,27 +46,27 @@
 </div>
 <!-- Main wrapper  -->
 <div id="main-wrapper">
-        <!-- header header  -->
-        <div class="header">
-            <nav class="navbar top-navbar navbar-expand-md navbar-light">
-                <div class="navbar-collapse">
-                    <!-- toggle and nav items -->
-                    <ul class="navbar-nav mr-auto mt-md-0">
-                        <!-- This is  -->
+    <!-- header header  -->
+    <div class="header">
+        <nav class="navbar top-navbar navbar-expand-md navbar-light">
+            <div class="navbar-collapse">
+                <!-- toggle and nav items -->
+                <ul class="navbar-nav mr-auto mt-md-0">
+                    <!-- This is  -->
 
-                        <!-- End Messages -->
-                    </ul>
-                    <!-- User profile and search -->
-                    <ul class="navbar-nav my-lg-0">
+                    <!-- End Messages -->
+                </ul>
+                <!-- User profile and search -->
+                <ul class="navbar-nav my-lg-0">
 
-                        <!-- Search -->
+                    <!-- Search -->
 
-                        <!-- Comment -->
-                        <!-- End Comment -->
-                        <!-- Messages -->
-                        <!-- End Messages -->
-                        <!-- Profile -->
-                        <li class="nav-item dropdown">
+                    <!-- Comment -->
+                    <!-- End Comment -->
+                    <!-- Messages -->
+                    <!-- End Messages -->
+                    <!-- Profile -->
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false"><img
                                 src="{{ url_for('static' , filename='images/users/5.jpg') }}" alt="user"
@@ -78,10 +78,10 @@
                             </ul>
                         </div>
                     </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
+                </ul>
+            </div>
+        </nav>
+    </div>
     <!-- Left Sidebar  -->
     <div class="left-sidebar">
         <!-- Sidebar scroll-->
@@ -90,27 +90,31 @@
             <nav class="sidebar-nav">
                 <ul id="sidebarnav">
                     <li class="nav-devider"></li>
-                    <li class="nav-label">Home</li>
-                    <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
-                            class="hide-menu">Dashboard <span
-                            class="label label-rouded label-primary pull-right">2</span></span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{ url_for('route_simulation') }}">Simulation </a>
-                            </li>
-                            <li><a href="{{ url_for('route_analytics') }}">Analytics </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
-                            class="hide-menu">Manager Tools <span
-                            class="label label-rouded label-primary pull-right">2</span></span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
-                            </li>
-                            <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a>
-                            </li>
-                        </ul>
-                    </li>
+                    {% if manager %}
+
+                        <li class="nav-label">Home</li>
+                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                                class="hide-menu">Dashboard <span
+                                class="label label-rouded label-primary pull-right">2</span></span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ url_for('route_simulation') }}">Simulation </a>
+                                </li>
+                                <li><a href="{{ url_for('route_analytics') }}">Analytics </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                                class="hide-menu">Manager Tools <span
+                                class="label label-rouded label-primary pull-right">2</span></span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
+                                </li>
+                                <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+
                     <li class="nav-label">Actions</li>
                     <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
                     <li><a href="{{ url_for('route_reserve_room') }}">Reserve Room</a></li>
@@ -125,44 +129,44 @@
     <!-- End Left Sidebar  -->
     <!-- Page wrapper  -->
     <div class="page-wrapper">
-            <!-- Bread crumb -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h3 class="text-primary">Schedule you Next Meeting:</h3> </div>
-                <div class="col-md-7 align-self-center">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active">Reserve room</li>
-                    </ol>
-                </div>
+        <!-- Bread crumb -->
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h3 class="text-primary">Schedule you Next Meeting:</h3></div>
+            <div class="col-md-7 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item active">Reserve room</li>
+                </ol>
             </div>
-            <!-- End Bread crumb -->
-            <!-- Container fluid  -->
+        </div>
+        <!-- End Bread crumb -->
+        <!-- Container fluid  -->
 
-                <!-- Start Page Content -->
+        <!-- Start Page Content -->
 
-                <div class="card">
-
-
-					<div class="gtco-section border-bottom">
-		<div class="gtco-container">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="col-md-6 animate-box">
-					<form action="#">
-						<div class="row form-group">
+        <div class="card">
 
 
-								<label for="dateofbirth">Date: &nbsp;</label>
+            <div class="gtco-section border-bottom">
+                <div class="gtco-container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6 animate-box">
+                                <form action="#">
+                                    <div class="row form-group">
 
-								<input type="date" id="dateofbirth" placeholder="Date">
+
+                                        <label for="dateofbirth">Date: &nbsp;</label>
+
+                                        <input type="date" id="dateofbirth" placeholder="Date">
 
 
-                        </div>
-						<div class="row form-group">
-							<div class="col-md-12">
-								<br></br>
-								<span>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-md-12">
+                                            <br></br>
+                                            <span>
 								<label for="Begin_hour">Begin Hour: &nbsp;</label>
 								<select id="begin_hour" name="begin_hour">
 								  <option selected>00:00</option>
@@ -197,156 +201,160 @@
 								  <option>23:00</option>
 								</select>
 							  </span>
-							</div>
-						</div>
+                                        </div>
+                                    </div>
 
-						<br></br>
+                                    <br></br>
 
 
+                                    <div class="row form-group">
+                                        <div class="col-md-12">
+                                            <label for="percent">Minimum occupency percent in room: </label>
 
-						<div class="row form-group">
-							<div class="col-md-12">
-								<label for="percent">Minimum occupency percent in room: </label>
+                                            <div class=""
+                                            "slidecontainer">
+                                            <input type="range" min="0" max="100" value="50" id="myRange1">
+                                            <p>Value: <span id="demo1"></span></p>
+                                        </div>
 
-								<div class="""slidecontainer">
-								  <input type="range" min="0" max="100" value="50"  id="myRange1">
-								  <p>Value: <span id="demo1"></span></p>
-								</div>
+                                        <script>
+                                            var slider = document.getElementById("myRange1");
+                                            var output = document.getElementById("demo1");
+                                            output.innerHTML = slider.value;
 
-								<script>
-									var slider = document.getElementById("myRange1");
-									var output = document.getElementById("demo1");
-									output.innerHTML = slider.value;
+                                            slider.oninput = function () {
+                                                output.innerHTML = this.value;
+                                            }
+                                        </script>
 
-									slider.oninput = function() {
-									  output.innerHTML = this.value;
-									}
-								</script>
+                                        <label for="percent">Maximum occupency percent in room: </label>
+                                        <div class=""
+                                        "slidecontainer">
+                                        <input type="range" min="0" max="100" value="50" id="myRange2">
+                                        <p>Value: <span id="demo2"></span></p>
+                                    </div>
+                                    <script>
+                                        var slider2 = document.getElementById("myRange2");
+                                        var output2 = document.getElementById("demo2");
+                                        output2.innerHTML = slider2.value;
 
-								<label for="percent">Maximum occupency percent in room: </label>
-								<div class="""slidecontainer">
-								  <input type="range" min="0" max="100" value="50"  id="myRange2">
-								  <p>Value: <span id="demo2"></span></p>
-								</div>
-								<script>
-									var slider2 = document.getElementById("myRange2");
-									var output2 = document.getElementById("demo2");
-									output2.innerHTML = slider2.value;
-
-									slider2.oninput = function() {
-									  output2.innerHTML = this.value;
-									}
-								</script>
-
-							</div>
-						</div>
-
-						<br></br>
-
-						<div class="row form-group">
-							<div class="col-md-12">
-								<label for="percent">Minimum Number of friends: </label>
-
-								<div class="""slidecontainer">
-								  <input type="range" min="0" max="5" value="2"  id="myRange3">
-								  <p>Value: <span id="demo3"></span></p>
-								</div>
-
-								<script>
-									var slider3 = document.getElementById("myRange3");
-									var output3 = document.getElementById("demo3");
-									output3.innerHTML = slider3.value;
-
-									slider3.oninput = function() {
-									  output3.innerHTML = this.value;
-									}
-								</script>
-
-							</div>
-                            <div class="col-md-12">
-                                <label for="percent">Maximum Number of friends: </label>
-
-                                <div class="""slidecontainer">
-                                  <input type="range" min="0" max="5" value="2"  id="myRange4">
-                                  <p>Value: <span id="demo4"></span></p>
-                                </div>
-
-                                <script>
-                                    var slider4 = document.getElementById("myRange4");
-                                    var output4 = document.getElementById("demo4");
-                                    output4.innerHTML = slider4.value;
-
-                                    slider4.oninput = function() {
-                                      output4.innerHTML = this.value;
-                                    }
-                                </script>
+                                        slider2.oninput = function () {
+                                            output2.innerHTML = this.value;
+                                        }
+                                    </script>
 
                             </div>
-						</div>
-
-						<br></br>
-						<div>
-                            <input type="checkbox" id="subscribeNews" name="subscribe" value="newsletter">
-                            <label for="subscribeNews">Accessible for people with disabilities</label>
                         </div>
 
-					</form>
+                        <br></br>
 
-				</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label for="percent">Minimum Number of friends: </label>
 
-    <form method="POST">
-        <div id="dynamicInput">
-            <br><input hidden type="text" name="myInputs[]">
+                                <div class=""
+                                "slidecontainer">
+                                <input type="range" min="0" max="5" value="2" id="myRange3">
+                                <p>Value: <span id="demo3"></span></p>
+                            </div>
+
+                            <script>
+                                var slider3 = document.getElementById("myRange3");
+                                var output3 = document.getElementById("demo3");
+                                output3.innerHTML = slider3.value;
+
+                                slider3.oninput = function () {
+                                    output3.innerHTML = this.value;
+                                }
+                            </script>
+
+                        </div>
+                        <div class="col-md-12">
+                            <label for="percent">Maximum Number of friends: </label>
+
+                            <div class=""
+                            "slidecontainer">
+                            <input type="range" min="0" max="5" value="2" id="myRange4">
+                            <p>Value: <span id="demo4"></span></p>
+                        </div>
+
+                        <script>
+                            var slider4 = document.getElementById("myRange4");
+                            var output4 = document.getElementById("demo4");
+                            output4.innerHTML = slider4.value;
+
+                            slider4.oninput = function () {
+                                output4.innerHTML = this.value;
+                            }
+                        </script>
+
+                    </div>
+                </div>
+
+                <br></br>
+                <div>
+                    <input type="checkbox" id="subscribeNews" name="subscribe" value="newsletter">
+                    <label for="subscribeNews">Accessible for people with disabilities</label>
+                </div>
+
+                </form>
+
+            </div>
         </div>
-        <input type="button" class="btn btn-primary btn-block m-b-10" value="Add friend" onClick="addInput('dynamicInput');">
-    </form>
-    <script>
-        var counter = 1;
-        var limit = 10;
+    </div>
+</div>
+</div>
 
-        function addInput(divName) {
-            if (counter == limit) {
-                alert("You have reached the limit of adding " + counter + " inputs");
-            }
-            else {
-                var newdiv = document.createElement('div');
-                newdiv.innerHTML = " <br><h4>Friend " + (counter)+ " Email:</h4>" +
-                                "<input type=\"text\" class=\"form-control input-default \" style=\"width:300px;\">";
-                document.getElementById(divName).appendChild(newdiv);
-                counter++;
-            }
+<form method="POST">
+    <div id="dynamicInput">
+        <br><input hidden type="text" name="myInputs[]">
+    </div>
+    <input type="button" class="btn btn-primary btn-block m-b-10" value="Add friend"
+           onClick="addInput('dynamicInput');">
+</form>
+<script>
+    var counter = 1;
+    var limit = 10;
+
+    function addInput(divName) {
+        if (counter == limit) {
+            alert("You have reached the limit of adding " + counter + " inputs");
         }
-    </script>
-	<br>
-    <br>
-	<!--</div>-->
+        else {
+            var newdiv = document.createElement('div');
+            newdiv.innerHTML = " <br><h4>Friend " + (counter) + " Email:</h4>" +
+                "<input type=\"text\" class=\"form-control input-default \" style=\"width:300px;\">";
+            document.getElementById(divName).appendChild(newdiv);
+            counter++;
+        }
+    }
+</script>
+<br>
+<br>
+<!--</div>-->
 
-				<p align="center">
-					<label for="announce" style="color:black;">The final room will be send to you in the meeting day at 7:00.</label>
-				</p>
+<p align="center">
+    <label for="announce" style="color:black;">The final room will be send to you in the meeting day at 7:00.</label>
+</p>
 
-				<p align="center">
-					<button type="button" class="btn btn-primary btn-md m-b-10 m-l-5">Submit</button>
-				</p>
-
-
-                </div>
+<p align="center">
+    <button type="button" class="btn btn-primary btn-md m-b-10 m-l-5">Submit</button>
+</p>
 
 
-                    <!-- /# column -->
-                </div>
-                <!-- /# row -->
+</div>
 
 
-            <!-- End Container fluid  -->
-            <!-- footer -->
-            <!-- End footer -->
-        </div>
-        <!-- End Page wrapper  -->
+<!-- /# column -->
+</div>
+<!-- /# row -->
+
+
+<!-- End Container fluid  -->
+<!-- footer -->
+<!-- End footer -->
+</div>
+<!-- End Page wrapper  -->
 </div>
 <!-- End Wrapper -->
 <!-- All Jquery -->
