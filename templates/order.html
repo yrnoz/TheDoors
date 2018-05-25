@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Tell the browser to be responsive to screen width -->
@@ -12,21 +14,22 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static' , filename= 'images/favicon.png') }}">
     <title>The Doors</title>
 
-    <link href="{{ url_for('static' , filename= 'css/lib/chartist/chartist.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static' , filename= 'css/lib/owl.carousel.min.css') }}" rel="stylesheet"/>
-    <link href="{{ url_for('static' , filename= 'css/lib/owl.theme.default.min.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static' , filename='css/lib/chartist/chartist.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/lib/owl.carousel.min.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static' , filename='css/lib/owl.theme.default.min.css') }}" rel="stylesheet"/>
     <!-- Bootstrap Core CSS -->
-    <link href="{{ url_for('static' , filename= 'css/lib/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/lib/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="{{ url_for('static' , filename= 'css/helper.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static' , filename= 'css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename='css/helper.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' ,filename= 'css/style.css') }}" rel="stylesheet">
     <link href="{{ url_for('static' , filename= 'css/nouislider.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static' , filename= 'css/nouislider.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
-    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
-    {#    <script src="/wp-includes/js/addInput.js" language="Javascript" type="text/javascript"></script>#}
+    <!--<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>-->
+    <!--{#    <script src="/wp-includes/js/addInput.js" language="Javascript" type="text/javascript"></script>#}-->
 
 
-    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
+    <!--<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>-->
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
     <!--[if lt IE 9]>
@@ -45,6 +48,42 @@
 </div>
 <!-- Main wrapper  -->
 <div id="main-wrapper">
+    <!-- header header  -->
+    <div class="header">
+        <nav class="navbar top-navbar navbar-expand-md navbar-light">
+            <div class="navbar-collapse">
+                <!-- toggle and nav items -->
+                <ul class="navbar-nav mr-auto mt-md-0">
+                    <!-- This is  -->
+
+                    <!-- End Messages -->
+                </ul>
+                <!-- User profile and search -->
+                <ul class="navbar-nav my-lg-0">
+
+                    <!-- Search -->
+
+                    <!-- Comment -->
+                    <!-- End Comment -->
+                    <!-- Messages -->
+                    <!-- End Messages -->
+                    <!-- Profile -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false"><img
+                                src="{{ url_for('static' , filename='images/users/5.jpg') }}" alt="user"
+                                class="profile-pic"/></a>
+                        <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+                            <ul class="dropdown-user">
+                                <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
+                                <li><a href="{{ url_for('logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
     <!-- Left Sidebar  -->
     <div class="left-sidebar">
         <!-- Sidebar scroll-->
@@ -53,27 +92,31 @@
             <nav class="sidebar-nav">
                 <ul id="sidebarnav">
                     <li class="nav-devider"></li>
-                    <li class="nav-label">Home</li>
-                    <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
-                            class="hide-menu">Dashboard <span
-                            class="label label-rouded label-primary pull-right">2</span></span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{ url_for('route_simulation') }}">Simulation </a>
-                            </li>
-                            <li><a href="{{ url_for('route_analytics') }}">Analytics </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
-                            class="hide-menu">Manager Tools <span
-                            class="label label-rouded label-primary pull-right">2</span></span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
-                            </li>
-                            <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a>
-                            </li>
-                        </ul>
-                    </li>
+                    {% if manager %}
+
+                        <li class="nav-label">Home</li>
+                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                                class="hide-menu">Dashboard <span
+                                class="label label-rouded label-primary pull-right">2</span></span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ url_for('route_simulation') }}">Simulation </a>
+                                </li>
+                                <li><a href="{{ url_for('route_analytics') }}">Analytics </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                                class="hide-menu">Manager Tools <span
+                                class="label label-rouded label-primary pull-right">2</span></span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
+                                </li>
+                                <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+
                     <li class="nav-label">Actions</li>
                     <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
                     <li><a href="{{ url_for('route_reserve_room') }}">Reserve Room</a></li>
@@ -101,182 +144,330 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+
         <!-- Bread crumb -->
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h3 class="text-primary">Schedule you Next Meeting:</h3></div>
+                <h3 class="text-primary">Schedule Your Next Meeting:</h3></div>
             <div class="col-md-7 align-self-center">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Actions</a></li>
-                    <li class="breadcrumb-item active">Reserve Room</li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item active">Reserve room</li>
                 </ol>
             </div>
         </div>
         <!-- End Bread crumb -->
         <!-- Container fluid  -->
-        <div class="container-fluid">
 
-            <!-- Start Page Content -->
+        <!-- Start Page Content -->
 
-            <div class="card">
+        {#        <div class="card">#}
+        {##}
+        {##}
+        {#            <div class="gtco-section border-bottom">#}
+        {#                <div class="gtco-container">#}
+        {#                    <div class="row">#}
+        {#                        <div class="col-md-12">#}
+        {#                            <div class="col-md-6 animate-box">#}
+        {#                                <form action="#">#}
+        {#                                    <div class="row form-group">#}
+        {##}
+        {##}
+        {#                                        <label for="dateofbirth">Date: &nbsp;</label>#}
+        {##}
+        {#                                        <input type="date" id="dateofbirth" placeholder="Date">#}
+        {##}
+        {##}
+        {#                                    </div>#}
+        {#                                    <div class="row form-group">#}
+        {#                                        <div class="col-md-12">#}
+        {#                                            <br></br>#}
+        {#                                            <span>#}
+        {#								<label for="Begin_hour">Begin Hour: &nbsp;</label>#}
+        {#								<select id="begin_hour" name="begin_hour">#}
+        {#								  <option selected>00:00</option>#}
+        {#								  <option>07:00</option>#}
+        {#								  <option>08:00</option>#}
+        {#								  <option>09:00</option>#}
+        {#								  <option>10:00</option>#}
+        {#								  <option>11:00</option>#}
+        {#								  <option>12:00</option>#}
+        {#								  <option>13:00</option>#}
+        {#								  <option>14:00</option>#}
+        {#								  <option>15:00</option>#}
+        {#								  <option>16:00</option>#}
+        {#								</select>#}
+        {##}
+        {#								<label for="End_hour">&nbsp; &nbsp; End Hour: &nbsp;</label>#}
+        {#								<select id="end_hour" name="end_hour">#}
+        {#								  <option selected>00:00</option>#}
+        {#								  <option>10:00</option>#}
+        {#								  <option>11:00</option>#}
+        {#								  <option>12:00</option>#}
+        {#								  <option>13:00</option>#}
+        {#								  <option>14:00</option>#}
+        {#								  <option>15:00</option>#}
+        {#								  <option>16:00</option>#}
+        {#								  <option>17:00</option>#}
+        {#								  <option>18:00</option>#}
+        {#								  <option>19:00</option>#}
+        {#								  <option>20:00</option>#}
+        {#								  <option>21:00</option>#}
+        {#								  <option>22:00</option>#}
+        {#								  <option>23:00</option>#}
+        {#								</select>#}
+        {#							  </span>#}
+        {#                                        </div>#}
+        {#                                    </div>#}
+        {##}
+        {#                                    <br></br>#}
+        {##}
+        {##}
+        {#                                    <div class="row form-group">#}
+        {#                                        <div class="col-md-12">#}
+        {#                                            <label for="percent">Minimum occupency percent in room: </label>#}
+        {##}
+        {#                                            <div class=""#}
+        {#                                            "slidecontainer">#}
+        {#                                            <input type="range" min="0" max="100" value="50" id="myRange1">#}
+        {#                                            <p>Value: <span id="demo1"></span></p>#}
+        {#                                        </div>#}
+        {##}
+        {#                                        <script>#}
+        {#                                            var slider = document.getElementById("myRange1");#}
+        {#                                            var output = document.getElementById("demo1");#}
+        {#                                            output.innerHTML = slider.value;#}
+        {##}
+        {#                                            slider.oninput = function () {#}
+        {#                                                output.innerHTML = this.value;#}
+        {#                                            }#}
+        {#                                        </script>#}
+        {##}
+        {#                                        <label for="percent">Maximum occupency percent in room: </label>#}
+        {#                                        <div class=""#}
+        {#                                        "slidecontainer">#}
+        {#                                        <input type="range" min="0" max="100" value="50" id="myRange2">#}
+        {#                                        <p>Value: <span id="demo2"></span></p>#}
+        {#                                    </div>#}
+        {#                                    <script>#}
+        {#                                        var slider2 = document.getElementById("myRange2");#}
+        {#                                        var output2 = document.getElementById("demo2");#}
+        {#                                        output2.innerHTML = slider2.value;#}
+        {##}
+        {#                                        slider2.oninput = function () {#}
+        {#                                            output2.innerHTML = this.value;#}
+        {#                                        }#}
+        {#                                    </script>#}
+        {##}
+        {#                            </div>#}
+        {#                        </div>#}
+        {##}
+        {#                        <br></br>#}
+        {##}
+        {#                        <div class="row form-group">#}
+        {#                            <div class="col-md-12">#}
+        {#                                <label for="percent">Minimum Number of friends: </label>#}
+        {##}
+        {#                                <div class=""#}
+        {#                                "slidecontainer">#}
+        {#                                <input type="range" min="0" max="5" value="2" id="myRange3">#}
+        {#                                <p>Value: <span id="demo3"></span></p>#}
+        {#                            </div>#}
+        {##}
+        {#                            <script>#}
+        {#                                var slider3 = document.getElementById("myRange3");#}
+        {#                                var output3 = document.getElementById("demo3");#}
+        {#                                output3.innerHTML = slider3.value;#}
+        {##}
+        {#                                slider3.oninput = function () {#}
+        {#                                    output3.innerHTML = this.value;#}
+        {#                                }#}
+        {#                            </script>#}
+        {##}
+        {#                        </div>#}
+        {#                        <div class="col-md-12">#}
+        {#                            <label for="percent">Maximum Number of friends: </label>#}
+        {##}
+        {#                            <div class=""#}
+        {#                            "slidecontainer">#}
+        {#                            <input type="range" min="0" max="5" value="2" id="myRange4">#}
+        {#                            <p>Value: <span id="demo4"></span></p>#}
+        {#                        </div>#}
+        {##}
+        {#                        <script>#}
+        {#                            var slider4 = document.getElementById("myRange4");#}
+        {#                            var output4 = document.getElementById("demo4");#}
+        {#                            output4.innerHTML = slider4.value;#}
+        {##}
+        {#                            slider4.oninput = function () {#}
+        {#                                output4.innerHTML = this.value;#}
+        {#                            }#}
+        {#                        </script>#}
+        {##}
+        {#                    </div>#}
+        {#                </div>#}
+        {##}
+        {#                                    <br></br>#}
+        {#                                    <div>#}
+        {#                                        <input type="checkbox" id="subscribeNews" name="subscribe" value="newsletter">#}
+        {#                                        <label for="subscribeNews">Accessible for people with disabilities</label>#}
+        {#                                    </div>#}
+        {##}
+        {#                                </form>#}
+        {##}
+        {#                            </div>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
+        {##}
+        {#            <form method="POST">#}
+        {#                <div id="dynamicInput">#}
+        {#                    <br><input hidden type="text" name="myInputs[]">#}
+        {#                </div>#}
+        {#                <input type="button" class="btn btn-primary btn-block m-b-10" value="Add friend"#}
+        {#                       onClick="addInput('dynamicInput');">#}
+        {#            </form>#}
+        {#            <script>#}
+        {#                var counter = 1;#}
+        {#                var limit = 10;#}
+        {##}
+        {#                function addInput(divName) {#}
+        {#                    if (counter == limit) {#}
+        {#                        alert("You have reached the limit of adding " + counter + " inputs");#}
+        {#                    }#}
+        {#                    else {#}
+        {#                        var newdiv = document.createElement('div');#}
+        {#                        newdiv.innerHTML = " <br><h4>Friend " + (counter) + " Email:</h4>" +#}
+        {#                            "<input type=\"text\" class=\"form-control input-default \" style=\"width:300px;\">";#}
+        {#                        document.getElementById(divName).appendChild(newdiv);#}
+        {#                        counter++;#}
+        {#                    }#}
+        {#                }#}
+        {#            </script>#}
+        {#            <br>#}
+        {#            <br>#}
+        {#            <!--</div>-->#}
+        {##}
+        {#            <p align="center">#}
+        {#                <label for="announce" style="color:black;">The final room will be send to you in the meeting day at#}
+        {#                    7:00.</label>#}
+        {#            </p>#}
+        {##}
+        {#            <p align="center">#}
+        {#                <button type="button" class="btn btn-primary btn-md m-b-10 m-l-5">Submit</button>#}
+        {#            </p>#}
+        {##}
+        {##}
+        {#        </div>#}
 
-                <div class="gtco-section border-bottom">
-                    <div class="gtco-container">
-                        <div class="col-md-12">
-                            <div class="col-md-6 animate-box">
-                                <form action="#">
 
-                                    <div class="row form-group">
-                                        <label for="dateofbirth">Date: &nbsp;</label>
-                                        <input type="date" id="dateofbirth" placeholder="Date">
-                                    </div>
+        <div class="tab-pane  p-20" id="add" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card card-outline-primary">
+                        <div class="card-header">
+                            <h4 class="m-b-0 text-white">New Order</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('route_reserve_room') }}" method="post">
+                                <div class="form-body">
+                                    <h3 class="card-title m-t-15">Reserve Info</h3>
+                                    <hr>
+                                    <div class="row p-t-20">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">Date</label>
+                                                <input name="date" type="date" id="date"
+                                                       class="form-control"
+                                                       required>
+                                            </div>
+                                            <script>$(function () {
 
-                                    <div class="row form-group">
-                                        <div class="col-md-12">
-                                            <div class="row">
+                                                var now = new Date(),
+                                                    minDate = now.toISOString().substring(0, 10);
 
-                                                <label for="Begin_hour">Begin Hour: &nbsp;</label>
-                                                <select id="begin_hour" name="begin_hour">
-                                                    <option selected>00:00</option>
-                                                    <option>01:00</option>
-                                                    <option>02:00</option>
-                                                    <option>03:00</option>
-                                                    <option>04:00</option>
-                                                    <option>05:00</option>
-                                                    <option>06:00</option>
-                                                    <option>07:00</option>
-                                                    <option>08:00</option>
-                                                    <option>09:00</option>
-                                                    <option>10:00</option>
-                                                    <option>11:00</option>
-                                                    <option>12:00</option>
-                                                    <option>13:00</option>
-                                                    <option>14:00</option>
-                                                    <option>15:00</option>
-                                                    <option>16:00</option>
-                                                    <option>17:00</option>
-                                                    <option>18:00</option>
-                                                    <option>19:00</option>
-                                                    <option>20:00</option>
-                                                    <option>21:00</option>
-                                                    <option>22:00</option>
-                                                    <option>23:00</option>
+                                                $("#date").prop('min', minDate);
+                                            })
+                                            </script>
+                                            <div class="form-group">
+                                                <label class="control-label">Guests - option</label>
+                                                <select name="participants" type="text" list="friends"
+                                                        class="form-control custom-select js-example-basic-multiple"
+                                                        data-placeholder="Choose a Category"
+                                                        tabindex="1" multiple>
+                                                    {% for friend in friends %}
+                                                        <option value="{{ friend }}">{{ friend }}</option>
+                                                    {% endfor %}
                                                 </select>
 
-                                                <label for="End_hour">&nbsp; &nbsp; End Hour: &nbsp;</label>
-                                                <select id="end_hour" name="end_hour">
-                                                    <option selected>00:00</option>
-                                                    <option>01:00</option>
-                                                    <option>02:00</option>
-                                                    <option>03:00</option>
-                                                    <option>04:00</option>
-                                                    <option>05:00</option>
-                                                    <option>06:00</option>
-                                                    <option>07:00</option>
-                                                    <option>08:00</option>
-                                                    <option>09:00</option>
-                                                    <option>10:00</option>
-                                                    <option>11:00</option>
-                                                    <option>12:00</option>
-                                                    <option>13:00</option>
-                                                    <option>14:00</option>
-                                                    <option>15:00</option>
-                                                    <option>16:00</option>
-                                                    <option>17:00</option>
-                                                    <option>18:00</option>
-                                                    <option>19:00</option>
-                                                    <option>20:00</option>
-                                                    <option>21:00</option>
-                                                    <option>22:00</option>
-                                                    <option>23:00</option>
-                                                </select>
+                                            </div>
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn btn-success"><i
+                                                        class="fa fa-check"></i> Add
+                                                </button>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <label class="control-label">Begin Hour</label>
+                                                    <select name="start" id="start"
+                                                            class="form-control"
+                                                            required>
+                                                        <option value="8">8:00</option>
+                                                        <option value="9">9:00</option>
+                                                        <option value="10">10:00</option>
+                                                        <option value="11">11:00</option>
+                                                        <option value="12">12:00</option>
+                                                        <option value="13">13:00</option>
+                                                        <option value="14">14:00</option>
+                                                        <option value="15">15:00</option>
+                                                        <option value="16">16:00</option>
+                                                        <option value="17">17:00</option>
+                                                        <option value="18">18:00</option>
+                                                    </select>
+
+                                                </div>
+                                                <label class="control-label">Meeting Duration</label>
+                                                <select name="duration" id="duration"
+                                                        class="form-control"
+                                                        required>
+                                                    <option value="1"> 1 Hour</option>
+                                                    <option value="2"> 2 Hours</option>
+                                                    <option value="3"> 3 Hours</option>
+                                                </select>
+                                            </div>
+
+
+                                            <!--/span-->
+
+                                        </div>
+                                        <!--/row-->
+
+                                        <!--/row-->
+
+                                        <!--/row-->
+
                                     </div>
-
-                                    <br></br>
-
-                                    <div data-role="rangeslider">
-                                        <label for="range-1a">percent ocupency in room:</label>
-                                        <input type="range" name="range-1a" id="range-1a" min="0" max="100" value="40"
-                                               data-popup-enabled="true" data-show-value="true">
-                                        <label for="range-1b">percent ocupency in room:</label>
-                                        <input type="range" name="range-1b" id="range-1b" min="0" max="100" value="80"
-                                               data-popup-enabled="true" data-show-value="true">
-                                    </div>
-
-
-                                    <br></br>
-
-                                    <div data-role="rangeslider">
-                                        <label for="range-1a">Number of friends:</label>
-                                        <input type="range" name="range-1a" id="range-1a" min="0" max="5" value="2"
-                                               data-popup-enabled="true" data-show-value="true">
-                                        <label for="range-1b">Number of friends:</label>
-                                        <input type="range" name="range-1b" id="range-1b" min="0" max="5" value="3"
-                                               data-popup-enabled="true" data-show-value="true">
-                                    </div>
-
-                                    <br></br>
-                                    <div>
-                                        <input type="checkbox" id="subscribeNews" name="subscribe" value="newsletter">
-                                        <label for="subscribeNews">Accessible for people with disabilities</label>
-                                    </div>
-
-                                </form>
-
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-
                 </div>
-
-                <form method="POST">
-                    <div id="dynamicInput">
-                        <br><input hidden type="text" name="myInputs[]">
-                    </div>
-                    <input type="button" value="Add Another friend" onClick="addInput('dynamicInput');">
-                </form>
-                <script>
-                    var counter = 1;
-                    var limit = 10;
-
-                    function addInput(divName) {
-                        if (counter == limit) {
-                            alert("You have reached the limit of adding " + counter + " inputs");
-                        }
-                        else {
-                            var newdiv = document.createElement('div');
-                            newdiv.innerHTML = "E-mail " + (counter) + " <br><input type='text' name='myInputs[]'>";
-                            document.getElementById(divName).appendChild(newdiv);
-                            counter++;
-                        }
-                    }
-                </script>
-
-
-                <br></br>
-                <p align="center">
-                    <button type="button">Submit</button>
-                </p>
-
-                <p align="center">
-                    <label for="announce">The final room will be send to you in the meeting day at 7:00.</label>
-                </p>
-
             </div>
-
-
-            <!-- /# column -->
         </div>
-        <!-- /# row -->
 
-
-        <!-- End Container fluid  -->
-        <!-- footer -->
-        <!-- End footer -->
+        <!-- /# column -->
     </div>
-    <!-- End Page wrapper  -->
+    <!-- /# row -->
+
+
+    <!-- End Container fluid  -->
+    <!-- footer -->
+    <!-- End footer -->
+</div>
+<!-- End Page wrapper  -->
 </div>
 <!-- End Wrapper -->
 <!-- All Jquery -->

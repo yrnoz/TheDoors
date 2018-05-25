@@ -19,6 +19,7 @@ def p():
     p.terminate()
 
 
+
 def test_user():
     Database.initialize()
     Database.dropAll()
@@ -78,26 +79,52 @@ def test_rooms():
     assert len(Room.get_by_capacity(50, 'YAHOO', 'matam', 2)) == 0
     assert len(Room.get_by_capacity(20, 'YAHOO', 'matam', 3)) > 0
     assert len(Room.get_by_capacity(20, 'YAHOO', 'matam', 1)) == 0
+
     # todo - Ilana should fix this
     # assert len(Room.available_rooms('11/11/11', 12, 1, 2, 2, 'YAHOO', 'matam')) > 0
 
 
+
+
+
 # todo - Ilana should fix this
-# def test_schedules_orders():
-#     print("hi")
-#     user = User.get_by_email('email_1@gmail.com')
-#     participants = ['email_1@gmail.com', 'email_2@gmail.com']
-#     date = datetime.utcnow().strftime('%d/%m/%y')
-#     status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam', 0, 100, 0, 5, False)
-#     print(string)
-#     assert len(user.get_orders()) > 0
-#     schedules = user.get_schedule()
-#     assert len(schedules) > 0
-#     schedules = Schedule.get_schedules('email_1@gmail.com')
-#     for sched in schedules:
-#         sched.get_order_id()
-#         sched.future_meeting()
-#     assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
+def test_schedules_orders():
+    print("hi")
+    Database.initialize()
+    user = User.get_by_email('email_1@gmail.com')
+    participants = ['email_1@gmail.com', 'email_2@gmail.com']
+    date = datetime.utcnow().strftime('%d/%m/%y')
+    status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam', 0, 100, 0, 5, False)
+    print(string)
+    assert len(user.get_orders()) > 0
+    schedules = user.get_schedule()
+    assert len(schedules) > 0
+    schedules = Schedule.get_schedules('email_1@gmail.com')
+    for sched in schedules:
+        sched.get_order_id()
+        sched.future_meeting()
+    assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
+
+    assert len(Room.available_rooms('11/11/11', 12, 1, 2, 2, 'YAHOO', 'matam')) > 0
+
+
+
+def test_schedules_orders():
+    Database.initialize()
+
+    user = User.get_by_email('email_1@gmail.com')
+    participants = ['email_1@gmail.com', 'email_2@gmail.com']
+    date = datetime.utcnow().strftime('%d/%m/%y')
+    status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam' , 0, 100, 0, 5, False)
+    print(string)
+    assert len(user.get_orders()) > 0
+    schedules = user.get_schedule()
+    assert len(schedules) > 0
+    schedules = Schedule.get_schedules('email_1@gmail.com')
+    for sched in schedules:
+        sched.get_order_id()
+        sched.future_meeting()
+    assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
 
 
 def test_facilities():
@@ -173,3 +200,5 @@ def test_friends():
 
     assert user2 is not None
     assert manager.delete_user( 'email_2@gmail.com') is True
+
+

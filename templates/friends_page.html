@@ -37,6 +37,42 @@
 </div>
 <!-- Main wrapper  -->
 <div id="main-wrapper">
+    <!-- header header  -->
+    <div class="header">
+        <nav class="navbar top-navbar navbar-expand-md navbar-light">
+            <div class="navbar-collapse">
+                <!-- toggle and nav items -->
+                <ul class="navbar-nav mr-auto mt-md-0">
+                    <!-- This is  -->
+
+                    <!-- End Messages -->
+                </ul>
+                <!-- User profile and search -->
+                <ul class="navbar-nav my-lg-0">
+
+                    <!-- Search -->
+
+                    <!-- Comment -->
+                    <!-- End Comment -->
+                    <!-- Messages -->
+                    <!-- End Messages -->
+                    <!-- Profile -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false"><img
+                                src="{{ url_for('static' , filename='images/users/5.jpg') }}" alt="user"
+                                class="profile-pic"/></a>
+                        <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+                            <ul class="dropdown-user">
+                                <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
+                                <li><a href="{{ url_for('logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
     <!-- Left Sidebar  -->
     <div class="left-sidebar">
         <!-- Sidebar scroll-->
@@ -45,27 +81,31 @@
             <nav class="sidebar-nav">
                 <ul id="sidebarnav">
                     <li class="nav-devider"></li>
-                    <li class="nav-label">Home</li>
-                    <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
-                            class="hide-menu">Dashboard <span
-                            class="label label-rouded label-primary pull-right">2</span></span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{ url_for('route_simulation') }}">Simulation </a>
-                            </li>
-                            <li><a href="{{ url_for('route_analytics') }}">Analytics </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
-                            class="hide-menu">Manager Tools <span
-                            class="label label-rouded label-primary pull-right">2</span></span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
-                            </li>
-                            <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a>
-                            </li>
-                        </ul>
-                    </li>
+                    {% if manager %}
+
+                        <li class="nav-label">Home</li>
+                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                                class="hide-menu">Dashboard <span
+                                class="label label-rouded label-primary pull-right">2</span></span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ url_for('route_simulation') }}">Simulation </a>
+                                </li>
+                                <li><a href="{{ url_for('route_analytics') }}">Analytics </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                                class="hide-menu">Manager Tools <span
+                                class="label label-rouded label-primary pull-right">2</span></span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
+                                </li>
+                                <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+
                     <li class="nav-label">Actions</li>
                     <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
                     <li><a href="{{ url_for('route_reserve_room') }}">Reserve Room</a></li>
@@ -142,9 +182,9 @@
                                                                 class="form-control custom-select"
                                                                 data-placeholder="Choose a Category"
                                                                 tabindex="1">
-                                                            {% for user in possible_friends %}
-                                                            <option value="{{ user.email }}">{{ user.email }}
-                                                            </option>
+                                                            {% for email in possible_friends %}
+                                                                <option value="{{ email }}">{{ email }}
+                                                                </option>
                                                             {% endfor %}
                                                         </select>
                                                         <input name="type" value="add_friend" hidden>
@@ -170,14 +210,22 @@
                                                 </tr>
                                                 <tbody>
                                                 {% for user in friends %}
-                                                <tr>
-                                                    <td style="color:black;">{{ user.username }}</td>
-                                                    <td style="color:black;">{{ user.email }}</td>
-                                                    <td style="color:black;">{{ user.facility }}</td>
-                                                    <td><input type="button" value="Remove" onclick="deleteRow(this)">
-                                                    </td>
+                                                    <tr>
+                                                        <td style="color:black;">{{ user.username }}</td>
+                                                        <td style="color:black;">{{ user.email }}</td>
+                                                        <td style="color:black;">{{ user.facility }}</td>
+                                                        <td>
+                                                            <button name="email" value="{{ user.email }}" type="submit"
+                                                                    class="btn btn-success"><i
+                                                                    onclick="deleteRow(this)" class="fa fa-check"></i>
+                                                                Remove
+                                                            </button>
+                                                            {#                                                            <input type="button" placeholder="Remove"#}
+                                                            {#                                                                   value="{{ user.email }}"#}
+                                                            {#                                                                   name="email" onclick="deleteRow(this)">#}
+                                                        </td>
 
-                                                </tr>
+                                                    </tr>
                                                 {% endfor %}
                                                 </tbody>
                                                 <input name="type" value="remove_friend" hidden>
@@ -185,10 +233,10 @@
                                         </form>
 
                                         <script>
-                                                function deleteRow(r) {
-                                                    var i = r.parentNode.parentNode.rowIndex;
-                                                    document.getElementById("customers").deleteRow(i);
-                                                }
+                                            function deleteRow(r) {
+                                                var i = r.parentNode.parentNode.rowIndex;
+                                                document.getElementById("customers").deleteRow(i);
+                                            }
 
 
                                         </script>

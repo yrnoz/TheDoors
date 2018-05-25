@@ -5,11 +5,8 @@ from datetime import datetime
 
 
 class Order(object):
-    def __init__(self, user_email, _id, date, participants, start_time, end_time, company,
+    def __init__(self, _id, user_email, date, participants, start_time, end_time, company,
                  facility, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
-
-
-
 
         _id = user_email + date + str(start_time) + str(end_time)
         self.user_email = user_email
@@ -17,9 +14,10 @@ class Order(object):
         self.participants = participants
         self.start_time = start_time
         self.end_time = end_time
+        # self.min_permission = min_permission
         self.min_occupancy = min_occupancy
-        self.max_occupancy= max_occupancy
-        self.min_friends=min_friends
+        self.max_occupancy = max_occupancy
+        self.min_friends = min_friends
         self.max_friends = max_friends
         self.is_accessible = is_accessible
         self._id = _id
@@ -28,7 +26,8 @@ class Order(object):
 
     def save_to_mongodb(self):
         Database.insert(collection='orders', data=self.json())
-        #need to be option to save to user
+
+    # need to be option to save to user
 
     def json(self):
         return {
@@ -37,7 +36,8 @@ class Order(object):
             'participants': self.participants,
             'start_time': self.start_time,
             'end_time': self.end_time,
-            'min_occupancy' :self.min_occupancy,
+            # 'min_permission' : self.min_permission,
+            'min_occupancy': self.min_occupancy,
             'max_occupancy': self.max_occupancy,
             'min_friends': self.min_friends,
             'max_friends': self.max_friends,
@@ -84,19 +84,66 @@ class Order(object):
     @classmethod
     def find_by_user_email_and_date_and_time(cls, user_email, date, beign, end):
         orders = []
-        query = {
-            '$and': [{'date': date}, {'user_email': user_email},
-                     {'$or': [{'$gt': {'start_time': end}}, {'$st': {'end_time': beign}}]}]
+
+        intersection = {
+            '$or':
+                [
+                    {
+                        '$and':
+                            [
+                                {
+                                    'start_time':
+                                        {
+                                            '$not':
+                                                {
+                                                    '$gte': end
+
+                                                }
+                                        }
+
+                                },
+                                {
+                                    'end_time':
+                                        {
+                                            '$gte': end
+                                        }
+                                }
+                            ]
+                    }
+                    ,
+                    {
+                        '$and':
+                            [
+                                {
+                                    'start_time':
+                                        {
+                                            '$not':
+                                                {
+                                                    '$gte': beign
+
+                                                }
+                                        }
+
+                                },
+                                {
+                                    'end_time':
+                                        {
+                                            '$gt': beign
+                                        }
+                                }
+                            ]
+                    }
+                ]
         }
+
+        query = {
+            '$and': [{'date': date}, {'user_email': user_email}, intersection]
+        }
+
         data = Database.find('orders', query)
         for order in data:
             orders.append(cls(**order))
         return orders
-
-    @classmethod
-    def already_have_an_order_on_this_time(cls, user_email, date, start_time, end_time):
-        orders = cls.find_by_date_and_time(user_email, date, start_time, end_time)
-        return True if len(orders) > 0 else False
 
     @classmethod
     def find_by_date_and_time(cls, user_email, date, beign, end):
@@ -161,10 +208,14 @@ class Order(object):
             orders.append(cls(**order))
         return orders
 
-
+    @classmethod
+    def already_have_an_order_on_this_time(cls, user_email, date, start_time, end_time):
+        orders = cls.find_by_user_email_and_date_and_time(user_email, date, start_time, end_time)
+        return True if len(orders) > 1 else False
 
     @classmethod
-    def new_order(cls, user_email, date, participants, start_time, end_time, company, facility, min_permission, min_occupancy, max_occupancy,
+    def new_order(cls, _id, user_email, date, participants, start_time, end_time, company, facility,
+                  min_occupancy, max_occupancy,
                   min_friends, max_friends, is_accessible):
         """
 
@@ -182,37 +233,29 @@ class Order(object):
         else --> true
         """
 
-        # user already have an order on that time
-        if cls.already_have_an_order_on_this_time(user_email, date, start_time, end_time):
-            print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+        new_order = cls(1, user_email, date, participants, start_time, end_time, company, facility,
+                        min_occupancy, max_occupancy,
+                        min_friends, max_friends, is_accessible)
+        # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
+        # todo - this algorithm try to assign the new order into specific room.
+        # todo - if it can't do this then it start to chnage other orders.
+        min_permission = 3  ##change it
+        # status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
+        #                                                  #      len(participants))
 
-            return False, "user already have an order on that time ", "failed"
+        status, room_id = new_order.try_schedule_simple_algorithm(company, facility, min_permission,
+                                                                  len(participants))
 
-        if Schedule.all_participants_are_free(date, participants, start_time, end_time):
-            print('ssssssssssssssssssssssssssssss')
-
-            new_order = cls(user_email, date, participants, start_time, end_time, company, facility, min_permission, min_occupancy,max_occupancy,
-                  min_friends, max_friends, is_accessible)
-            # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
-            # todo - this algorithm try to assign the new order into specific room.
-            # todo - if it can't do this then it start to chnage other orders.
-            status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
-                                                                     len(participants))
-
-            print(room_id)
-            if status:
-                new_order.save_to_mongodb()
-                return True, new_order._id, room_id
-            else:
-                all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
-                cls.remove_conflict_schedule(all_conflict_orders)
-                cls.bactracking_algorithm(all_conflict_orders)
-
+        print(room_id)
+        if status:
+            new_order.save_to_mongodb()
+            return True, new_order._id, room_id
         else:
-            print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
-            return False, "failed", 'failed'
-
-        return False, " problem with some participants", 'failed'
+            pass
+            # all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
+            # cls.remove_conflict_schedule(all_conflict_orders)
+            # cls.bactracking_algorithm(all_conflict_orders)
+        return False, "There is not empty room", 'failed'
 
     @classmethod
     def remove_conflict_schedule(cls, all_conflict_orders):
@@ -243,14 +286,27 @@ class Order(object):
         return order.user_email
 
     def try_schedule_naive_algorithm(self, company, facility, min_permission, participant_num):
-        rooms = Room.available_rooms(self.date, len(self.participants), self.start_time, self.end_time, min_permission,
+        rooms = Room.available_rooms(self.date, participant_num, self.start_time, self.end_time, min_permission,
                                      company, facility, self.min_occupancy, self.max_occupancy,
-                                    self.min_friends, self.max_friends, self.is_accessible)
+                                     self.min_friends, self.max_friends, self.is_accessible)
 
         print('here the rooms available')
         print(rooms)
         for room in rooms:
             if room.avialable_on_time(self.date, self.start_time, self.end_time, participant_num):
+                return self._id, room._id
+        return False, 'fail'
+
+    def try_schedule_simple_algorithm(self, company, facility, min_permission, participant_num):
+        rooms = Room.available_rooms(self.date, participant_num, self.start_time, self.end_time, min_permission,
+                                     company, facility, self.min_occupancy, self.max_occupancy,
+                                     self.min_friends, self.max_friends, self.is_accessible)
+
+        print('here the rooms available')
+        print(rooms)
+        for room in rooms:
+            if room.available_on_time(self.date, self.start_time, self.end_time, participant_num):
+                print('available')
                 return self._id, room._id
         return False, 'fail'
 
@@ -267,14 +323,13 @@ class Order(object):
     def find_by_date_and_time(cls, date, begin_hour, end_hour):
         orders = []
         query = {
-            '$and': [{'date': date},{'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]
+            '$and': [{'date': date}, {'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]
         }
         data = Database.find('orders', query)
         if data is not None:
             for order in data:
                 orders.append(cls(**order))
         return orders
-
 
     def remove_participant(self, user_email):
         self.participants.remove(user_email)
@@ -289,14 +344,12 @@ class Order(object):
                 orders.append(cls(**order))
         return orders
 
-
     @classmethod
     def get_all_participants_in_order(cls, user_email, date, start_time, end_time):
         order = cls.find_by_date_and_time(user_email, date, start_time, end_time)
         if len(order > 0):
             return order.participants
         return []
-
 
     @staticmethod
     def remove_user(user_email):

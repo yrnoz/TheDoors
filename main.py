@@ -1,4 +1,6 @@
 import errno
+
+from datetime import datetime
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import sys
@@ -91,6 +93,7 @@ def home():
                 return redirect(url_for('route_edit_friends'))
     except Exception as e:
         return render_template('page-login.html', wrong_password=False)
+    return render_template('page-login.html', wrong_password=False)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -247,24 +250,58 @@ def route_edit_friends():
         email = session['email']
         user = User.get_by_email(email)
         if request.method == 'GET':
+            friends = user.get_friends_emails()
+            possible_friends = [friend.email for friend in User.get_by_company(user.company) if
+                                friend.email not in friends and friend.email != email]
             friends = user.get_friends()
-            possible_friends= User.get_by_company(user.company)
-            possible_friends = filter(lambda x: x.email not in user.get_friends_emails(), possible_friends)
-            return render_template('friends_page.html', manager=user.manager, friends=friends, possible_friends=possible_friends )
+            print(str(user.manager) + '   ' + user.email)
+            return render_template('friends_page.html', manager=user.manager, friends=friends,
+                                   possible_friends=possible_friends)
         elif request.method == 'POST':
             if request.form['type'] == 'add_friend':
                 user.add_friend(request.form['email'])
             if request.form['type'] == 'remove_friend':
                 user.remove_friend(request.form['email'])
+        return redirect(url_for('route_edit_friends'))
 
 
-@app.route('/reserve_room', methods=['GET'])
+def convert_date():
+    date = datetime.strptime(request.form['date'], '%Y-%m-%d')
+    date = str(date.day) + '/' + str(date.month) + '/' + str(date.year)[2:]
+    return date
+
+
+def reserve_room():
+    participants = list(request.form.getlist('participants', None))
+    date = convert_date()
+    print(date)
+    start_time = request.form['start']
+    meeting_duration = request.form['duration']
+    user = User.get_by_email(session['email'])
+    end_time = str(int(start_time) + int(meeting_duration))
+    status, info = user.new_order(date, participants, start_time, end_time, user.company,
+                                  user.facility)
+    if not status:
+        if isinstance(info, str):
+            flash('Fail!\n' + info)
+        else:
+            str1 = ' '.join(info)
+            flash('Fail!\n Those participants already have meeting on this time ' + str1)
+    elif status:
+        flash('Meeting create successfully')
+
+
+@app.route('/reserve_room', methods=['GET', 'POST'])
 def route_reserve_room():
     if session['email'] is not None:
+        email = session['email']
+        user = User.get_by_email(email)
+        friends = user.get_friends_emails()
         if request.method == 'GET':
-            email = session['email']
-            user = User.get_by_email(email)
-            return render_template('order.html', manager=user.manager)
+            return render_template('order.html', manager=user.manager, friends=friends)
+        elif request.method == 'POST':
+            reserve_room()
+    return redirect(url_for('route_reserve_room'))
 
 
 @app.route('/my_reservations', methods=['GET'])
@@ -283,4 +320,5 @@ def initialize_database():
 
 if __name__ == '__main__':
     print(UPLOAD_FOLDER)
+    app.debug = True
     app.run()

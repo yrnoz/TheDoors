@@ -15,7 +15,7 @@ from datetime import datetime
 class Schedule(object):
 
     def __init__(self, email, date, begin_meeting, end_meeting, order_id, participants, room_id=None, _id=None):
-        _id = email + date + room_id + ' start: ' + str(begin_meeting) + ' end: ' + str(end_meeting)
+        _id = email + ' ' + date + ' ' + room_id + ' start: ' + str(begin_meeting) + ' end: ' + str(end_meeting)
         self.email = email
         self._id = _id
         self.date = date
@@ -26,6 +26,8 @@ class Schedule(object):
         self.participants = participants
 
     def save_to_mongodb(self):
+        data = self.json()
+        print(data)
         Database.insert(collection='schedules', data=self.json())
 
     def json(self):
@@ -91,12 +93,18 @@ class Schedule(object):
 
     @classmethod
     def all_participants_are_free(cls, date, participants, start_time, end_time):
+        problematics = []
         for user_email in participants:
-            data = cls.get_schedules(user_email, date, start_time, end_time)
-            if len(data) > 0:
+            data = cls.get_schedules(user_email, date)
+            print(data)
+            print('that wa daatatat')
+            for sched in data:
                 # this user is not free on this time
-                return False
-        return True
+                print(sched._id)
+                if not sched.is_available(start_time, end_time):
+                    problematics.append(user_email)
+                    break
+        return problematics
 
     @classmethod
     def delete_meeting_from_schedule(cls, date, participants, start_time, end_time):
@@ -125,15 +133,14 @@ class Schedule(object):
         :param end_time:
         :return: True if [start_time,end_time] intersection with [ self.begin_meeting , self.end_meeting] is empty
         """
-        before = (end_time <= self.begin_meeting)
-        after = (start_time >= self.end_meeting)
+        before = (int(end_time) <= int(self.begin_meeting))
+        after = (int(start_time) >= int(self.end_meeting))
         return True if (before or after) else False
 
     @classmethod
     def assign_all(cls, date, participants, start_time, end_time, order_id, room_id):
-        participants = set(participants)
         for user_email in participants:
-            new_meeting = Schedule(user_email, date, start_time, end_time, order_id, room_id)
+            new_meeting = Schedule(user_email, date, start_time, end_time, order_id, participants, room_id)
             new_meeting.save_to_mongodb()
 
     @classmethod
@@ -164,20 +171,18 @@ class Schedule(object):
     @classmethod
     def get_by_room_and_date_and_hour(cls, _id, date, begin_hour, end_hour):
         schedules = []
-        query = {'$and': [{'date': date}, {'room_id': _id}  , {'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]}
+        query = {'$and': [{'date': date}, {'room_id': _id},
+                          {'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]}
         data = Database.find('schedules', query)
         if data is not None:
             for sched in data:
                 schedules.append(cls(**sched))
         return schedules
 
-
-
     @classmethod
     def get_participants_by_room_date_and_hour(cls, _id, date, start_time, end_time):
         schedule = Schedule.get_by_room_and_date_and_hour(date, start_time, end_time)
         return schedule.participants
-
 
     def get_order_id(self):
         return self.order_id
