@@ -257,6 +257,7 @@ def route_edit_friends():
             if request.form['type'] == 'remove_friend':
                 user.remove_friend(request.form['email'])
 
+
 @app.route('/reserve_room', methods=['GET'])
 def route_reserve_room():
     if session['email'] is not None:
