@@ -95,10 +95,15 @@ class Schedule(object):
     def all_participants_are_free(cls, date, participants, start_time, end_time):
         problematics = []
         for user_email in participants:
-            data = cls.get_schedules(user_email, date, start_time, end_time)
-            if len(data) > 0:
+            data = cls.get_schedules(user_email, date)
+            print(data)
+            print('that wa daatatat')
+            for sched in data:
                 # this user is not free on this time
-                problematics.append(user_email)
+                print(sched._id)
+                if not sched.is_available(start_time, end_time):
+                    problematics.append(user_email)
+                    break
         return problematics
 
     @classmethod
@@ -128,8 +133,8 @@ class Schedule(object):
         :param end_time:
         :return: True if [start_time,end_time] intersection with [ self.begin_meeting , self.end_meeting] is empty
         """
-        before = (end_time <= self.begin_meeting)
-        after = (start_time >= self.end_meeting)
+        before = (int(end_time) <= int(self.begin_meeting))
+        after = (int(start_time) >= int(self.end_meeting))
         return True if (before or after) else False
 
     @classmethod
