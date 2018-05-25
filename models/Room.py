@@ -76,7 +76,7 @@ class Room(object):
                 rooms.append(cls(**room))
         return rooms
 
-    def avialable_on_time(self, date, start_time, end_time, demand_sits):
+    def available_on_time(self, date, start_time, end_time, demand_sits):
         schedules = self.get_schedules()
         save_place = 0
         for schedule in schedules:
@@ -161,7 +161,6 @@ class Room(object):
     def get_schedules(self):
         return Schedule.get_by_room(self._id)
 
-
     @classmethod
     def check_room_space(cls, min_occupancy, max_occupancy, room_capacity, current_capacity, available_spaces):
         percent_occupancy = (current_capacity + available_spaces) * 100 / room_capacity
@@ -169,11 +168,10 @@ class Room(object):
             return True
         return False
 
-
     @classmethod
     def check_room_friends(cls, room_id, date, start_time, end_time, min_friends, max_friends):
         participants = Schedule.get_participants_by_room_date_and_hour(room_id, date, start_time, end_time)
-        if len(participants) >= min_friends and len(participants)<= max_friends:
+        if len(participants) >= min_friends and len(participants) <= max_friends:
             return True
         return False
 
@@ -188,8 +186,9 @@ class Room(object):
         return is_accessible == False or room.disabled_access
 
     @classmethod
-    def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility, min_occupancy, max_occupancy,
-                  min_friends, max_friends, is_accessible):
+    def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility,
+                        min_occupancy, max_occupancy,
+                        min_friends, max_friends, is_accessible):
         """
 
         :param date:
@@ -205,11 +204,14 @@ class Room(object):
             room_schedule = Schedule.get_by_room_and_date(room._id, date)
             if len(room_schedule) > 0:
                 # this room already have some reservation
-                save_space = Schedule.saved_space(room_schedule, begin_meeting, end_meeting, available_spaces)
-                is_room_space_ok=cls.check_room_space(min_occupancy, max_occupancy, room.capacity, save_space, available_spaces)
-                is_num_friends_ok = cls.check_room_friends(room._id, date, begin_meeting, end_meeting, min_friends, max_friends)
-                is_accessible_ok = cls.check_accessible(room._id, is_accessible)
-                if is_room_space_ok and is_num_friends_ok and is_accessible_ok:
+                save_space = Schedule.saved_space(room_schedule, begin_meeting, end_meeting)
+                is_room_space_ok = cls.check_room_space(min_occupancy, max_occupancy, room.capacity, save_space,
+                                                        available_spaces)
+                # is_num_friends_ok = cls.check_room_friends(room._id, date, begin_meeting, end_meeting, min_friends,
+                #                                            max_friends)
+                # is_accessible_ok = cls.check_accessible(room._id, is_accessible)
+                # if is_room_space_ok and is_num_friends_ok and is_accessible_ok:
+                if is_room_space_ok:
                     available_rooms.append(room)
             else:
                 # this room is empty

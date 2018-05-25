@@ -233,43 +233,29 @@ class Order(object):
         else --> true
         """
 
-        # user already have an order on that time
-        if cls.already_have_an_order_on_this_time(user_email, date, start_time, end_time):
-            print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+        new_order = cls(1, user_email, date, participants, start_time, end_time, company, facility,
+                        min_occupancy, max_occupancy,
+                        min_friends, max_friends, is_accessible)
+        # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
+        # todo - this algorithm try to assign the new order into specific room.
+        # todo - if it can't do this then it start to chnage other orders.
+        min_permission = 3  ##change it
+        # status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
+        #                                                  #      len(participants))
 
-            return False, "user already have an order on that time ", "failed"
+        status, room_id = new_order.try_schedule_simple_algorithm(company, facility, min_permission,
+                                                                  len(participants))
 
-        if Schedule.all_participants_are_free(date, participants, start_time, end_time):
-            print('ssssssssssssssssssssssssssssss')
-
-            new_order = cls(1, user_email, date, participants, start_time, end_time, company, facility,
-                            min_occupancy, max_occupancy,
-                            min_friends, max_friends, is_accessible)
-            # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
-            # todo - this algorithm try to assign the new order into specific room.
-            # todo - if it can't do this then it start to chnage other orders.
-            min_permission = 3  ##change it
-            # status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
-            #                                                  #      len(participants))
-
-            status, room_id = new_order.try_schedule_simple_algorithm(company, facility, min_permission,
-                                                                      len(participants))
-
-            print(room_id)
-            if status:
-                new_order.save_to_mongodb()
-                return True, new_order._id, room_id
-            else:
-                pass
-                # all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
-                # cls.remove_conflict_schedule(all_conflict_orders)
-                # cls.bactracking_algorithm(all_conflict_orders)
-
+        print(room_id)
+        if status:
+            new_order.save_to_mongodb()
+            return True, new_order._id, room_id
         else:
-            print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
-            return False, "failed", 'failed'
-
-        return False, " problem with some participants", 'failed'
+            pass
+            # all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
+            # cls.remove_conflict_schedule(all_conflict_orders)
+            # cls.bactracking_algorithm(all_conflict_orders)
+        return False, "There is not empty room", 'failed'
 
     @classmethod
     def remove_conflict_schedule(cls, all_conflict_orders):
@@ -319,7 +305,8 @@ class Order(object):
         print('here the rooms available')
         print(rooms)
         for room in rooms:
-            if room.avialable_on_time(self.date, self.start_time, self.end_time, participant_num):
+            if room.available_on_time(self.date, self.start_time, self.end_time, participant_num):
+                print('available')
                 return self._id, room._id
         return False, 'fail'
 

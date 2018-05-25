@@ -134,16 +134,21 @@ class User(object):
     def get_schedule(self, date=None, start_time=None, end_time=None, room_id=None):
         return Schedule.get_schedules(self.email, date, start_time, end_time, room_id)
 
-    def new_order(self, date, participants, start_time, end_time, company, facility, min_occupancy, max_occupancy,
-                  min_friends, max_friends, is_accessible):
+    def new_order(self, date, participants, start_time, end_time, company, facility, min_occupancy=None,
+                  max_occupancy=None,
+                  min_friends=None, max_friends=None, is_accessible=None):
         # todo fix this function
         participants.append(self.email)
-        participants = list(set(participants))
-        min_permission = User.min_permission(participants)
+        problematic_participants = Schedule.all_participants_are_free(date, participants, start_time,
+                                                                      end_time)
 
-        status, order_id, room_id = Order.new_order(1,self.email, date, participants, start_time, end_time, company,
+        if len(problematic_participants) > 0:
+            return False, problematic_participants
+        # min_permission = User.min_permission(participants)
+
+        status, order_id, room_id = Order.new_order(1, self.email, date, participants, start_time, end_time, company,
                                                     facility,
-                                                     min_occupancy, max_occupancy, min_friends,
+                                                    min_occupancy, max_occupancy, min_friends,
                                                     max_friends, is_accessible)
         if status:
             self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
