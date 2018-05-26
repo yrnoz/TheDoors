@@ -146,12 +146,12 @@ class User(object):
 
         if len(problematic_participants) > 0:
             return False, problematic_participants
-        # min_permission = User.min_permission(participants)
+        min_permission = User.min_permission(participants)
 
         status, order_id, room_id = Order.new_order(1, self.email, date, participants, start_time, end_time, company,
                                                     facility,
                                                     min_occupancy, max_occupancy, min_friends,
-                                                    max_friends, is_accessible)
+                                                    max_friends, is_accessible, min_permission)
         if status:
             self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
