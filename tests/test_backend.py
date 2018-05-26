@@ -91,6 +91,12 @@ def test_rooms():
 def test_schedules_orders():
     print("hi")
     Database.initialize()
+    num1 = Database.count('orders')
+    Database.remove('orders', {'_id': '23/05/18'})
+    num2 = Database.count('orders')
+    Database.remove('orders', {'date': '26/05/18'})
+    num3 = Database.count('orders')
+
     user = User.get_by_email('email_1@gmail.com')
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
@@ -104,19 +110,25 @@ def test_schedules_orders():
         sched.get_order_id()
         sched.future_meeting()
     assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
-
-    assert len(Room.available_rooms('11/11/11', 12, 1, 2, 2, 'YAHOO', 'matam')) > 0
-
+    assert len(Room.available_rooms('11/11/11', 2, 1, 2, 2, 'YAHOO', 'matam', 0, 100, 0, 5, False)) > 0
 
 
-def test_schedules_orders():
+
+def test_schedules_orders2():
     Database.initialize()
+    #Database.find_one('orders', {'_id' : '23/05/18' })
+    num1 = Database.count('orders')
+    Database.remove('orders', {'_id': '23/05/18'})
+    num2 = Database.count('orders')
+
 
     user = User.get_by_email('email_1@gmail.com')
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
-    status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam' , 0, 100, 0, 5, False)
+    status, string = user.new_order(date, participants, 6, 7, "YAHOO", 'matam' , 0, 100, 0, 5, False)
     print(string)
+    orders = user.get_orders()
+    num_orders = len(orders)
     assert len(user.get_orders()) > 0
     schedules = user.get_schedule()
     assert len(schedules) > 0

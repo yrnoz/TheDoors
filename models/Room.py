@@ -50,13 +50,23 @@ class Room(object):
             'disabled_access': self.disabled_access
         }
 
-    def intersection(self, start_time, end_time):
+    def intersection(self, start_time, end_time, schedule):
+        is_intersect = False
+        if schedule.begin_meeting < start_time and schedule.end_meeting> end_time:
+            is_intersect = True
+        if schedule.begin_meeting < start_time and schedule.end_meeting> start_time and schedule.end_meeting < end_time:
+            is_intersect = True
+        if schedule.begin_meeting > start_time and schedule.begin_meeting < end_time and schedule.end_meeting > end_time:
+            is_intersect = True
+        return is_intersect
+        '''
         if self.begin_meeting < start_time < self.end_meeting:
             return True
         elif self.begin_meeting < end_time < self.end_meeting:
             return True
         else:
             return False
+        '''
 
     @classmethod
     def get_by_facility(cls, company, facility):
@@ -80,7 +90,7 @@ class Room(object):
         schedules = self.get_schedules()
         save_place = 0
         for schedule in schedules:
-            if schedule.date == date and self.intersection(start_time, end_time, ):
+            if schedule.date == date and self.intersection(start_time, end_time, schedule):
                 save_place += 1
         return True if demand_sits < self.capacity - save_place else False
 
