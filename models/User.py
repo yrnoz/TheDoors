@@ -26,7 +26,7 @@ class User(object):
         self.roles = roles
 
     def save_to_mongodb(self):
-        print "need to fixed. save to mongo"
+        print ("need to fixed. save to mongo")
         Database.insert(collection='users', data=self.json())
 
     def json(self):
@@ -185,7 +185,9 @@ class User(object):
         for user in participants:
             user = User.get_by_email(user)
             if user is not None:
-                permission = user.permission if user.permission < permission else permission
+                if int(user.permission) < permission:
+                    permission = user.permission
+                #permission = user.permission if user.permission < permission else permission
         return permission
 
 
