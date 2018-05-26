@@ -26,7 +26,8 @@ class User(object):
         self.roles = roles
 
     def save_to_mongodb(self):
-        Database.insert(collection='users', data=self.json())
+        print "need to fixed. save to mongo"
+        #Database.insert(collection='users', data=self.json())
 
     def json(self):
         return {

@@ -70,6 +70,7 @@ class Order(object):
         data = Database.find('orders', {'user_email': user_email})
         for order in data:
             orders.append(cls(**order))
+            a= 1+2
         return orders
 
     @classmethod
