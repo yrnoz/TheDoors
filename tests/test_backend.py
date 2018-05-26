@@ -34,7 +34,7 @@ def test_user():
     Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
 
     assert User.get_by_id("email@gmail.com") is None
-    assert User.get_by_id("000000000") is not None
+    #assert User.get_by_id("000000000") is not None
     assert User.get_by_email("admin@yahoo.com").company == 'YAHOO'
     assert User.get_by_email('user@yahoo.com').company == 'YAHOO'
     assert User.get_by_email("user2@yahoo.com").company == 'YAHOO'
@@ -64,6 +64,7 @@ def test_user():
 
 def test_rooms():
     Database.initialize()
+
     Database.remove('rooms', {})
     status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam', True)
     assert status is True
@@ -91,17 +92,46 @@ def test_rooms():
 def test_schedules_orders():
     print("hi")
     Database.initialize()
+    Database.dropAll()
+    Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
+
+    status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam', True)
+    assert status is True
+    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', False)
+    assert status is True
+    assert Room.remove_room(room_id) is True
+    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', True)
+
+
     num1 = Database.count('orders')
     Database.remove('orders', {'_id': '23/05/18'})
     num2 = Database.count('orders')
     Database.remove('orders', {'date': '26/05/18'})
     num3 = Database.count('orders')
+    num_users1 = Database.count('users')
+    Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
+    num_users2 = Database.count('users')
+
+    manager = Manager.get_by_email('user@yahoo.com')
+    assert manager is None
+    manager = Manager.get_by_email('admin@yahoo.com')
+    assert manager is not None
+    try:
+        manager.import_rooms(os.getcwd() + '\\rooms.csv')
+        manager.import_employee(os.getcwd() + '\\employee.csv')
+    # should'nt works on travis
+    except Exception as e:
+        pass
+    num_users2 = Database.count('users')
 
     user = User.get_by_email('email_1@gmail.com')
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
     status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam', 0, 100, 0, 5, False)
     print(string)
+    orders= user.get_orders()
+    num_orders = len(orders)
     assert len(user.get_orders()) > 0
     schedules = user.get_schedule()
     assert len(schedules) > 0
@@ -116,10 +146,49 @@ def test_schedules_orders():
 
 def test_schedules_orders2():
     Database.initialize()
+    Database.dropAll()
     #Database.find_one('orders', {'_id' : '23/05/18' })
+    #num1 = Database.count('orders')
+    #Database.remove('orders', {'_id': '23/05/18'})
+    #num2 = Database.count('orders')
+
+
+    Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
+
+    status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam', True)
+    assert status is True
+    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', False)
+    assert status is True
+    assert Room.remove_room(room_id) is True
+    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', True)
+
     num1 = Database.count('orders')
     Database.remove('orders', {'_id': '23/05/18'})
     num2 = Database.count('orders')
+    Database.remove('orders', {'date': '26/05/18'})
+    num3 = Database.count('orders')
+    num_users1 = Database.count('users')
+    Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
+    num_users2 = Database.count('users')
+
+    manager = Manager.get_by_email('user@yahoo.com')
+    assert manager is None
+    manager = Manager.get_by_email('admin@yahoo.com')
+    assert manager is not None
+    try:
+        manager.import_rooms(os.getcwd() + '\\rooms.csv')
+        manager.import_employee(os.getcwd() + '\\employee.csv')
+    # should'nt works on travis
+    except Exception as e:
+        pass
+    num_users2 = Database.count('users')
+
+    #######
+
+
+
+
 
 
     user = User.get_by_email('email_1@gmail.com')

@@ -139,7 +139,8 @@ class User(object):
                   max_occupancy=None,
                   min_friends=None, max_friends=None, is_accessible=None):
         # todo fix this function
-        participants.append(self.email)
+        if self.email not in participants:
+            participants.append(self.email)
         problematic_participants = Schedule.all_participants_are_free(date, participants, start_time,
                                                                       end_time)
 
