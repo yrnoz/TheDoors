@@ -218,7 +218,7 @@ class Order(object):
     @classmethod
     def new_order(cls, _id, user_email, date, participants, start_time, end_time, company, facility,
                   min_occupancy, max_occupancy,
-                  min_friends, max_friends, is_accessible, min_pemission):
+                  min_friends, max_friends, is_accessible, min_permission):
         """
 
         :param user_email:
@@ -243,7 +243,7 @@ class Order(object):
         # todo - if it can't do this then it start to chnage other orders.
 
         #min_permission = cls.get_min_permission_order(participants)
-        min_permission = 3  ##change it
+       # min_permission = 3  ##change it
         # status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
         #                                                  #      len(participants))
 

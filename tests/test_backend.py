@@ -184,13 +184,6 @@ def test_schedules_orders2():
         pass
     num_users2 = Database.count('users')
 
-    #######
-
-
-
-
-
-
     user = User.get_by_email('email_1@gmail.com')
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
@@ -246,6 +239,15 @@ def test_facilities():
 
 def test_friends():
     Database.initialize()
+    Database.dropAll()
+
+    Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("user@yahoo.com", '123', 'yosi', '023412349', 'eng', 1, 'YAHOO', 'matam')
+    Manager.user_register("user2@yahoo.com", '123', 'dave', '123412348', 'eng', 1, 'YAHOO', 'matam')
+    Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_2@gmail.com", '123', 'avi', '000260000', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_3@gmail.com", '123', 'yin', '000000026', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
 
     user1 = User.get_by_email("email_1@gmail.com")
     user2 = User.get_by_email('email_2@gmail.com')
