@@ -122,7 +122,9 @@ def manager_register():
         company = request.form['company']
         facility = request.form['facility']
         username = request.form['username']
-        status, info = Manager.manager_register(email, password, username, email, 'Manager', MAX_PERMISSION, company,
+        _id = request.form['_id']
+        status, info = Manager.manager_register(email, password, username, _id, 'Manager', MAX_PERMISSION,
+                                                company,
                                                 facility)
         if status:
             User.login(email)

@@ -37,27 +37,27 @@
 </div>
 <!-- Main wrapper  -->
 <div id="main-wrapper">
-        <!-- header header  -->
-        <div class="header">
-            <nav class="navbar top-navbar navbar-expand-md navbar-light">
-                <div class="navbar-collapse">
-                    <!-- toggle and nav items -->
-                    <ul class="navbar-nav mr-auto mt-md-0">
-                        <!-- This is  -->
+    <!-- header header  -->
+    <div class="header">
+        <nav class="navbar top-navbar navbar-expand-md navbar-light">
+            <div class="navbar-collapse">
+                <!-- toggle and nav items -->
+                <ul class="navbar-nav mr-auto mt-md-0">
+                    <!-- This is  -->
 
-                        <!-- End Messages -->
-                    </ul>
-                    <!-- User profile and search -->
-                    <ul class="navbar-nav my-lg-0">
+                    <!-- End Messages -->
+                </ul>
+                <!-- User profile and search -->
+                <ul class="navbar-nav my-lg-0">
 
-                        <!-- Search -->
+                    <!-- Search -->
 
-                        <!-- Comment -->
-                        <!-- End Comment -->
-                        <!-- Messages -->
-                        <!-- End Messages -->
-                        <!-- Profile -->
-                        <li class="nav-item dropdown">
+                    <!-- Comment -->
+                    <!-- End Comment -->
+                    <!-- Messages -->
+                    <!-- End Messages -->
+                    <!-- Profile -->
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false"><img
                                 src="{{ url_for('static' , filename='images/users/5.jpg') }}" alt="user"
@@ -69,10 +69,10 @@
                             </ul>
                         </div>
                     </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
+                </ul>
+            </div>
+        </nav>
+    </div>
     <!-- Left Sidebar  -->
     <div class="left-sidebar">
         <!-- Sidebar scroll-->
@@ -130,16 +130,16 @@
             {% endif %}
         {% endwith %}
 
-{#        {% with messages = get_flashed_messages() %}#}
-{#            {% if messages %}#}
-{#                <script>#}
-{#                    var messages = {{ messages | safe}};#}
-{#                    for (var i = 0; i < messages.length; i++) {#}
-{#                        alert(messages[i]);#}
-{#                    }#}
-{#                </script>#}
-{#            {% endif %}#}
-{#        {% endwith %}#}
+        {#        {% with messages = get_flashed_messages() %}#}
+        {#            {% if messages %}#}
+        {#                <script>#}
+        {#                    var messages = {{ messages | safe}};#}
+        {#                    for (var i = 0; i < messages.length; i++) {#}
+        {#                        alert(messages[i]);#}
+        {#                    }#}
+        {#                </script>#}
+        {#            {% endif %}#}
+        {#        {% endwith %}#}
 
         <!-- Bread crumb -->
         <div class="row page-titles">
@@ -335,7 +335,8 @@
                                                             <div class="col-md-6">
                                                                 <div class="form-group has-danger">
                                                                     <label class="control-label">ID</label>
-                                                                    <input name="id" type="text" id="ID"
+                                                                    <input name="id" type="text" id="ID" maxlength="9"
+                                                                           minlength="9"
                                                                            class="form-control form-control-danger"
                                                                            placeholder="1234"></div>
                                                             </div>

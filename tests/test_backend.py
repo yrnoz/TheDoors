@@ -19,10 +19,9 @@ def p():
     p.terminate()
 
 
-
 def test_user():
-    Database.initialize()
-    Database.dropAll()
+    Database.initialize_test()
+    # Database.dropAll()
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
     Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
@@ -34,7 +33,7 @@ def test_user():
     Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
 
     assert User.get_by_id("email@gmail.com") is None
-    #assert User.get_by_id("000000000") is not None
+    # assert User.get_by_id("000000000") is not None
     assert User.get_by_email("admin@yahoo.com").company == 'YAHOO'
     assert User.get_by_email('user@yahoo.com').company == 'YAHOO'
     assert User.get_by_email("user2@yahoo.com").company == 'YAHOO'
@@ -62,8 +61,9 @@ def test_user():
     except Exception as e:
         pass
 
+
 def test_rooms():
-    Database.initialize()
+    Database.initialize_test()
 
     Database.remove('rooms', {})
     status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam', True)
@@ -85,14 +85,11 @@ def test_rooms():
     # assert len(Room.available_rooms('11/11/11', 12, 1, 2, 2, 'YAHOO', 'matam')) > 0
 
 
-
-
-
 # todo - Ilana should fix this
 def test_schedules_orders():
     print("hi")
-    Database.initialize()
-    Database.dropAll()
+    Database.initialize_test()
+    # Database.dropAll()
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
     status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam', True)
@@ -101,7 +98,6 @@ def test_schedules_orders():
     assert status is True
     assert Room.remove_room(room_id) is True
     status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', True)
-
 
     num1 = Database.count('orders')
     Database.remove('orders', {'_id': '23/05/18'})
@@ -130,7 +126,7 @@ def test_schedules_orders():
     date = datetime.utcnow().strftime('%d/%m/%y')
     status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam', 0, 100, 0, 5, False)
     print(string)
-    orders= user.get_orders()
+    orders = user.get_orders()
     num_orders = len(orders)
     assert len(user.get_orders()) > 0
     schedules = user.get_schedule()
@@ -143,15 +139,13 @@ def test_schedules_orders():
     assert len(Room.available_rooms('11/11/11', 2, 1, 2, 2, 'YAHOO', 'matam', 0, 100, 0, 5, False)) > 0
 
 
-
 def test_schedules_orders2():
-    Database.initialize()
-    Database.dropAll()
-    #Database.find_one('orders', {'_id' : '23/05/18' })
-    #num1 = Database.count('orders')
-    #Database.remove('orders', {'_id': '23/05/18'})
-    #num2 = Database.count('orders')
-
+    Database.initialize_test()
+    # Database.dropAll()
+    # Database.find_one('orders', {'_id' : '23/05/18' })
+    # num1 = Database.count('orders')
+    # Database.remove('orders', {'_id': '23/05/18'})
+    # num2 = Database.count('orders')
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
@@ -187,7 +181,7 @@ def test_schedules_orders2():
     user = User.get_by_email('email_1@gmail.com')
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
-    status, string = user.new_order(date, participants, 6, 7, "YAHOO", 'matam' , 0, 100, 0, 5, False)
+    status, string = user.new_order(date, participants, 6, 7, "YAHOO", 'matam', 0, 100, 0, 5, False)
     print(string)
     orders = user.get_orders()
     num_orders = len(orders)
@@ -202,7 +196,7 @@ def test_schedules_orders2():
 
 
 def test_facilities():
-    Database.initialize()
+    Database.initialize_test()
     # add company
 
     status = Facilities.is_company_exist('google')
@@ -238,8 +232,8 @@ def test_facilities():
 
 
 def test_friends():
-    Database.initialize()
-    Database.dropAll()
+    Database.initialize_test()
+    # Database.dropAll()
 
     Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
     Manager.user_register("user@yahoo.com", '123', 'yosi', '023412349', 'eng', 1, 'YAHOO', 'matam')
@@ -254,9 +248,9 @@ def test_friends():
     user3 = User.get_by_email('email_3@gmail.com')
     user4 = User.get_by_email('email_4@gmail.com')
 
-    emails=["email_1@gmail.com", 'email_2@gmail.com', 'email_3@gmail.com', 'email_4@gmail.com', "user2@yahoo.com"]
-    permission=User.min_permission(emails)
-    assert permission==1
+    emails = ["email_1@gmail.com", 'email_2@gmail.com', 'email_3@gmail.com', 'email_4@gmail.com', "user2@yahoo.com"]
+    permission = User.min_permission(emails)
+    assert permission == 1
 
     user1.add_friend('email_2@gmail.com')
     status, string = user1.add_friend('email_3@gmail.com')
@@ -282,6 +276,4 @@ def test_friends():
     manager.add_friend('email_1@gmail.com')
 
     assert user2 is not None
-    assert manager.delete_user( 'email_2@gmail.com') is True
-
-
+    assert manager.delete_user('email_2@gmail.com') is True
