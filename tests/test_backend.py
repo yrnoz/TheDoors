@@ -20,7 +20,7 @@ def p():
 
 
 def test_user():
-    Database.initialize_test()
+    Database.initialize()
     # Database.dropAll()
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
@@ -63,7 +63,7 @@ def test_user():
 
 
 def test_rooms():
-    Database.initialize_test()
+    Database.initialize()
 
     Database.remove('rooms', {})
     status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam', True)
@@ -88,7 +88,7 @@ def test_rooms():
 # todo - Ilana should fix this
 def test_schedules_orders():
     print("hi")
-    Database.initialize_test()
+    Database.initialize()
     # Database.dropAll()
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
@@ -140,7 +140,7 @@ def test_schedules_orders():
 
 
 def test_schedules_orders2():
-    Database.initialize_test()
+    Database.initialize()
     # Database.dropAll()
     # Database.find_one('orders', {'_id' : '23/05/18' })
     # num1 = Database.count('orders')
@@ -196,7 +196,7 @@ def test_schedules_orders2():
 
 
 def test_facilities():
-    Database.initialize_test()
+    Database.initialize()
     # add company
 
     status = Facilities.is_company_exist('google')
@@ -232,7 +232,7 @@ def test_facilities():
 
 
 def test_friends():
-    Database.initialize_test()
+    Database.initialize()
     # Database.dropAll()
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
@@ -243,7 +243,6 @@ def test_friends():
     Manager.user_register("email_2@gmail.com", '123', 'avi', '000260000', 'eng', 3, 'YAHOO', 'matam')
     Manager.user_register("email_3@gmail.com", '123', 'yin', '000000026', 'eng', 3, 'YAHOO', 'matam')
     Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
-
 
     user1 = User.get_by_email("email_1@gmail.com")
     user2 = User.get_by_email('email_2@gmail.com')
@@ -271,7 +270,6 @@ def test_friends():
     assert Friends.is_friends('email_1@gmail.com', 'email_2@gmail.com')
 
     manager = Manager.get_by_email('admin@yahoo.com')
-    assert len(manager.get_friends()) == 0
 
     assert len(user1.get_friends()) > 0
 

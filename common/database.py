@@ -19,10 +19,10 @@ class Database(object):
         client = pymongo.MongoClient(Database.URI)
         Database.DATABASE = client["Thedoors"]
 
-    @staticmethod
-    def initialize_test():
-        client = pymongo.MongoClient(Database.URI)
-        Database.DATABASE = client["ThedoorsTest"]
+    # @staticmethod
+    # def initialize_test():
+    #     client = pymongo.MongoClient(Database.URI)
+    #     Database.DATABASE = client["ThedoorsTest"]
 
     @staticmethod
     def insert(collection, data):
