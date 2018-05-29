@@ -26,8 +26,8 @@ class User(object):
         self.roles = roles
 
     def save_to_mongodb(self):
-        print "need to fixed. save to mongo"
-        #Database.insert(collection='users', data=self.json())
+        # print "need to fixed. save to mongo"
+        Database.insert(collection='users', data=self.json())
 
     def json(self):
         return {
@@ -139,18 +139,19 @@ class User(object):
                   max_occupancy=None,
                   min_friends=None, max_friends=None, is_accessible=None):
         # todo fix this function
-        participants.append(self.email)
+        if self.email not in participants:
+            participants.append(self.email)
         problematic_participants = Schedule.all_participants_are_free(date, participants, start_time,
                                                                       end_time)
 
         if len(problematic_participants) > 0:
             return False, problematic_participants
-        # min_permission = User.min_permission(participants)
+        min_permission = User.min_permission(participants)
 
         status, order_id, room_id = Order.new_order(1, self.email, date, participants, start_time, end_time, company,
                                                     facility,
                                                     min_occupancy, max_occupancy, min_friends,
-                                                    max_friends, is_accessible)
+                                                    max_friends, is_accessible, min_permission)
         if status:
             self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
