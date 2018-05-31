@@ -4,10 +4,9 @@ from models.Schedule import Schedule
 from datetime import datetime
 
 
-
 class Order(object):
     def __init__(self, _id, user_email, date, participants, start_time, end_time, company,
-                 facility, min_occupancy, max_occupancy, min_friends, max_friends, is_accessible):
+                 facility):
 
         _id = user_email + date + str(start_time) + str(end_time)
         self.user_email = user_email
@@ -16,11 +15,11 @@ class Order(object):
         self.start_time = start_time
         self.end_time = end_time
         # self.min_permission = min_permission
-        self.min_occupancy = min_occupancy
-        self.max_occupancy = max_occupancy
-        self.min_friends = min_friends
-        self.max_friends = max_friends
-        self.is_accessible = is_accessible
+        # self.min_occupancy = min_occupancy
+        # self.max_occupancy = max_occupancy
+        # self.min_friends = min_friends
+        # self.max_friends = max_friends
+        # self.is_accessible = is_accessible
         self._id = _id
         self.company = company
         self.facility = facility
@@ -38,11 +37,11 @@ class Order(object):
             'start_time': self.start_time,
             'end_time': self.end_time,
             # 'min_permission' : self.min_permission,
-            'min_occupancy': self.min_occupancy,
-            'max_occupancy': self.max_occupancy,
-            'min_friends': self.min_friends,
-            'max_friends': self.max_friends,
-            'is_accessible': self.is_accessible,
+            # 'min_occupancy': self.min_occupancy,
+            # 'max_occupancy': self.max_occupancy,
+            # 'min_friends': self.min_friends,
+            # 'max_friends': self.max_friends,
+            # 'is_accessible': self.is_accessible,
             '_id': self._id,
             'company': self.company,
             'facility': self.facility
@@ -71,7 +70,6 @@ class Order(object):
         data = Database.find('orders', {'user_email': user_email})
         for order in data:
             orders.append(cls(**order))
-            a= 1+2
         return orders
 
     @classmethod
@@ -216,36 +214,28 @@ class Order(object):
         return True if len(orders) > 1 else False
 
     @classmethod
-    def new_order(cls, _id, user_email, date, participants, start_time, end_time, company, facility,
-                  min_occupancy, max_occupancy,
-                  min_friends, max_friends, is_accessible, min_permission):
+    def new_order(cls, _id, user_email, date, participants, start_time, end_time, company, facility, min_permission):
         """
 
+        :param min_permission:
+        :param _id:
+        :param facility:
+        :param company:
         :param user_email:
         :param date:
         :param participants:
         :param start_time:
         :param end_time:
-        :param floor_constrain:
-        :param friends_in_room:
-        :param max_percent:
         :return: True if we can create new order:
         if this user_email already had an order on this time --> false
         if one of the participants already have a meeting on this time --> false
         else --> true
         """
 
-        new_order = cls(1, user_email, date, participants, start_time, end_time, company, facility,
-                        min_occupancy, max_occupancy,
-                        min_friends, max_friends, is_accessible)
+        new_order = cls(_id, user_email, date, participants, start_time, end_time, company, facility)
         # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
         # todo - this algorithm try to assign the new order into specific room.
-        # todo - if it can't do this then it start to chnage other orders.
-
-        #min_permission = cls.get_min_permission_order(participants)
-       # min_permission = 3  ##change it
-        # status, room_id = new_order.try_schedule_naive_algorithm(company, facility, min_permission,
-        #                                                  #      len(participants))
+        # todo - if it can't do this then it start to change other orders.
 
         status, room_id = new_order.try_schedule_simple_algorithm(company, facility, min_permission,
                                                                   len(participants))
@@ -303,8 +293,7 @@ class Order(object):
 
     def try_schedule_simple_algorithm(self, company, facility, min_permission, participant_num):
         rooms = Room.available_rooms(self.date, participant_num, self.start_time, self.end_time, min_permission,
-                                     company, facility, self.min_occupancy, self.max_occupancy,
-                                     self.min_friends, self.max_friends, self.is_accessible)
+                                     company, facility)
 
         print('here the rooms available')
         print(rooms)

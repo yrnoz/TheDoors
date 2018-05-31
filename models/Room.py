@@ -52,9 +52,9 @@ class Room(object):
 
     def intersection(self, start_time, end_time, schedule):
         is_intersect = False
-        if schedule.begin_meeting < start_time and schedule.end_meeting> end_time:
+        if schedule.begin_meeting < start_time and schedule.end_meeting > end_time:
             is_intersect = True
-        if schedule.begin_meeting < start_time and schedule.end_meeting> start_time and schedule.end_meeting < end_time:
+        if schedule.begin_meeting < start_time and schedule.end_meeting > start_time and schedule.end_meeting < end_time:
             is_intersect = True
         if schedule.begin_meeting > start_time and schedule.begin_meeting < end_time and schedule.end_meeting > end_time:
             is_intersect = True
@@ -196,34 +196,26 @@ class Room(object):
         return is_accessible == False or room.disabled_access
 
     @classmethod
-    def available_rooms(cls, date, available_spaces, begin_meeting, end_meeting, permission, company, facility,
-                        min_occupancy, max_occupancy,
-                        min_friends, max_friends, is_accessible):
+    def available_rooms(cls, date, num_employee, begin_meeting, end_meeting, permission, company, facility):
         """
 
         :param date:
-        :param available_spaces: the participent in the room
+        :param num_employee: the participent in the room
         :param begin_meeting:
         :param end_meeting:
         :return: a list of all the room that have enough  space >= available_spaces  for a meeting on the given time
         """
         available_rooms = []
 
-        rooms = Room.get_by_capacity(available_spaces, company, facility, permission)
+        rooms = Room.get_by_capacity(num_employee, company, facility, permission)
         for room in rooms:
+            room_capacity = room.capacity
             room_schedule = Schedule.get_by_room_and_date(room._id, date)
-            if len(room_schedule) > 0:
-                # this room already have some reservation
-                save_space = Schedule.saved_space(room_schedule, begin_meeting, end_meeting)
-                is_room_space_ok = cls.check_room_space(min_occupancy, max_occupancy, room.capacity, save_space,
-                                                        available_spaces)
-                # is_num_friends_ok = cls.check_room_friends(room._id, date, begin_meeting, end_meeting, min_friends,
-                #                                            max_friends)
-                # is_accessible_ok = cls.check_accessible(room._id, is_accessible)
-                # if is_room_space_ok and is_num_friends_ok and is_accessible_ok:
-                if is_room_space_ok:
-                    available_rooms.append(room)
-            else:
+            for sched in room_schedule:
+                if room.intersection(begin_meeting, end_meeting, sched):
+                    room_capacity = room_capacity - len(sched.participants)
+
+            if room_capacity >= num_employee:
                 # this room is empty
                 available_rooms.append(room)
         return available_rooms

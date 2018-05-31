@@ -1,6 +1,7 @@
 import errno
 
-from datetime import datetime
+from datetime import datetime, timedelta
+
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import sys
@@ -9,6 +10,7 @@ import os
 import subprocess
 
 from models.Room import Room
+from models.Schedule import Schedule
 from models.User import User, Manager
 
 app = Flask(__name__)
@@ -23,6 +25,21 @@ ALLOWED_EXTENSIONS = set(['csv'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 MAX_PERMISSION = 100
+
+one_day = timedelta(days=1)
+
+
+def get_week(date):
+    """Return the full week (Sunday first) of the week containing the given date.
+
+    'date' may be a datetime or date instance (the same type is returned).
+    """
+    day_idx = (date.weekday() + 1) % 7  # turn sunday into 0, monday into 1, etc.
+    sunday = date - timedelta(days=day_idx)
+    date = sunday
+    for n in range(0, 7):
+        yield date
+        date += one_day
 
 
 def add_user(req, manager):
@@ -269,7 +286,10 @@ def route_edit_friends():
 
 def convert_date():
     date = datetime.strptime(request.form['date'], '%Y-%m-%d')
-    date = str(date.day) + '/' + str(date.month) + '/' + str(date.year)[2:]
+    day = str(date.day) if date.day > 9 else '0' + str(date.day)
+    month = str(date.month) if date.month > 9 else '0' + str(date.month)
+    year = str(date.year)[2:]
+    date = day + '/' + month + '/' + year
     return date
 
 
@@ -311,7 +331,22 @@ def route_reservations():
     if session['email'] is not None:
         email = session['email']
         user = User.get_by_email(email)
-        return render_template('reservation.html', manager=user.manager)
+        print(user.email)
+        meetings = []
+        for day in get_week(datetime.today().date()):
+            d = str(day.day) if day.day > 9 else '0' + str(day.day)
+            month = str(day.month) if day.month > 9 else '0' + str(day.month)
+            year = str(day.year)[2:]
+            date = '{}/{}/{}'.format(d, month, year)
+            print(date)
+            scheds = user.get_schedule(date)
+            print(scheds)
+            if len(scheds) > 0:
+                meetings = meetings + scheds
+        for m in meetings:
+            print(m)
+        print('after we prinbt meeatings')
+        return render_template('reservation.html', manager=user.manager, meetings=meetings)
 
 
 @app.before_first_request
@@ -320,7 +355,15 @@ def initialize_database():
     Database.initialize()
 
 
+@app.route('/event_abs_circuit.html', methods=['GET'])
+def event_abs_circuit():
+    print('sssssssssssssssssssssssss')
+    return render_template('event-abs-circuit.html')
+
+
 if __name__ == '__main__':
-    print(UPLOAD_FOLDER)
     app.debug = True
+    # for day in get_week(datetime.today().date()):
+    #     date = '{}/{}/{}'.format(day.day, day.month, str(day.year)[2:4])
+    #     print(date)
     app.run()

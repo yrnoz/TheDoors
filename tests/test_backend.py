@@ -21,7 +21,7 @@ def p():
 
 def test_user():
     Database.initialize()
-    # Database.dropAll()
+    Database.dropAll()
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
     Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
@@ -34,7 +34,7 @@ def test_user():
 
     assert User.get_by_id("email@gmail.com") is None
     # assert User.get_by_id("000000000") is not None
-    assert User.get_by_email("admin@yahoo.com").company == 'YAHOO'
+    assert Manager.get_by_email("admin@yahoo.com").company == 'YAHOO'
     assert User.get_by_email('user@yahoo.com').company == 'YAHOO'
     assert User.get_by_email("user2@yahoo.com").company == 'YAHOO'
 
@@ -90,7 +90,6 @@ def test_schedules_orders():
     print("hi")
     Database.initialize()
     # Database.dropAll()
-    Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
     status, room_id = Room.add_room(2, 30, 1, 3, 'YAHOO', 'matam', True)
     assert status is True
