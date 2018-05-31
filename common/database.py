@@ -4,6 +4,7 @@ import pymongo
 class Database(object):
     URI = 'mongodb://127.0.0.1:27017'
     DATABASE = None
+    SIMULATION = None
 
     @staticmethod
     def dropAll():
@@ -17,7 +18,7 @@ class Database(object):
     @staticmethod
     def initialize():
         client = pymongo.MongoClient(Database.URI)
-        Database.DATABASE = client["Thedoors"]
+        Database.DATABASE = client["TheDoors"]
 
     # @staticmethod
     # def initialize_test():
@@ -47,3 +48,45 @@ class Database(object):
     @staticmethod
     def count(collection):
         return Database.DATABASE[collection].count()
+
+############################### FOR THE SIMULATION ###############################
+
+    @staticmethod
+    def dropAllSimulation():
+        Database.SIMULATION['users'].drop()
+        Database.SIMULATION['orders'].drop()
+        Database.SIMULATION['schedules'].drop()
+        Database.SIMULATION['rooms'].drop()
+        Database.SIMULATION['facilities'].drop()
+        Database.SIMULATION['friends'].drop()
+
+    @staticmethod
+    def initialize():
+        client = pymongo.MongoClient(Database.URI)
+        Database.SIMULATION = client["Simulation"]
+
+    @staticmethod
+    def insertSimulation(collection, data):
+        Database.SIMULATION[collection].insert_one(data)
+
+    @staticmethod
+    def findSimulation(collection, query):
+        return Database.SIMULATION[collection].find(query)
+
+    @staticmethod
+    def updateSimulation(collection, query, update):
+        Database.SIMULATION[collection].update(query, update)
+
+    @staticmethod
+    def find_oneSimulation(collection, query):
+        return Database.SIMULATION[collection].find_one(query)
+
+    @staticmethod
+    def removeSimulation(collection, query):
+        Database.SIMULATION[collection].remove(query)
+
+    @staticmethod
+    def countSimulation(collection):
+        return Database.SIMULATION[collection].count()
+
+
