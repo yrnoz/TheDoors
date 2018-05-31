@@ -8,6 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    {#    here we try something new#}
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static' , filename='css/reset.css') }}"> <!-- CSS reset -->
+    <link rel="stylesheet" href="{{ url_for('static' , filename='css/style-calander.css') }}"> <!-- Resource style -->
+    {#   done here#}
+
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename= 'images/favicon.png') }}">
     <title>The Doors</title>
@@ -131,21 +137,188 @@
                 </ol>
             </div>
         </div>
+
+
         <!-- End Bread crumb -->
         <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Start Page Content -->
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="year-calendar"></div>
-                        </div>
-                    </div>
-                </div>
+        {#        <div class="container-fluid">#}
+        <!-- Start Page Content -->
+        {#            <div class="row justify-content-center">#}
+        {#                <div class="col-lg-6">#}
+        {#                    <div class="card">#}
+        {#                        <div class="card-body">#}
+        {#                            <div class="year-calendar"></div>#}
+
+        {#                            here we try sometihng new #}
+        <div class="cd-schedule loading">
+            <div class="timeline">
+                <ul>
+                    <li><span>08:00</span></li>
+                    <li><span>09:00</span></li>
+                    <li><span>10:00</span></li>
+                    <li><span>11:00</span></li>
+                    <li><span>12:00</span></li>
+                    <li><span>13:00</span></li>
+                    <li><span>14:00</span></li>
+                    <li><span>15:00</span></li>
+                    <li><span>16:00</span></li>
+                    <li><span>17:00</span></li>
+                    <li><span>18:00</span></li>
+                    <li><span>19:00</span></li>
+                    <li><span>20:00</span></li>
+                    <li><span>21:00</span></li>
+                    <li><span>22:00</span></li>
+                    <li><span>23:00</span></li>
+                    <li><span>00:00</span></li>
+
+                </ul>
+            </div> <!-- .timeline -->
+
+
+            <div class="events">
+                <ul>
+                    <li class="events-group">
+                        <div class="top-info"><span>Sunday</span></div>
+
+                        <ul>
+                            {% for meeting in  meetings %}
+                                {% if meeting.get_day() == 'Sunday' %}
+                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
+                                        data-end="{{ meeting.get_end_time() }}"
+                                        data-content="#"
+                                        data-event="event-1">
+                                        <a href="#0">
+                                            <em class="event-name">Abs Circuit</em>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                        </ul>
+                    </li>
+
+                    <li class="events-group">
+                        <div class="top-info"><span>Monday</span></div>
+
+                        <ul>
+                            {% for meeting in  meetings %}
+                                {% if meeting.get_day() == 'Monday' %}
+                                    <li class="single-event" data-start="10:00" data-end="11:00"
+                                        data-content="start: {{ meeting.get_start_time() }}
+                                           end: {{ meeting.get_end_time() }}
+                                           participants: {{ meeting.participants }}"
+                                        data-event="event-2">
+                                        <a href="#0">
+                                            <em class="event-name">Rowing Workout</em>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                        </ul>
+                    </li>
+
+                    <li class="events-group">
+                        <div class="top-info"><span>Tuesday</span></div>
+
+                        <ul>
+                            {% for meeting in  meetings %}
+                                {% if meeting.get_day() == 'Tuesday' %}
+                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
+                                        data-end="{{ meeting.get_end_time() }}"
+                                        data-content="start: {{ meeting.get_start_time() }}
+                                                       end: {{ meeting.get_end_time() }}
+                                                        participants: {{ meeting.participants }}"
+                                        data-event="event-3">
+                                        <a href="#0">
+                                            <em class="event-name">Restorative Yoga</em>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                        </ul>
+                    </li>
+
+                    <li class="events-group">
+                        <div class="top-info"><span>Wednesday</span></div>
+
+                        <ul>
+                            {% for meeting in  meetings %}
+                                {% if meeting.get_day() == 'Wednesday' %}
+                                    <li class="single-event" data-start="09:30" data-end="10:30"
+                                        data-content="start: {{ meeting.get_start_time() }}
+                                                       end: {{ meeting.get_end_time() }}
+                                                        participants: {{ meeting.participants }}"
+                                        data-event="event-4">
+                                        <a href="#0">
+                                            <em class="event-name">Abs Circuit</em>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li class="events-group">
+                        <div class="top-info"><span>Thursday</span></div>
+
+                        <ul>
+                            {% for meeting in  meetings %}
+
+                                {% if meeting.get_day() == 'Thursday' %}
+                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
+                                        data-end="{{ meeting.get_end_time() }}"
+                                        data-content=""
+                                        data-event="event-1">
+                                        <a>
+                                            <em class="event-name"></em>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                        </ul>
+                    </li>
+                </ul>
             </div>
-            <!-- End PAge Content -->
-        </div>
+
+            <div class="event-modal">
+                <header class="header">
+                    <div class="content">
+                        <span class="event-date"></span>
+                        <h3 class="event-name"></h3>
+                    </div>
+
+                    <div class="header-bg"></div>
+                </header>
+
+                <div class="body">
+                    <div class="event-info"></div>
+                    <div class="body-bg"></div>
+                </div>
+
+            </div>
+
+            <div class="cover-layer"></div>
+        </div> <!-- .cd-schedule -->
+        <script src="{{ url_for('static' , filename='js/modernizr.js') }}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+        <script>
+            if (!window.jQuery) document.write('<script src="{{ url_for("static" , filename="js/jquery-3.0.0.min.js") }}"><\/script>');
+        </script>
+        <script src="{{ url_for('static' , filename='js/main.js') }}"></script>
+        <!-- Resource jQuery -->
+
+
+        {#                            here we try sometihng new #}
+
+        {#            </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
+        <!-- End PAge Content -->
+        {#        </div>#}
         <!-- End Container fluid  -->
         <!-- footer -->
         <footer class="footer"> © 2018 All rights reserved. Template designed by <a

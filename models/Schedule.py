@@ -11,6 +11,9 @@ if a user want to order room,
 from common.database import Database
 from datetime import datetime
 
+time_dict = {'8': "08:00", '9': "09:00", '10': "10:00", '11': "11:00", '12': "12:00", '13': "13:00", '14': "14:00",
+             '15': "15:00", '16': "16:00", "17": "17:00", '18': "18:00"}
+
 
 class Schedule(object):
 
@@ -50,6 +53,15 @@ class Schedule(object):
         else:
             return True
 
+    def get_start_time(self):
+        """
+            :return the time in this format: "10:30"
+        """
+        return time_dict[str(self.begin_meeting)]
+
+    def get_end_time(self):
+        return time_dict[str(self.end_meeting)]
+
     @classmethod
     def remove_user(cls, user_email):
         schedules = Schedule.get_schedules(user_email)
@@ -69,13 +81,18 @@ class Schedule(object):
         begin_query = {'begin_meeting': start_time} if start_time is not None else {}
         end_query = {'end_meeting': end_time} if end_time is not None else {}
         query = {'$and': [email_query, date_query, room_query, begin_query, end_query]}
-        print(query)
         schedules = []
         data = Database.find('schedules', query)
+        print(query)
+        print(date)
         if data is not None:
             for sched in data:
                 schedules.append(cls(**sched))
         return schedules
+
+    def get_day(self):
+        date = datetime.strptime(self.date, '%d/%m/%y')
+        return str(date.strftime("%A"))
 
     @classmethod
     def get_by_room(cls, room_id):
@@ -154,6 +171,18 @@ class Schedule(object):
                 # there is a meeting on the the given time, so save_place++
                 save_place += schedule.participants
         return save_place
+
+    @classmethod
+    def get_by_id(cls, _id):
+        """
+             :return: list of schedule's object that represent the schedule in the given room_id on the given date
+             """
+        query = {'_id': _id}
+        data = Database.find_one('schedules', query)
+        if data is not None:
+            return cls(**data)
+
+
 
     @classmethod
     def get_by_room_and_date(cls, _id, date):
