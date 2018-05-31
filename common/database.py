@@ -19,6 +19,7 @@ class Database(object):
     def initialize():
         client = pymongo.MongoClient(Database.URI)
         Database.DATABASE = client["TheDoors"]
+        Database.SIMULATION = client["Simulation"]
 
     # @staticmethod
     # def initialize_test():
@@ -60,10 +61,10 @@ class Database(object):
         Database.SIMULATION['facilities'].drop()
         Database.SIMULATION['friends'].drop()
 
-    @staticmethod
-    def initialize():
-        client = pymongo.MongoClient(Database.URI)
-        Database.SIMULATION = client["Simulation"]
+    # @staticmethod
+    # def initialize():
+    #     client = pymongo.MongoClient(Database.URI)
+    #     Database.SIMULATION = client["Simulation"]
 
     @staticmethod
     def insertSimulation(collection, data):

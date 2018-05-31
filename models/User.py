@@ -29,6 +29,10 @@ class User(object):
         # print "need to fixed. save to mongo"
         Database.insert(collection='users', data=self.json())
 
+    def save_to_mongodb_simulation(self):
+        # print "need to fixed. save to mongo"
+        Database.insertSimulation(collection='users', data=self.json())
+
     def json(self):
         return {
             'email': self.email,
@@ -59,6 +63,12 @@ class User(object):
     @classmethod
     def get_by_email(cls, email):
         data = Database.find_one('users', {'email': email})
+        if data is not None:
+            return cls(**data)
+
+    @classmethod
+    def get_by_email_simulation(cls, email):
+        data = Database.find_oneSimulation('users', {'email': email})
         if data is not None:
             return cls(**data)
 
@@ -212,6 +222,12 @@ class Manager(User):
         if data is not None:
             return cls(**data)
 
+    @classmethod
+    def get_by_email_simulation(cls, email):
+        data = Database.find_oneSimulation('users', {'$and': [{'manager': True}, {'email': email}]})
+        if data is not None:
+            return cls(**data)
+
     def get_employees(self):
         return User.get_by_company(self.company)
 
@@ -231,6 +247,27 @@ class Manager(User):
                 new_user = cls(email, username, password, _id, role, permission, company, facility)
                 try:
                     new_user.save_to_mongodb()
+                    session['email'] = email
+                    return True, "SUCCESS"
+                except Exception as e:
+                    return False, str(e)
+            else:
+                # User already exist
+                return False, "user email already exist"
+
+    def manager_register_simulation(cls, email, password, username, _id, role, permission, company, facility):
+        data = Database.find_oneSimulation('facilities', {'company': company})
+        role = 'Manager'
+        if data is not None:
+            return False, "company already exist"
+        else:
+            Facilities.add_company_simulation(company, facility)
+            user = cls.get_by_email_simulation(email)
+            if user is None:
+                # User dose'nt exist, create new user
+                new_user = cls(email, username, password, _id, role, permission, company, facility)
+                try:
+                    new_user.save_to_mongodb_simulation()
                     session['email'] = email
                     return True, "SUCCESS"
                 except Exception as e:
@@ -273,6 +310,24 @@ class Manager(User):
             # User already exist
             return False, "user email already exist"
 
+    @classmethod
+    def user_register_simulation(cls, email, password, username, _id, role, permission, company, facility):
+        if not Facilities.is_company_exist_simulation(company):
+            return False, "company dose'nt exist"
+        user = User.get_by_email_simulation(email)
+        print(email)
+        if user is None:
+            # User dose'nt exist, create new user
+            new_user = User(email, username, password, _id, role, permission, company, facility)
+            try:
+                new_user.save_to_mongodb_simulation()
+            except Exception as e:
+                return False, str(e)
+            return True, ''
+        else:
+            # User already exist
+            return False, "user email already exist"
+
     def delete_user(self, user_email):
         user = User.get_by_email(user_email)
         if user is not None and user.company == self.company:
@@ -297,6 +352,9 @@ class Manager(User):
     def add_facility(self, facility):
         Facilities.add_facility(self.company, facility)
 
+    def add_facility_simulation(self, facility):
+        Facilities.add_facility_simulation(self.company, facility)
+
     def import_employee(self, file):
         """
         :param file:the format is like this:
@@ -316,6 +374,9 @@ class Manager(User):
                 self.user_register(email, 'password', name, id, role, permission, self.company, facility)
 
     def add_room(self, permission, capacity, room_num, floor, facility, disabled_access):
+        return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
+
+    def add_room_simulation(self, permission, capacity, room_num, floor, facility, disabled_access):
         return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
 
     def import_rooms(self, file):

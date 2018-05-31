@@ -148,8 +148,30 @@ class Room(object):
             return False, _id
 
     @classmethod
+    def add_room_simulation(cls, permission, capacity, room_num, floor, company, facility, disabled_access=False):
+        _id = company + " " + facility + ' ' + str(room_num)
+        if not cls.is_room_exist_simulation(_id):
+            print('not exist' + _id)
+            new_room = cls(permission, capacity, _id, floor, company, facility, disabled_access)
+            Database.insertSimulation('rooms', new_room.json())
+            return True, _id
+        else:
+            print(' exist' + _id)
+
+            # room already exist
+            return False, _id
+
+    @classmethod
     def is_room_exist(cls, _id):
         data = Room.get_by_id(_id)
+        if data is None:
+            return False
+        else:
+            return True
+
+    @classmethod
+    def is_room_exist_simulation(cls, _id):
+        data = Room.get_by_id_simulation(_id)
         if data is None:
             return False
         else:
@@ -231,5 +253,11 @@ class Room(object):
     @classmethod
     def get_by_id(cls, _id):
         data = Database.find_one('rooms', {'_id': _id})
+        if data is not None:
+            return cls(**data)
+
+    @classmethod
+    def get_by_id_simulation(cls, _id):
+        data = Database.find_oneSimulation('rooms', {'_id': _id})
         if data is not None:
             return cls(**data)
