@@ -52,7 +52,7 @@ class Room(object):
 
     def intersection(self, start_time, end_time, schedule):
         is_intersect = False
-        if schedule.begin_meeting < start_time and schedule.end_meeting > end_time:
+        if schedule.begin_meeting <= start_time and schedule.end_meeting >= end_time:
             is_intersect = True
         if schedule.begin_meeting < start_time and schedule.end_meeting > start_time and schedule.end_meeting < end_time:
             is_intersect = True
@@ -92,7 +92,7 @@ class Room(object):
         for schedule in schedules:
             if schedule.date == date and self.intersection(start_time, end_time, schedule):
                 save_place += 1
-        return True if demand_sits < self.capacity - save_place else False
+        return True if demand_sits <= self.capacity - save_place else False
 
     @classmethod
     def get_by_capacity(cls, free_space, company, facility, permission):
@@ -121,7 +121,7 @@ class Room(object):
                     {
                         'capacity':
                             {
-                                '$gt': free_space
+                                '$gt': (free_space-1)
                             }
                     }
                 ]
