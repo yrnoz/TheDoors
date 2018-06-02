@@ -17,7 +17,9 @@ class Database(object):
 
     @staticmethod
     def initialize():
-        client = pymongo.MongoClient(Database.URI)
+        #client = pymongo.MongoClient(Database.URI)
+        client = pymongo.MongoClient(os.getenv("MONGOURL"))
+        db.authenticate(name=os.getenv("MONGO_USERNAME"),password=os.getenv("MONGO_PASSWORD"))
         Database.DATABASE = client["TheDoors"]
         Database.SIMULATION = client["Simulation"]
 
