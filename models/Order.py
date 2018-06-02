@@ -2,6 +2,7 @@ from common.database import Database
 from models.Room import Room
 from models.Schedule import Schedule
 from datetime import datetime
+from itertools import permutations
 
 
 class Order(object):
@@ -246,10 +247,37 @@ class Order(object):
             return True, new_order._id, room_id
         else:
             pass
-            # all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
-            # cls.remove_conflict_schedule(all_conflict_orders)
-            # cls.bactracking_algorithm(all_conflict_orders)
+            all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
+            cls.remove_conflict_schedule(all_conflict_orders)
+            cls.bactracking_algorithm(all_conflict_orders)
         return False, "There is not empty room", 'failed'
+
+
+    @classmethod
+    def bactracking_algorithm(cls, all_conflict_orders):
+        all_rooms=Room.get_all_rooms()
+        perm = permutations(all_rooms)
+        for i in list(perm):
+            total = cls.aux_backtracking(all_conflict_orders, 0, list(i), all_rooms.count())
+            if total:
+                break
+        print total
+
+    @classmethod
+    def aux_backtracking(self, all_conflict_orders, index_order, all_rooms, num_rooms):
+        if index_order > len(all_conflict_orders) - 1:
+            return True
+        for i in range(num_rooms):
+            if all_conflict_orders[index_order] <= all_rooms[i]:
+                all_rooms[i] = all_rooms[i] - all_conflict_orders[index_order]
+                return self.aux_backtracking(all_conflict_orders, index_order + 1, all_rooms, num_rooms)
+        return False
+
+
+
+
+
+
 
     @classmethod
     def remove_conflict_schedule(cls, all_conflict_orders):

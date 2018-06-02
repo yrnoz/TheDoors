@@ -217,6 +217,19 @@ class Room(object):
         room = Room.get_by_id(room_id)
         return is_accessible == False or room.disabled_access
 
+
+    @classmethod
+    def get_all_rooms(cls):
+        all_rooms =[]
+        query = {}
+        data = Database.find('rooms', query)
+        if data is not None:
+            for room in data:
+                all_rooms.append(cls(**room))
+        return all_rooms
+
+
+
     @classmethod
     def available_rooms(cls, date, num_employee, begin_meeting, end_meeting, permission, company, facility):
         """
