@@ -147,6 +147,70 @@ class Order(object):
         return orders
 
     @classmethod
+    def find_by_date_and_time_facility(cls, date, beign, end, facility):
+        orders = []
+
+        intersection = {
+            '$or':
+                [
+                    {
+                        '$and':
+                            [
+                                {
+                                    'start_time':
+                                        {
+                                            '$not':
+                                                {
+                                                    '$gte': end
+
+                                                }
+                                        }
+
+                                },
+                                {
+                                    'end_time':
+                                        {
+                                            '$gte': end
+                                        }
+                                }
+                            ]
+                    }
+                    ,
+                    {
+                        '$and':
+                            [
+                                {
+                                    'start_time':
+                                        {
+                                            '$not':
+                                                {
+                                                    '$gte': beign
+
+                                                }
+                                        }
+
+                                },
+                                {
+                                    'end_time':
+                                        {
+                                            '$gt': beign
+                                        }
+                                }
+                            ]
+                    }
+                ]
+        }
+
+        query = {
+            '$and': [{'date': date}, {'facility' : facility}, intersection]
+        }
+        data = Database.find('orders', query)
+        for order in data:
+            orders.append(cls(**order))
+        return orders
+
+
+    @classmethod
     def find_by_date_and_time(cls, user_email, date, beign, end):
         orders = []
 
@@ -247,30 +311,38 @@ class Order(object):
             return True, new_order._id, room_id
         else:
             pass
-            all_conflict_orders = Order.find_by_date_and_time(date, start_time, end_time)
+            all_conflict_orders = Order.find_by_date_and_time_facility(date, start_time, end_time, facility)
+            all_conflict_orders.append(new_order)
             cls.remove_conflict_schedule(all_conflict_orders)
-            cls.bactracking_algorithm(all_conflict_orders)
+            cls.bactracking_algorithm(all_conflict_orders, facility)
         return False, "There is not empty room", 'failed'
 
 
     @classmethod
-    def bactracking_algorithm(cls, all_conflict_orders):
-        all_rooms=Room.get_all_rooms()
-        perm = permutations(all_rooms)
-        for i in list(perm):
-            total = cls.aux_backtracking(all_conflict_orders, 0, list(i), all_rooms.count())
+    def bactracking_algorithm(cls, all_conflict_orders, facility):
+        all_rooms=list(Room.find_by_facility(facility))
+        list_room_id =[]
+        for room in all_rooms:
+            room_id = room._id
+            list_room_id.append(room_id)
+        perm_list = list(permutations(all_rooms ,len(all_rooms)))
+
+        for i in perm_list:
+            print "hi"
+            total = cls.aux_backtracking(all_conflict_orders, 0, list(i), len(all_rooms))
+            a = 1+2
             if total:
                 break
         print total
 
     @classmethod
-    def aux_backtracking(self, all_conflict_orders, index_order, all_rooms, num_rooms):
+    def aux_backtracking(cls, all_conflict_orders, index_order, all_rooms, num_rooms):
         if index_order > len(all_conflict_orders) - 1:
             return True
         for i in range(num_rooms):
             if all_conflict_orders[index_order] <= all_rooms[i]:
                 all_rooms[i] = all_rooms[i] - all_conflict_orders[index_order]
-                return self.aux_backtracking(all_conflict_orders, index_order + 1, all_rooms, num_rooms)
+                return cls.aux_backtracking(all_conflict_orders, index_order + 1, all_rooms, num_rooms)
         return False
 
 
@@ -340,17 +412,8 @@ class Order(object):
                 orders.append(cls(**order))
         return orders
 
-    @classmethod
-    def find_by_date_and_time(cls, date, begin_hour, end_hour):
-        orders = []
-        query = {
-            '$and': [{'date': date}, {'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]
-        }
-        data = Database.find('orders', query)
-        if data is not None:
-            for order in data:
-                orders.append(cls(**order))
-        return orders
+
+
 
     def remove_participant(self, user_email):
         self.participants.remove(user_email)

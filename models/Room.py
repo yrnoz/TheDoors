@@ -192,6 +192,7 @@ class Room(object):
 
     def get_schedules(self):
         return Schedule.get_by_room(self._id)
+    
 
     @classmethod
     def check_room_space(cls, min_occupancy, max_occupancy, room_capacity, current_capacity, available_spaces):
@@ -219,9 +220,9 @@ class Room(object):
 
 
     @classmethod
-    def get_all_rooms(cls):
+    def find_by_facility(cls, facility):
         all_rooms =[]
-        query = {}
+        query = {'facility' : facility}
         data = Database.find('rooms', query)
         if data is not None:
             for room in data:
@@ -246,6 +247,7 @@ class Room(object):
         for room in rooms:
             room_capacity = room.capacity
             room_schedule = Schedule.get_by_room_and_date(room._id, date)
+
             for sched in room_schedule:
                 if room.intersection(begin_meeting, end_meeting, sched):
                     room_capacity = room_capacity - len(sched.participants)
