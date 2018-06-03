@@ -325,7 +325,8 @@ class Order(object):
             all_conflict_orders.append(new_order)
             all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
             cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
-            cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
+            status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
+            return True, new_order._id, room_id
         return False, "There is not empty room", 'failed'
 
 
@@ -340,9 +341,10 @@ class Order(object):
 
 
         for i in perm_list:
-            is_sucess = cls.simple_algo(all_conflict_orders, i, date, start_time, end_time)
+            is_sucess, room_id = cls.simple_algo(all_conflict_orders, i, date, start_time, end_time)
             if is_sucess:
-                break
+                return True, room_id,
+        return False, "no room"
 
 
     @classmethod
@@ -355,13 +357,13 @@ class Order(object):
             index_room = Room.get_next_room_from_list(all_rooms, index_room, len(participents_order), date, start_time, end_time)
             if index_room == -1:
                 cls.remove_conflict_schedule(already_scheduled, date, start_time, end_time)
-                return False
+                return False, "There is no room"
             room = all_rooms[index_room]
             room_id = room.get_id_room()
             Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
             scheds_by_order = Schedule.get_by_order(order_id)
             already_scheduled.append(scheds_by_order[0])
-        return True
+        return True, room_id
 
     @classmethod
     def aux_backtracking(cls, all_conflict_orders, index_order, all_rooms, num_rooms, date, start_time, end_time):
