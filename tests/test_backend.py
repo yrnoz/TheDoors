@@ -149,10 +149,10 @@ def test_schedules_orders2():
 
     status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True) ########################################changed capacity
     assert status is True
-    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', False)
+    status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
     assert status is True
     assert Room.remove_room(room_id) is True
-    status, room_id = Room.add_room(2, 30, 3, 4, 'YAHOO', 'matam', True)
+    status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', True)
 
     num1 = Database.count('orders')
     Database.remove('orders', {'_id': '23/05/18'})
@@ -181,9 +181,14 @@ def test_schedules_orders2():
     participants1 = ['email_1@gmail.com', 'email_2@gmail.com']
     participants2  =['email_4@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
-    status1, string1 = user1.new_order(date, participants1, 6, 7, "YAHOO", 'matam')
-    print(string1)
     status2, string2 = user2.new_order(date, participants2, 6, 7, "YAHOO", 'matam')
+    schedules2 = user2.get_schedule()
+
+    status1, string1 = user1.new_order(date, participants1, 6, 7, "YAHOO", 'matam')
+    schedules1 = user1.get_schedule()
+    schedules2 = user2.get_schedule()
+    print(string1)
+
     orders = user1.get_orders()
     num_orders = len(orders)
     assert len(user1.get_orders()) > 0

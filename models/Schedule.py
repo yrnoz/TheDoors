@@ -135,12 +135,14 @@ class Schedule(object):
 
         for user_email in participants:
             # check that all the participants really have a meeting on this time
-            schedule = Schedule.get_by_start_time(user_email, date, start_time, end_time)
+            schedule = Schedule.get_by_email_and_date_and_hour(user_email, date, start_time, end_time)
             if schedule is None:
                 return False
         for user_email in participants:
-            schedule = Schedule.get_by_start_time(user_email, date, start_time, end_time)
-            Database.remove('schedules', {'_id': schedule._id})
+            schedules = Schedule.get_by_email_and_date_and_hour(user_email, date, start_time, end_time)
+            for sched in schedules:
+                schedule_id = cls.get_sched_id(sched)
+                Database.remove('schedules', {'_id': schedule_id})
         return True
 
     def is_available(self, start_time, end_time):
@@ -209,15 +211,42 @@ class Schedule(object):
         return schedules
 
     @classmethod
+    def get_by_email_and_date_and_hour(cls, email, date, begin_hour, end_hour):
+        ###need to change the queary
+        schedules = []
+        query = {'$and': [{'date': date}, {'email':email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
+        #query = {'$and': [{'date': date}, {'email': email},
+         #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
+        data = Database.find('schedules', query)
+        if data is not None:
+            for sched in data:
+                schedules.append(cls(**sched))
+        return schedules
+
+    @classmethod
+    def get_by_date_and_hour(cls, date, begin_hour, end_hour):
+        schedules = []
+        query ={'$and': [{'date': date}, {'begin_meeting': begin_hour}]}
+        #query = {'$and': [{'date': date},
+         #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
+        data = Database.find('schedules', query)
+        if data is not None:
+            for sched in data:
+                schedules.append(cls(**sched))
+        return schedules
+
+    @classmethod
     def get_participants_by_room_date_and_hour(cls, _id, date, start_time, end_time):
         schedule = Schedule.get_by_room_and_date_and_hour(date, start_time, end_time)
         return schedule.participants
 
-    def get_order_id(self):
-        return self.order_id
+    @classmethod
+    def get_sched_id(cls, sched):
+        return sched._id
 
-    def get_participants(self):
-        return self.participants
+    @classmethod
+    def get_participants(cls, sched):
+        return sched.participants
 
     @classmethod
     def cancel_meeting(cls, meeting_id):

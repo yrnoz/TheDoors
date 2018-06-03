@@ -82,6 +82,16 @@ class Order(object):
             orders.append(cls(**order))
         return orders
 
+    def get_num_parctipents(self):
+        num_participents= len(self.participants)
+        return num_participents
+
+    def get_participents(self):
+        return self.participants
+
+    def get_id(self):
+        return self._id
+
     @classmethod
     def find_by_user_email_and_date_and_time(cls, user_email, date, beign, end):
         orders = []
@@ -313,13 +323,14 @@ class Order(object):
             pass
             all_conflict_orders = Order.find_by_date_and_time_facility(date, start_time, end_time, facility)
             all_conflict_orders.append(new_order)
-            cls.remove_conflict_schedule(all_conflict_orders)
-            cls.bactracking_algorithm(all_conflict_orders, facility)
+            all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
+            cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
+            cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
         return False, "There is not empty room", 'failed'
 
 
     @classmethod
-    def bactracking_algorithm(cls, all_conflict_orders, facility):
+    def bactracking_algorithm(cls, all_conflict_orders, facility, date, start_time, end_time):
         all_rooms=list(Room.find_by_facility(facility))
         list_room_id =[]
         for room in all_rooms:
@@ -327,21 +338,31 @@ class Order(object):
             list_room_id.append(room_id)
         perm_list = list(permutations(all_rooms ,len(all_rooms)))
 
+
         for i in perm_list:
             print "hi"
-            total = cls.aux_backtracking(all_conflict_orders, 0, list(i), len(all_rooms))
+            total = cls.aux_backtracking(all_conflict_orders, 0, list(i), len(all_rooms), date, start_time, end_time)
             a = 1+2
             if total:
                 break
         print total
 
     @classmethod
-    def aux_backtracking(cls, all_conflict_orders, index_order, all_rooms, num_rooms):
+    def aux_backtracking(cls, all_conflict_orders, index_order, all_rooms, num_rooms, date, start_time, end_time):
         if index_order > len(all_conflict_orders) - 1:
             return True
         for i in range(num_rooms):
             if all_conflict_orders[index_order] <= all_rooms[i]:
-                all_rooms[i] = all_rooms[i] - all_conflict_orders[index_order]
+                room = all_rooms[i]
+                room_occupation_current=room.occupation_room(date, start_time, end_time)
+                order = all_conflict_orders[index_order]
+                order_id = order.get_id()
+                demanded_space = order.get_num_parctipents()
+                participents_order = order.get_participents()
+                after_occupency_room = room_occupation_current - demanded_space
+                room_id = room.get_id_room()
+                Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
+                #all_rooms[i] = room_occupation_current  - all_conflict_orders[index_order].
                 return cls.aux_backtracking(all_conflict_orders, index_order + 1, all_rooms, num_rooms)
         return False
 
@@ -352,9 +373,29 @@ class Order(object):
 
 
     @classmethod
-    def remove_conflict_schedule(cls, all_conflict_orders):
-        for order in all_conflict_orders:
-            cls.delete_order(order._id)
+    def remove_conflict_schedule(cls, all_conflict_schedules, date, start_time, end_time):
+        for sched in all_conflict_schedules:
+
+            #participants =
+            participants = Schedule.get_participants(sched)
+            Schedule.delete_meeting_from_schedule(date, participants, start_time, end_time)
+
+
+        ''''
+        if len(all_conflict_orders)==0:
+            return
+        order = all_conflict_orders[0]
+
+        email = order.user_email
+        date = order.date
+        begin_hour = order.start_time
+        end_hour = order.end_time
+
+        all_conflict_schedules= Schedule.get_by_email_and_date_and_hour(email, date, begin_hour, end_hour)
+        for sched in all_conflict_schedules:
+            sched_id = Schedule.get_sched_id(sched)
+            Schedule.cancel_meeting(sched_id)
+        '''
 
     @classmethod
     def participant_cancel(cls, user_email, order_id):
@@ -372,7 +413,10 @@ class Order(object):
 
     @classmethod
     def delete_order(cls, order_id):
+        found = Database.find_one('orders', {'_id': order_id})
         Database.remove('orders', {'_id': order_id})
+        found = Database.find_one('orders', {'_id': order_id})
+        a =1+2
 
     @classmethod
     def who_create_order(cls, order_id):
