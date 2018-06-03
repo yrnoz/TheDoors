@@ -281,3 +281,16 @@ class Room(object):
 
     def get_id_room(self):
         return self._id
+
+    @classmethod
+    def get_next_room_from_list(cls, all_rooms, index_room, num_participants, date, start_time, end_time):
+        i = index_room
+
+        while i <= index_room:
+            room = all_rooms[index_room]
+            is_available = room.available_on_time(date, start_time, end_time, num_participants)
+            if is_available:
+                return index_room
+            else:
+                i =+1
+        return -1

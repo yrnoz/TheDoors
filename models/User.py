@@ -191,7 +191,7 @@ class User(object):
         for user in participants:
             user = User.get_by_email(user)
             if user is not None:
-                permission = user.permission if user.permission < permission else permission
+                permission = int(user.permission) if int(user.permission) < permission else permission
         return permission
 
 

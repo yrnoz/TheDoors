@@ -340,12 +340,25 @@ class Order(object):
 
 
         for i in perm_list:
-            print "hi"
-            total = cls.aux_backtracking(all_conflict_orders, 0, list(i), len(all_rooms), date, start_time, end_time)
-            a = 1+2
-            if total:
-                break
-        print total
+            print ("hi")
+            cls.simple_algo(all_conflict_orders, all_rooms, date, start_time, end_time)
+            #total = cls.aux_backtracking(all_conflict_orders, 0, list(i), len(all_rooms), date, start_time, end_time)
+
+
+    @classmethod
+    def simple_algo(cls, all_conflict_orders, all_rooms, date, start_time, end_time):
+        index_room =0
+        for order in all_conflict_orders:
+            order_id = order.get_id()
+            participents_order = order.get_participents()
+            index_room = Room.get_next_room_from_list(all_rooms, index_room, len(participents_order), date, start_time, end_time)
+            if index_room == -1:
+                print ("fail")
+                return
+            room = all_rooms[index_room]
+            room_id = room.get_id_room()
+            Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
+
 
     @classmethod
     def aux_backtracking(cls, all_conflict_orders, index_order, all_rooms, num_rooms, date, start_time, end_time):
