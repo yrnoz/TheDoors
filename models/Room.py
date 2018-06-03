@@ -287,10 +287,10 @@ class Room(object):
         i = index_room
 
         while i <= len(all_rooms)-1:
-            room = all_rooms[index_room]
+            room = all_rooms[i]
             is_available = room.available_on_time(date, start_time, end_time, num_participants)
             if is_available:
-                return index_room
+                return i
             else:
                 i = i+1
         return -1
