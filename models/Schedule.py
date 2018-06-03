@@ -184,6 +184,18 @@ class Schedule(object):
         if data is not None:
             return cls(**data)
 
+    @classmethod
+    def get_by_order(cls, order_id):
+        all_scheds = []
+        query = {'order_id': order_id}
+        data = Database.find('schedules', query)
+
+        if data is not None:
+            for sched in data:
+                all_scheds.append(cls(**sched))
+        return all_scheds
+
+
 
 
     @classmethod
