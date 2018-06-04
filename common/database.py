@@ -1,5 +1,5 @@
 import pymongo
-
+import os
 
 class Database(object):
     URI = 'mongodb://127.0.0.1:27017'
@@ -19,7 +19,7 @@ class Database(object):
     def initialize():
         #client = pymongo.MongoClient(Database.URI)
         client = pymongo.MongoClient(os.getenv("CUSTOMCONNSTR_MONGOURL"))
-		Database.DATABASE = client["TheDoors"]
+        Database.DATABASE = client["TheDoors"]
         Database.DATABASE.authenticate(name=os.getenv("CUSTOMCONNSTR_MONGO_USERNAME"),password=os.getenv("CUSTOMCONNSTR_MONGO_PASSWORD"))
         Database.SIMULATION = client["Simulation"]
 

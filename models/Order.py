@@ -328,12 +328,12 @@ class Order(object):
         perm_list = list(permutations(all_rooms ,len(all_rooms)))
 
         for i in perm_list:
-            print "hi"
+            #print "hi"
             total = cls.aux_backtracking(all_conflict_orders, 0, list(i), len(all_rooms))
             a = 1+2
             if total:
                 break
-        print total
+#        print total
 
     @classmethod
     def aux_backtracking(cls, all_conflict_orders, index_order, all_rooms, num_rooms):
