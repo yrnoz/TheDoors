@@ -362,7 +362,7 @@ def event_abs_circuit():
 
 
 if __name__ == '__main__':
-    app.debug = True
+    #app.debug = True
     # for day in get_week(datetime.today().date()):
     #     date = '{}/{}/{}'.format(day.day, day.month, str(day.year)[2:4])
     #     print(date)
