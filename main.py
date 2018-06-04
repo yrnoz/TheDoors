@@ -361,7 +361,7 @@ def event_abs_circuit():
     return render_template('event-abs-circuit.html')
 
 
-wsgi_app = app.wsgi_app
+wsgi_app = main.wsgi_app
 
 if __name__ == '__main__':
     #app.debug = True
