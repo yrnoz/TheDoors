@@ -78,9 +78,27 @@ class Room(object):
         return rooms
 
     @classmethod
+    def get_by_facility_simulation(cls, company, facility):
+        data = Database.findSimulation('rooms', {'$and': [{'company': company}, {'facility': facility}]})
+        rooms = []
+        if data is not None:
+            for room in data:
+                rooms.append(cls(**room))
+        return rooms
+
+    @classmethod
     def get_by_company(cls, company):
         rooms = []
         data = Database.find('rooms', {'company': company})
+        if data is not None:
+            for room in data:
+                rooms.append(cls(**room))
+        return rooms
+
+    @classmethod
+    def get_by_company_simulation(cls, company):
+        rooms = []
+        data = Database.findSimulation('rooms', {'company': company})
         if data is not None:
             for room in data:
                 rooms.append(cls(**room))
@@ -239,7 +257,15 @@ class Room(object):
                 all_rooms.append(cls(**room))
         return all_rooms
 
-
+    @classmethod
+    def find_by_facility_simulation(cls, facility):
+        all_rooms = []
+        query = {'facility': facility}
+        data = Database.findSimulation('rooms', query)
+        if data is not None:
+            for room in data:
+                all_rooms.append(cls(**room))
+        return all_rooms
 
     @classmethod
     def available_rooms(cls, date, num_employee, begin_meeting, end_meeting, permission, company, facility):

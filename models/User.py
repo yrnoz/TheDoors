@@ -84,8 +84,25 @@ class User(object):
         return set(users)
 
     @classmethod
+    def get_by_company_simulation(cls, company):
+        users = []
+        data = Database.findSimulation('users', {'company': company})
+        if data is not None:
+            for user in data:
+                users.append(cls(**user))
+        # print(len(users))
+        # print(users)
+        return set(users)
+
+    @classmethod
     def get_by_id(cls, _id):
         data = Database.find_one('users', {'_id': _id})
+        if data is not None:
+            return cls(**data)
+
+    @classmethod
+    def get_by_id_simulation(cls, _id):
+        data = Database.find_oneSimulation('users', {'_id': _id})
         if data is not None:
             return cls(**data)
 
@@ -228,6 +245,9 @@ class Manager(User):
     def get_employees(self):
         return User.get_by_company(self.company)
 
+    def get_employees_simulation(self):
+        return User.get_by_company_simulation(self.company)
+
     @classmethod
     def manager_register(cls, email, password, username, _id, role, permission, company, facility):
         data = Database.find_one('facilities', {'company': company})
@@ -338,6 +358,9 @@ class Manager(User):
 
     def get_facilities(self):
         return Facilities.get_facilities(self.company)
+
+    def get_facilities_simulation(self):
+        return Facilities.get_facilities_simulation(self.company)
 
     def get_roles(self):
         return self.roles

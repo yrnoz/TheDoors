@@ -55,9 +55,15 @@ def add_random_facilities_simulation(maxFacilities, manager):
 def order_rooms_simulation(duration):
     global DURATION
     global HOURS_PER_DAY
+    global NUM_EMPLOYEES
     DURATION = duration
     duration_hours = DURATION * HOURS_PER_DAY
-    poisson_dest = np.random.poisson(2, duration_hours)
+    lamda = 0
+    if NUM_EMPLOYEES > 10:
+        lamda = NUM_EMPLOYEES/10
+    else:
+        lamda = 1
+    poisson_dest = np.random.poisson(lamda, duration_hours)
     #TODO: order rooms for employees according to the poisson
 
 
