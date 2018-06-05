@@ -263,7 +263,7 @@ def route_rooms_datatable():
             # return render_template('Rooms-datatable.html', rooms=rooms, facilities=facilities)
 
 
-@app.route('/route_edit_friends', methods=['GET', 'POST'])
+@app.route('/edit_friends', methods=['GET', 'POST'])
 def route_edit_friends():
     if session['email'] is not None:
         email = session['email']
