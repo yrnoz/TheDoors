@@ -175,8 +175,10 @@ class User(object):
         _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
         status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
                                                     facility, min_permission)
+
         if status:
             print ("what was that")
+            Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
             #self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
 
