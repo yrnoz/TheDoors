@@ -130,9 +130,6 @@ def test_schedules_orders():
     schedules = user.get_schedule()
     assert len(schedules) > 0
     schedules = Schedule.get_schedules('email_1@gmail.com')
-    for sched in schedules:
-        sched.get_order_id()
-        sched.future_meeting()
     assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
     assert len(Room.available_rooms('11/11/11', 2, 1, 2, 2, 'YAHOO', 'matam')) > 0
 
@@ -195,9 +192,6 @@ def test_schedules_orders2():
     schedules1 = user1.get_schedule()
     assert len(schedules1) > 0
     schedules = Schedule.get_schedules('email_1@gmail.com')
-    for sched in schedules:
-        sched.get_order_id()
-        sched.future_meeting()
     assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
     schedules2 = user2.get_schedule()
     assert len(schedules2) > 0
