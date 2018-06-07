@@ -172,8 +172,8 @@ class User(object):
             return False, problematic_participants
         min_permission = User.min_permission_simulation(participants)
         _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
-        status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
-                                                    facility, min_permission) #here
+        status, order_id, room_id = Order.new_order_simulation(_id, self.email, date, participants, start_time, end_time, company,
+                                                    facility, min_permission)
 
         if status:
             print ("what was that")

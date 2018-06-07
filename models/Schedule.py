@@ -140,6 +140,20 @@ class Schedule(object):
                 schedules.append(cls(**sched))
         return schedules
 
+    @classmethod
+    def get_by_room_simulation(cls, room_id):
+        """
+
+        :param room_id:
+        :return: list of schedule's object that represent the schedule in the given room_id
+        """
+        schedules = []
+        data = Database.findSimulation('schedules', {'room_id': room_id})
+        if data is not None:
+            for sched in data:
+                schedules.append(cls(**sched))
+        return schedules
+
 
     @classmethod
     def all_participants_are_free(cls, date, participants, start_time, end_time):
@@ -191,6 +205,28 @@ class Schedule(object):
             for sched in schedules:
                 schedule_id = cls.get_sched_id(sched)
                 Database.remove('schedules', {'_id': schedule_id})
+        return True
+
+    @classmethod
+    def delete_meeting_from_schedule_simulation(cls, date, participants, start_time, end_time):
+        """
+         delete the meeting from the schedule of every user in the participants list.
+        :param date: the date of the meeting
+        :param participants: the emails of the peoples that invited to this meeting
+        :param start_time:
+        :param end_time:
+        """
+
+        for user_email in participants:
+            # check that all the participants really have a meeting on this time
+            schedule = Schedule.get_by_email_and_date_and_hour_simulation(user_email, date, start_time, end_time)
+            if schedule is None:
+                return False
+        for user_email in participants:
+            schedules = Schedule.get_by_email_and_date_and_hour_simulation(user_email, date, start_time, end_time)
+            for sched in schedules:
+                schedule_id = cls.get_sched_id(sched)
+                Database.removeSimulation('schedules', {'_id': schedule_id})
         return True
 
     def is_available(self, start_time, end_time):
@@ -254,6 +290,16 @@ class Schedule(object):
                 all_scheds.append(cls(**sched))
         return all_scheds
 
+    @classmethod
+    def get_by_order_simulation(cls, order_id):
+        all_scheds = []
+        query = {'order_id': order_id}
+        data = Database.findSimulation('schedules', query)
+
+        if data is not None:
+            for sched in data:
+                all_scheds.append(cls(**sched))
+        return all_scheds
 
     @classmethod
     def get_by_room_and_date(cls, _id, date):
@@ -263,6 +309,19 @@ class Schedule(object):
         schedules = []
         query = {'$and': [{'date': date}, {'room_id': _id}]}
         data = Database.find('schedules', query)
+        if data is not None:
+            for sched in data:
+                schedules.append(cls(**sched))
+        return schedules
+
+    @classmethod
+    def get_by_room_and_date_simulation(cls, _id, date):
+        """
+             :return: list of schedule's object that represent the schedule in the given room_id on the given date
+             """
+        schedules = []
+        query = {'$and': [{'date': date}, {'room_id': _id}]}
+        data = Database.findSimulation('schedules', query)
         if data is not None:
             for sched in data:
                 schedules.append(cls(**sched))
@@ -312,6 +371,18 @@ class Schedule(object):
         #query = {'$and': [{'date': date},
          #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
         data = Database.find('schedules', query)
+        if data is not None:
+            for sched in data:
+                schedules.append(cls(**sched))
+        return schedules
+
+    @classmethod
+    def get_by_date_and_hour_simulation(cls, date, begin_hour, end_hour):
+        schedules = []
+        query = {'$and': [{'date': date}, {'begin_meeting': begin_hour}]}
+        # query = {'$and': [{'date': date},
+        #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
+        data = Database.findSimulation('schedules', query)
         if data is not None:
             for sched in data:
                 schedules.append(cls(**sched))
