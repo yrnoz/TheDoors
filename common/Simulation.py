@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 
 from models.Room import Room
 from models.Schedule import Schedule
@@ -16,6 +16,7 @@ NUM_ROOMS = 0
 NUM_FACILITIES = 0
 DURATION = 0
 HOURS_PER_DAY = 10
+DATE = datetime.now()
 
 def add_random_users_simulation(maxEmployees, manager):
     '''
@@ -56,19 +57,30 @@ def order_rooms_simulation(duration):
     global DURATION
     global HOURS_PER_DAY
     global NUM_EMPLOYEES
+    global DATE
     DURATION = duration
     duration_hours = DURATION * HOURS_PER_DAY
-    lamda = 0
-    if NUM_EMPLOYEES > 10:
-        lamda = NUM_EMPLOYEES/10
-    else:
-        lamda = 1
-    poisson_dest = np.random.poisson(lamda, duration_hours)
-    #TODO: order rooms for employees according to the poisson
-
-
+    poisson_dest = np.random.poisson((NUM_EMPLOYEES/20 +1), duration_hours)
+    day_need_to_add = 0
+    for hour in range(duration_hours-1):
+        time = 8 + (hour % 10)
+        DATE += timedelta(days = day_need_to_add)
+        for i in range(poisson_dest[hour]-1):
+            user_index = random.randint(1, NUM_EMPLOYEES)
+            user = User.get_by_email_simulation("simulationEmp" + str(user_index) +"@gmail.com")
+            # TODO: add participants to order
+            user.new_order_simulation(DATE,[],time, time+1, 'Simulation', user.facility)
+        if hour%10 == 0:
+            day_need_to_add += 1
 
 
 def simulation_engine():
+    global DATE
     Database.initialize()
     Manager.manager_register_simulation("simulation@gmail.com", 'admin', 'simulation admin', '000000000', 'eng', 1, 'Simulation', 'sim')
+    DATE = datetime.utcnow().strftime('%d/%m/%y')
+
+
+
+
+
