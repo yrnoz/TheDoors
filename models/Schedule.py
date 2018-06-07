@@ -35,6 +35,13 @@ class Schedule(object):
         data2 = Database.find_one('schedules', {'email': 'email_4@gmail.com'})
         Database.insert(collection='schedules', data=self.json())
 
+    def save_to_mongodb_simulation(self):
+        data = self.json()
+        print(data)
+        data1 = Database.find_oneSimulation('schedules' , {'email': 'email_1@gmail.com'})
+        data2 = Database.find_oneSimulation('schedules', {'email': 'email_4@gmail.com'})
+        Database.insertSimulation(collection='schedules', data=self.json())
+
     def json(self):
         return {
             'email': self.email,
@@ -93,6 +100,28 @@ class Schedule(object):
                 schedules.append(cls(**sched))
         return schedules
 
+    @classmethod
+    def get_schedules_simulation(cls, user_email, date=None, start_time=None, end_time=None, room_id=None):
+        """
+
+        :return: list of schedule's object that represent the schedule of the user's email
+        """
+        email_query = {'email': user_email}
+        date_query = {'date': date} if date is not None else {}
+        room_query = {'room_id': room_id} if room_id is not None else {}
+        begin_query = {'begin_meeting': start_time} if start_time is not None else {}
+        end_query = {'end_meeting': end_time} if end_time is not None else {}
+        # query = {'$and': [email_query, date_query, room_query, begin_query, end_query]}
+        query = {'email': user_email}
+        schedules = []
+        data = Database.findSimulation('schedules', query)
+        print(query)
+        print(date)
+        if data is not None:
+            for sched in data:
+                schedules.append(cls(**sched))
+        return schedules
+
     def get_day(self):
         date = datetime.strptime(self.date, '%d/%m/%y')
         return str(date.strftime("%A"))
@@ -111,11 +140,27 @@ class Schedule(object):
                 schedules.append(cls(**sched))
         return schedules
 
+
     @classmethod
     def all_participants_are_free(cls, date, participants, start_time, end_time):
         problematics = []
         for user_email in participants:
             data = cls.get_schedules(user_email, date)
+            print(data)
+            print('that wa daatatat')
+            for sched in data:
+                # this user is not free on this time
+                print(sched._id)
+                if not sched.is_available(start_time, end_time):
+                    problematics.append(user_email)
+                    break
+        return problematics
+
+    @classmethod
+    def all_participants_are_free_simulation(cls, date, participants, start_time, end_time):
+        problematics = []
+        for user_email in participants:
+            data = cls.get_schedules_simulation(user_email, date)
             print(data)
             print('that wa daatatat')
             for sched in data:
@@ -159,6 +204,7 @@ class Schedule(object):
         after = (int(start_time) >= int(self.end_meeting))
         return True if (before or after) else False
 
+    #simulation
     @classmethod
     def assign_all(cls, date, participants, start_time, end_time, order_id, room_id):
         for user_email in participants:
@@ -166,6 +212,14 @@ class Schedule(object):
             sched_user =cls.get_by_email_and_date_and_hour(user_email, date, start_time, end_time)
             if len(sched_user)==0:
                 new_meeting.save_to_mongodb()
+
+    @classmethod
+    def assign_all_simulation(cls, date, participants, start_time, end_time, order_id, room_id):
+        for user_email in participants:
+            new_meeting = Schedule(user_email, date, start_time, end_time, order_id, participants, room_id)
+            sched_user = cls.get_by_email_and_date_and_hour_simulation(user_email, date, start_time, end_time) #simulation
+            if len(sched_user) == 0:
+                new_meeting.save_to_mongodb_simulation()
 
     @classmethod
     def saved_space(cls, room_schedule, begin_meeting, end_meeting):
@@ -201,8 +255,6 @@ class Schedule(object):
         return all_scheds
 
 
-
-
     @classmethod
     def get_by_room_and_date(cls, _id, date):
         """
@@ -235,6 +287,19 @@ class Schedule(object):
         #query = {'$and': [{'date': date}, {'email': email},
          #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
         data = Database.find('schedules', query)
+        if data is not None:
+            for sched in data:
+                schedules.append(cls(**sched))
+        return schedules
+
+    @classmethod
+    def get_by_email_and_date_and_hour_simulation(cls, email, date, begin_hour, end_hour):
+        ###need to change the queary
+        schedules = []
+        query = {'$and': [{'date': date}, {'email': email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
+        # query = {'$and': [{'date': date}, {'email': email},
+        #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
+        data = Database.findSimulation('schedules', query)
         if data is not None:
             for sched in data:
                 schedules.append(cls(**sched))
