@@ -4,6 +4,7 @@ from models.Room import Room
 from models.Schedule import Schedule
 from models.Order import Order
 from flask import session
+import smtplib
 
 from common.database import Database
 from models.facilities import Facilities
@@ -162,6 +163,19 @@ class User(object):
         return Schedule.get_schedules(self.email, date, start_time, end_time, room_id)
 
     def new_order(self, date, participants, start_time, end_time, company, facility):
+
+        # print ("hi")
+        mail = smtplib.SMTP('smtp.gmail.com', 587)
+        mail.ehlo()
+        mail.starttls()
+        mail.login('theDoorsTechnion@gmail.com', '2018TheDoors')
+        SUBJECT = 'Reminder for meeting'
+        TEXT = 'We want to remind you about meeting'
+        message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
+
+        mail.sendmail('theDoorsTechnion@gmail.com', 'ilanalev1996@gmail.com', message)
+        mail.close()
+
         if self.email not in participants:
             participants.append(self.email)
         problematic_participants = Schedule.all_participants_are_free(date, participants, start_time,

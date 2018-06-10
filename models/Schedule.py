@@ -342,6 +342,9 @@ class Schedule(object):
     def get_by_email_and_date_and_hour(cls, email, date, begin_hour, end_hour):
         ###need to change the queary
         schedules = []
+        #query = {'$and': [{'date': date} , {'email': email}, {'$gt': {'begin_meeting': begin_hour}}]}
+
+
         query = {'$and': [{'date': date}, {'email':email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
         #query = {'$and': [{'date': date}, {'email': email},
          #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
