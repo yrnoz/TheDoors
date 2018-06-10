@@ -112,7 +112,13 @@ class Room(object):
                 save_place += len(schedule.participants)
         return True if demand_sits <= self.capacity - save_place else False
 
-
+    def available_on_time_simulation(self, date, start_time, end_time, demand_sits):
+        schedules = self.get_schedules_simulation()
+        save_place = 0
+        for schedule in schedules:
+            if schedule.date == date and self.intersection(start_time, end_time, schedule):
+                save_place += len(schedule.participants)
+        return True if demand_sits <= self.capacity - save_place else False
 
     def occupation_room(self, date, start_time, end_time):
         schedules = self.get_schedules()
@@ -160,6 +166,46 @@ class Room(object):
             for room in data:
                 rooms.append(cls(**room))
         return rooms
+
+    @classmethod
+    def get_by_capacity_simulation(cls, free_space, company, facility, permission):
+        rooms = []
+        print('free space:')
+        print(type(free_space))
+        query = {
+            '$and':
+
+                [
+                    {
+                        'company': company
+                    },
+                    {
+                        'facility': facility
+                    },
+                    {
+                        'permission':
+                            {
+                                '$not':
+                                    {
+                                        '$gt': permission
+                                    }
+                            }
+                    },
+                    {
+                        'capacity':
+                            {
+                                '$gt': (free_space - 1)
+                            }
+                    }
+                ]
+
+        }
+        data = Database.findSimulation('rooms', query)
+        if data is not None:
+            for room in data:
+                rooms.append(cls(**room))
+        return rooms
+
 
     @classmethod
     def add_room(cls, permission, capacity, room_num, floor, company, facility, disabled_access=False):
@@ -221,6 +267,9 @@ class Room(object):
     def get_schedules(self):
         return Schedule.get_by_room(self._id)
 
+
+    def get_schedules_simulation(self):
+        return Schedule.get_by_room_simulation(self._id)
 
     @classmethod
     def check_room_space(cls, min_occupancy, max_occupancy, room_capacity, current_capacity, available_spaces):
@@ -294,6 +343,32 @@ class Room(object):
         return available_rooms
 
     @classmethod
+    def available_rooms_simulation(cls, date, num_employee, begin_meeting, end_meeting, permission, company, facility):
+        """
+
+        :param date:
+        :param num_employee: the participent in the room
+        :param begin_meeting:
+        :param end_meeting:
+        :return: a list of all the room that have enough  space >= available_spaces  for a meeting on the given time
+        """
+        available_rooms = []
+
+        rooms = Room.get_by_capacity_simulation(num_employee, company, facility, permission)
+        for room in rooms:
+            room_capacity = room.capacity
+            room_schedule = Schedule.get_by_room_and_date_simulation(room._id, date)
+
+            for sched in room_schedule:
+                if room.intersection(begin_meeting, end_meeting, sched):
+                    room_capacity = room_capacity - len(sched.participants)
+
+            if room_capacity >= num_employee:
+                # this room is empty
+                available_rooms.append(room)
+        return available_rooms
+
+    @classmethod
     def get_by_id(cls, _id):
         data = Database.find_one('rooms', {'_id': _id})
         if data is not None:
@@ -319,4 +394,17 @@ class Room(object):
                 return i
             else:
                 i = i+1
+        return -1
+
+    @classmethod
+    def get_next_room_from_list_simulation(cls, all_rooms, index_room, num_participants, date, start_time, end_time):
+        i = index_room
+
+        while i <= len(all_rooms) - 1:
+            room = all_rooms[i]
+            is_available = room.available_on_time_simulation(date, start_time, end_time, num_participants)
+            if is_available:
+                return i
+            else:
+                i = i + 1
         return -1
