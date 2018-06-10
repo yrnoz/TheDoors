@@ -5,6 +5,7 @@ from datetime import datetime
 from itertools import permutations
 
 
+
 class Order(object):
     def __init__(self, _id, user_email, date, participants, start_time, end_time, company,
                  facility):
@@ -306,6 +307,10 @@ class Order(object):
         if one of the participants already have a meeting on this time --> false
         else --> true
         """
+
+
+
+
 
         new_order = cls(_id, user_email, date, participants, start_time, end_time, company, facility)
         # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
