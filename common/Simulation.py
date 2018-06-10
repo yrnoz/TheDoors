@@ -40,7 +40,7 @@ def add_random_rooms_simulation(maxRooms, manager):
     global NUM_FACILITIES
     NUM_ROOMS = random.randint(1, maxRooms)
     for i in range():
-        Manager.add_room_simulation(random.randint(1,3), random.randint(30,100), i, random.randint(1,3), "facility" + str(random.randint(1, NUM_FACILITIES)), True)
+        manager.add_room_simulation(random.randint(1,3), random.randint(30,100), i, random.randint(1,3), "facility" + str(random.randint(1, NUM_FACILITIES)), True)
 
 def add_random_facilities_simulation(maxFacilities, manager):
     '''
@@ -68,18 +68,28 @@ def order_rooms_simulation(duration):
         for i in range(poisson_dest[hour]-1):
             user_index = random.randint(1, NUM_EMPLOYEES)
             user = User.get_by_email_simulation("simulationEmp" + str(user_index) +"@gmail.com")
-            # TODO: add participants to order
-            user.new_order_simulation(DATE,[],time, time+1, 'Simulation', user.facility)
+            participants_id = [user_index]
+            num_of_participants = random.randint(0,4)
+            for i in num_of_participants:
+                participant = random.randint(1, NUM_EMPLOYEES)
+                while participant in participants_id:
+                    participant = random.randint(1, NUM_EMPLOYEES)
+                participants_id.append(participant)
+            participants = map(lambda id: "simulationEmp" + str(id) +"@gmail.com", participants_id)
+            user.new_order_simulation(DATE,participants,time, time+1, 'Simulation', user.facility)
         if hour%10 == 0:
             day_need_to_add += 1
 
 
-def simulation_engine():
+def simulation_engine(max_rooms, max_employees, max_facilities, duration):
     global DATE
     Database.initialize()
-    Manager.manager_register_simulation("simulation@gmail.com", 'admin', 'simulation admin', '000000000', 'eng', 1, 'Simulation', 'sim')
-    DATE = datetime.utcnow().strftime('%d/%m/%y')
-
+    manager = Manager.manager_register_simulation("simulation@gmail.com", 'admin', 'simulation admin', '000000000', 'eng', 1, 'Simulation', 'sim')
+    DATE = datetime.now()
+    add_random_facilities_simulation(max_facilities,manager)
+    add_random_rooms_simulation(max_rooms, manager)
+    add_random_users_simulation(max_employees, manager)
+    order_rooms_simulation(duration)
 
 
 
