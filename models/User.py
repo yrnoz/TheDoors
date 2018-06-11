@@ -5,10 +5,15 @@ from models.Schedule import Schedule
 from models.Order import Order
 from flask import session
 import smtplib
+import schedule
+
+import time
 
 from common.database import Database
 from models.facilities import Facilities
 from models.friends import Friends
+
+
 
 
 class User(object):
@@ -256,6 +261,15 @@ class User(object):
                 permission = int(user.permission) if int(user.permission) < permission else permission
         return permission
 
+    @classmethod
+    def print_time(cls):
+        print "************************************************From print_time", time.time()
+
+    @classmethod
+    def print_values(cls):
+        schedule.every(1).seconds.do(cls.print_time)
+
+
 
 class Manager(User):
 
@@ -390,6 +404,8 @@ class Manager(User):
             # User already exist
             return False, "user email already exist"
 
+
+
     def delete_user(self, user_email):
         user = User.get_by_email(user_email)
         if user is not None and user.company == self.company:
@@ -464,3 +480,4 @@ class Manager(User):
 
     def get_rooms(self):
         return Room.get_by_company(self.company)
+

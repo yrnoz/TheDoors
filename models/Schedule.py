@@ -339,20 +339,33 @@ class Schedule(object):
         return schedules
 
     @classmethod
+    def check_time_interval(self, sched, begin_hour, end_hour):
+        sched_begin_meeting = sched['begin_meeting']
+        sched_end_meeting = sched['end_meeting']
+        op1 = int(sched_begin_meeting)<=begin_hour and sched_end_meeting > begin_hour and sched_end_meeting<=end_hour
+        op2 = sched_begin_meeting >= begin_hour and sched_end_meeting<=end_hour
+        op3 = sched_begin_meeting<end_hour and sched_end_meeting>=end_hour
+        return op1 or op2 or op3
+
+    @classmethod
     def get_by_email_and_date_and_hour(cls, email, date, begin_hour, end_hour):
         ###need to change the queary
         schedules = []
         #query = {'$and': [{'date': date} , {'email': email}, {'$gt': {'begin_meeting': begin_hour}}]}
 
-
-        query = {'$and': [{'date': date}, {'email':email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
+        query = {'$and': [{'date': date}, {'email': email}]}
+        #query = {'$and': [{'date': date}, {'email':email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
         #query = {'$and': [{'date': date}, {'email': email},
          #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
         data = Database.find('schedules', query)
         if data is not None:
             for sched in data:
-                schedules.append(cls(**sched))
+                if cls.check_time_interval(sched, begin_hour, end_hour) == True:
+                    schedules.append(cls(**sched))
         return schedules
+
+
+
 
     @classmethod
     def get_by_email_and_date_and_hour_simulation(cls, email, date, begin_hour, end_hour):
