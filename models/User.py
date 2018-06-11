@@ -5,7 +5,7 @@ from models.Schedule import Schedule
 from models.Order import Order
 from flask import session
 import smtplib
-import schedule
+import sched
 
 import time
 
@@ -263,11 +263,12 @@ class User(object):
 
     @classmethod
     def print_time(cls):
-        print "************************************************From print_time", time.time()
+        print ("************************************************From print_time", time.time())
 
     @classmethod
     def print_values(cls):
-        schedule.every(1).seconds.do(cls.print_time)
+        print ("")
+        #sched.every(1).seconds.do(cls.print_time)
 
 
 
