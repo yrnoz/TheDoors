@@ -37,9 +37,25 @@ class Analytics(object):
         return emps.count(True)
 
     @staticmethod
+    def get_num_employees_company_simulation(company_id):
+        query = {'company_id': company_id}
+        emps = Database.findSimulation('users', query)
+        if emps is None:
+            return
+        return emps.count(True)
+
+    @staticmethod
     def get_num_employees_facility(company_id, facility_id):
         query = {'$and': [{'facility': facility_id}, {'company_id': company_id}]}
         emps = Database.find('users', query)
+        if emps is None:
+            return
+        return emps.count(True)
+
+    @staticmethod
+    def get_num_employees_facility_simulation(company_id, facility_id):
+        query = {'$and': [{'facility': facility_id}, {'company_id': company_id}]}
+        emps = Database.findSimulation('users', query)
         if emps is None:
             return
         return emps.count(True)
@@ -53,6 +69,14 @@ class Analytics(object):
         return rooms.count(True)
 
     @staticmethod
+    def get_num_rooms_facility_simulation(company_id):
+        query = {'company_id': company_id}
+        rooms = Database.findSimulation('rooms', query)
+        if rooms is None:
+            return
+        return rooms.count(True)
+
+    @staticmethod
     def get_num_rooms_facility(company_id, facility_id):
         query = {'$and': [{'facility': facility_id}, {'company_id': company_id}]}
         rooms = Database.find('rooms', query)
@@ -60,3 +84,10 @@ class Analytics(object):
             return
         return rooms.count(True)
 
+    @staticmethod
+    def get_num_rooms_facility_simulation(company_id, facility_id):
+        query = {'$and': [{'facility': facility_id}, {'company_id': company_id}]}
+        rooms = Database.findSimulation('rooms', query)
+        if rooms is None:
+            return
+        return rooms.count(True)

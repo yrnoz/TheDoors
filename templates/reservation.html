@@ -188,7 +188,7 @@
                                         data-content="#"
                                         data-event="event-1">
                                         <a href="#0">
-                                            <em class="event-name">Abs Circuit</em>
+                                            <!--<em class="event-name">Abs Circuit</em>-->
                                         </a>
                                     </li>
                                 {% endif %}
@@ -209,7 +209,7 @@
                                            participants: {{ meeting.participants }}"
                                         data-event="event-2">
                                         <a href="#0">
-                                            <em class="event-name">Rowing Workout</em>
+                                            <!--<em class="event-name">Rowing Workout</em>-->
                                         </a>
                                     </li>
                                 {% endif %}
@@ -231,7 +231,7 @@
                                                         participants: {{ meeting.participants }}"
                                         data-event="event-3">
                                         <a href="#0">
-                                            <em class="event-name">Restorative Yoga</em>
+                                            <!--<em class="event-name">Restorative Yoga</em>-->
                                         </a>
                                     </li>
                                 {% endif %}
@@ -252,7 +252,7 @@
                                                         participants: {{ meeting.participants }}"
                                         data-event="event-4">
                                         <a href="#0">
-                                            <em class="event-name">Abs Circuit</em>
+                                            <!--<em class="event-name">Abs Circuit</em>-->
                                         </a>
                                     </li>
                                 {% endif %}
@@ -272,7 +272,7 @@
                                         data-content=""
                                         data-event="event-1">
                                         <a>
-                                            <em class="event-name"></em>
+                                            <!--<em class="event-name"></em>-->
                                         </a>
                                     </li>
                                 {% endif %}
@@ -282,7 +282,8 @@
                     </li>
                 </ul>
             </div>
-
+            <form action="{{ url_for('route_cancel_reserve_room') }}"
+                      method="post">
             <div class="event-modal">
                 <header class="header">
                     <div class="content">
@@ -296,10 +297,15 @@
                 <div class="body">
                     <div class="event-info"></div>
                     <div class="body-bg"></div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-info btn-flat btn-addon m-b-10 m-l-5">
+                            <i class="ti-close"></i>Remove
+                        </button>
+                    </div>
                 </div>
 
             </div>
-
+            </form>
             <div class="cover-layer"></div>
         </div> <!-- .cd-schedule -->
         <script src="{{ url_for('static' , filename='js/modernizr.js') }}"></script>
