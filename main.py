@@ -281,8 +281,8 @@ def route_edit_friends():
                 user.add_friend(request.form['email'])
             if request.form['type'] == 'remove_friend':
                 user.remove_friend(request.form['email'])
-        return redirect(url_for('route_analytics'))
-        #return redirect(url_for('route_edit_friends'))
+        #return redirect(url_for('route_analytics'))
+        return redirect(url_for('route_edit_friends'))
 
 
 def convert_date():
