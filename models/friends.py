@@ -45,7 +45,7 @@ class Friends(object):
 
         if not Friends.is_friends(user_email, new_friend):
             #_id = friends_key(user_email, new_friend)
-            #Database.insert('friends', {'_id': _id})
+            Database.insert('friends', json(user_email, new_friend))
             #Friends.save_to_mongodb(user_email, new_friend)
             return True, "success"
         return False, "already friends"
