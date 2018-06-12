@@ -122,6 +122,7 @@ def test_schedules_orders():
     user = User.get_by_email('email_1@gmail.com')
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
+    date = '26/06/18'
     status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam')
     print(string)
     orders = user.get_orders()
@@ -179,7 +180,8 @@ def test_schedules_orders2():
     user2 = User.get_by_email('email_4@gmail.com')
     participants1 = ['email_1@gmail.com', 'email_2@gmail.com']
     participants2  =['email_4@gmail.com']
-    date = datetime.utcnow().strftime('%d/%m/%y')
+    #date = datetime.utcnow().strftime('%d/%m/%y')
+    date = '26/06/18'
     status2, string2 = user2.new_order(date, participants2, 6, 7, "YAHOO", 'matam')
     schedules2 = user2.get_schedule()
 
@@ -252,6 +254,7 @@ def test_schedules_orders3():
     participants2  =['email_4@gmail.com']
     participants3 = ['email_7@gmail.com' , 'email_8@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
+    #date ='12/06/18'
     status2, string2 = user2.new_order(date, participants2, 6, 7, "YAHOO", 'matam')
     schedules2 = user2.get_schedule()
 
