@@ -44,7 +44,7 @@ class Friends(object):
         """
 
         if not Friends.is_friends(user_email, new_friend):
-            Friends.save_to_mongodb(user_email, new_friend)
+            #Friends.save_to_mongodb(user_email, new_friend)
             return True, "success"
         return False, "already friends"
 
