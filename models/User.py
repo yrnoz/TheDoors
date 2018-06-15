@@ -227,7 +227,7 @@ class User(object):
         """
         this method delete the order that match this order_id from the 'orders' table in db
         and delete the meeting from the schedule of each participant that invited to this meeting.
-        only the user taht create this order can cancel it
+        only the user that create this order can cancel it
         :param order_id:
         """
         if Order.who_create_order(order_id) == self.email:

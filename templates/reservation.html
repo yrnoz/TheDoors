@@ -150,7 +150,7 @@
         {#                            <div class="year-calendar"></div>#}
 
         {#                            here we try sometihng new #}
-        <div class="cd-schedule loading">
+        <div class="cd-schedule loading" id= "table">
             <div class="timeline">
                 <ul>
                     <li><span>08:00</span></li>
@@ -175,15 +175,15 @@
             </div> <!-- .timeline -->
 
 
-            <div class="events">
+            <div class="events" id="events">
                 <ul>
-                    <li class="events-group">
+                    <li class="events-group" id="event-group">
                         <div class="top-info"><span>Sunday</span></div>
 
                         <ul>
                             {% for meeting in  meetings %}
                                 {% if meeting.get_day() == 'Sunday' %}
-                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
+                                    <li class="single-event" id = "reservation1" data-start="{{ meeting.get_start_time() }}"
                                         data-end="{{ meeting.get_end_time() }}"
                                         data-content="#"
                                         data-event="event-1">
@@ -203,7 +203,7 @@
                         <ul>
                             {% for meeting in  meetings %}
                                 {% if meeting.get_day() == 'Monday' %}
-                                    <li class="single-event" data-start="10:00" data-end="11:00"
+                                    <li class="single-event" id = "reservation2" data-start="10:00" data-end="11:00"
                                         data-content="start: {{ meeting.get_start_time() }}
                                            end: {{ meeting.get_end_time() }}
                                            participants: {{ meeting.participants }}"
@@ -224,7 +224,7 @@
                         <ul>
                             {% for meeting in  meetings %}
                                 {% if meeting.get_day() == 'Tuesday' %}
-                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
+                                    <li class="single-event" id = "reservation3" data-start="{{ meeting.get_start_time() }}"
                                         data-end="{{ meeting.get_end_time() }}"
                                         data-content="start: {{ meeting.get_start_time() }}
                                                        end: {{ meeting.get_end_time() }}
@@ -246,7 +246,7 @@
                         <ul>
                             {% for meeting in  meetings %}
                                 {% if meeting.get_day() == 'Wednesday' %}
-                                    <li class="single-event" data-start="09:30" data-end="10:30"
+                                    <li class="single-event" id = "reservation4" data-start="09:30" data-end="10:30"
                                         data-content="start: {{ meeting.get_start_time() }}
                                                        end: {{ meeting.get_end_time() }}
                                                         participants: {{ meeting.participants }}"
@@ -267,7 +267,7 @@
                             {% for meeting in  meetings %}
 
                                 {% if meeting.get_day() == 'Thursday' %}
-                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
+                                    <li class="single-event" id = "reservation5" data-start="{{ meeting.get_start_time() }}"
                                         data-end="{{ meeting.get_end_time() }}"
                                         data-content=""
                                         data-event="event-1">
@@ -299,11 +299,10 @@
                     <div class="body-bg"></div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-info btn-flat btn-addon m-b-10 m-l-5">
-                            <i class="ti-close"></i>Remove
+                            <i onclick="deleteReservation(this)" class="fa fa-check"></i>Remove
                         </button>
                     </div>
                 </div>
-
             </div>
             </form>
             <div class="cover-layer"></div>
