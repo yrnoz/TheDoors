@@ -325,18 +325,18 @@ def route_reserve_room():
             reserve_room()
     return redirect(url_for('route_reserve_room'))
 
-@app.route('/my_reservations', methods=['POST'])
+@app.route('/my_reservations', methods=['GET', 'POST'])
 def route_cancel_reserve_room():
-    return
-    # if session['email'] is not None:
-    #     email = session['email']
-    #     user = User.get_by_email(email)
-    #     friends = user.get_friends_emails()
-    #     if request.method == 'GET':
-    #         return render_template('order.html', manager=user.manager, friends=friends)
-    #     elif request.method == 'POST':
-    #         reserve_room()
-    # return redirect(url_for('route_reserve_room'))
+    if session['email'] is not None:
+        email = session['email']
+        user = User.get_by_email(email)
+        friends = user.get_friends_emails()
+        if request.method == 'GET':
+            return render_template('reservation.html', manager=user.manager, friends=friends)
+        if request.method == 'POST':
+            user.cancel_meeting()  #TODO: find the meeting id
+    return render_template('reservation.html', manager=user.manager, friends=friends)
+    # return redirect(url_for('route_cancel_reserve_room'))
 
 
 @app.route('/my_reservations', methods=['GET'])

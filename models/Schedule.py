@@ -371,13 +371,12 @@ class Schedule(object):
     def get_by_email_and_date_and_hour_simulation(cls, email, date, begin_hour, end_hour):
         ###need to change the queary
         schedules = []
-        query = {'$and': [{'date': date}, {'email': email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
-        # query = {'$and': [{'date': date}, {'email': email},
-        #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
+        query = {'$and': [{'date': date}, {'email': email}]}
         data = Database.findSimulation('schedules', query)
         if data is not None:
             for sched in data:
-                schedules.append(cls(**sched))
+                if cls.check_time_interval(sched, begin_hour, end_hour) == True:
+                    schedules.append(cls(**sched))
         return schedules
 
     @classmethod
