@@ -359,14 +359,15 @@ class Order(object):
 
 
     @classmethod
-    def send_mail(cls, email_user, room_id, date, begin_meeting, end_meeting):
+    def send_mail(cls, email_user, room_id, date, begin_meetin, end_meeting):
         mail = smtplib.SMTP('smtp.gmail.com', 587)
         mail.ehlo()
         mail.starttls()
         mail.login('theDoorsTechnion@gmail.com', '2018TheDoors')
         SUBJECT = 'Reminder for meeting'
-        TEXT = 'We want to remind you about meeting Today. Here are the details: \n Date: ' + date + '\n Begin Time: ' + str(begin_meeting) + '\n End Time: ' +str(end_meeting)+ '\n Room: '+room_id +'\n see you there'
+        TEXT = 'We want to remind you about meeting Today'
         message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
+
         mail.sendmail('theDoorsTechnion@gmail.com', email_user, message)
         mail.close()
 
