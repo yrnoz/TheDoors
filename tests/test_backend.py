@@ -10,6 +10,7 @@ from models.Schedule import Schedule
 from models.User import Manager, User
 from models.facilities import Facilities
 from models.friends import Friends
+from models import Analytics
 
 
 @pytest.fixture(autouse=True)
@@ -366,3 +367,47 @@ def test_friends():
 
     assert user2 is not None
     assert manager.delete_user('email_2@gmail.com') is True
+
+
+    def test_analytics():
+        Database.initialize()
+
+        Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
+        Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
+        Manager.user_register("user@yahoo.com", '123', 'yosi', '023412349', 'eng', 1, 'YAHOO', 'matam')
+        Manager.user_register("user2@yahoo.com", '123', 'dave', '123412348', 'eng', 1, 'YAHOO', 'matam')
+        Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
+        Manager.user_register("email_2@gmail.com", '123', 'avi', '000260000', 'eng', 3, 'YAHOO', 'matam')
+        Manager.user_register("email_3@gmail.com", '123', 'yin', '000000026', 'eng', 3, 'YAHOO', 'matam')
+        Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
+
+        assert Analytics.get_num_employees_company('YAHOO') == 8
+
+        Manager.user_register("email_5@gmail.com", '123', 'yani', '026000001', 'eng', 3, 'YAHOO', 'matam')
+
+        assert Analytics.get_num_employees_company('YAHOO') == 9
+
+        Manager.manager_register("admin_herz@yahoo.com", 'admin_herz', 'Admin admin herz', '000000001', 'eng', 1, 'YAHOO', 'Herzeliya')
+        Manager.user_register("email_herz1@gmail.com", '123', 'ely', '000000326', 'eng', 3, 'YAHOO', 'Herzeliya')
+        Manager.user_register("user_herz2@yahoo.com", '123', 'yosi', '023414349', 'eng', 1, 'YAHOO', 'Herzeliya')
+
+        assert Analytics.get_num_employees_company('YAHOO') == 12
+
+        assert Analytics.get_num_employees_facility('YAHOO', 'Herzeliya') == 3
+
+        Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True)
+        Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
+
+        assert Analytics.get_num_rooms_facility_simulation('YAHOO') == 2
+
+        Room.add_room(2, 2, 1, 3, 'YAHOO', 'Herzeliya', True)
+        Room.add_room(2, 1, 3, 4, 'YAHOO', 'Herzeliya', False)
+
+        assert Analytics.get_num_rooms_facility('YAHOO') == 4
+        assert Analytics.get_num_rooms_facility('YAHOO',  'Herzeliya') == 2
+
+
+        user1 = User.get_by_email("email_1@gmail.com")
+        user2 = User.get_by_email('email_2@gmail.com')
+        user3 = User.get_by_email('email_3@gmail.com')
+        user4 = User.get_by_email('email_4@gmail.com')
