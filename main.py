@@ -168,10 +168,29 @@ def manager_register():
             return redirect(url_for('manager_register'))
 
 
-@app.route('/simulation', methods=['GET'])
+@app.route('/simulation', methods=['GET', 'POST'])
 def route_simulation():
-    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
-        return render_template('Simulation.html')
+    if request.method == 'GET':
+        return render_template('Simulation.html', employees_no=0, rooms_no=0, facility_no=0,
+                               meetings_no=0, facility_visits_meetings=[("None",0,0)],
+                               occupancies=[("None", 0)])
+    if request.method == 'POST':
+        manager = Manager.get_by_email(session['email'])
+        if session['email'] is not None and manager is not None:
+            employees_no = len(manager.get_employees_simulation())
+            facility_no = len(manager.get_facilities_simulation())
+            facility_visits_meetings = []
+            facilities = manager.get_facilities_simulation()
+            for facility in facilities:
+                visits = Analytics.get_all_participants_in_facility(manager, facility)
+                meetings = Analytics.get_meetings_number_in_facility(manager, facility)
+                facility_visits_meetings.append((facility, visits, meetings))
+            rooms_no = len(Room.get_by_company_simulation(manager.company))
+            occupancies = Analytics.get_all_rooms_occupancy_simulation(manager)
+            meetings_no = Analytics.get_meeting_number_simulation(manager)
+            return render_template('Simulation.html', employees_no=employees_no, rooms_no=rooms_no, facility_no=facility_no,
+                                   meetings_no=meetings_no, facility_visits_meetings=facility_visits_meetings,
+                                   occupancies=occupancies)
 
 
 @app.route('/analytics', methods=['GET'])

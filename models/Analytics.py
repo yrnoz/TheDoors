@@ -50,6 +50,18 @@ class Analytics(object):
         return functools.reduce(lambda a,b: a+b, meetings)
 
     @staticmethod
+    def get_meeting_number_simulation(manager, duration):
+        all_rooms = Room.get_by_company_simulation(manager.company)
+        if all_rooms is None:
+            return
+        sum_meetings = []
+        for day in range(duration):
+            for room in all_rooms:
+                occupancy = room.get_occupancy_simulation(datetime.now()+timedelta(days = day), room._id)
+                sum_meetings += occupancy
+        return sum_meetings/duration
+
+    @staticmethod
     def get_all_rooms_occupancy(manager):
         all_rooms = Room.get_by_company(manager.company)
         if all_rooms is None:
@@ -57,7 +69,20 @@ class Analytics(object):
         occupancies = []
         for room in all_rooms:
             occupancy = room.get_occupancy(datetime.now(), room._id)
-            occupancies.append((room._id, occupancy / room.capacity))
+            occupancies.append((room._id, (occupancy * 100) / room.capacity))
+        return occupancies
+
+    @staticmethod
+    def get_all_rooms_occupancy_simulation(manager, duration):
+        all_rooms = Room.get_by_company_simulation(manager.company)
+        if all_rooms is None:
+            return
+        occupancies = []
+        for room in all_rooms:
+            sum_occupancy = 0
+            for day in range(duration):
+                sum_occupancy += room.get_occupancy_simulation(datetime.now()+timedelta(days = day), room._id)
+            occupancies.append((room._id, (sum_occupancy * 100) / (room.capacity*duration)))
         return occupancies
 
     @staticmethod

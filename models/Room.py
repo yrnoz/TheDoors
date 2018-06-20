@@ -82,7 +82,7 @@ class Room(object):
 
     @classmethod
     def get_occupancy_simulation(cls, time, room_id):
-        schedules = Schedule.get_by_room_and_date_and_hour_simulation(room_id, time, time.hour, time.hour + 1)
+        schedules = Schedule.get_by_room_and_date_simulation(room_id, time.strftime('%d/%m/%Y'))
         lengthes = []
         lengthes = map(lambda a: len(a.participants), schedules)
         sum = 0
