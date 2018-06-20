@@ -177,6 +177,7 @@ def route_simulation():
     if request.method == 'POST':
         manager = Manager.get_by_email(session['email'])
         if session['email'] is not None and manager is not None:
+            simulation_engine(max_rooms, max_employees, max_facilities, duration)
             employees_no = len(manager.get_employees_simulation())
             facility_no = len(manager.get_facilities_simulation())
             facility_visits_meetings = []
