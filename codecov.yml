@@ -1,0 +1,6 @@
+ignore:
+  - "main.py"
+  - "static"
+  - "templates"
+  - "models/Order.py"
+  - "models/Schedule.py"
