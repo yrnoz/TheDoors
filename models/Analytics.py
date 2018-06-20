@@ -13,7 +13,7 @@ from datetime import datetime,timedelta
 class Analytics(object):
     @staticmethod
     def get_meetings_number_in_facility(manager, facility_name):
-        rooms = Room.get_by_facility(manager.company, facility_name)
+        rooms = Room.get_by_facility_simulation(manager.company, facility_name)
         if rooms is None:
             return
         sum_meetings = 0
@@ -23,15 +23,16 @@ class Analytics(object):
         return sum_meetings
 
     @staticmethod
-    def get_meetings_number_in_facility_simulation(manager, facility_name):
+    def get_meetings_number_in_facility_simulation(manager, facility_name, duration):
         rooms = Room.get_by_facility(manager.company, facility_name)
         if rooms is None:
             return
-        sum_meetings = 0
         for room in rooms:
-            occupancy = room.get_occupancy(datetime.now(), room._id)
-            sum_meetings += occupancy
-        return sum_meetings
+            sum_meetings = 0
+            for day in range(duration):
+                occupancy = room.get_occupancy(datetime.now(), room._id)
+                sum_meetings += occupancy
+        return sum_meetings/duration
 
     @staticmethod
     def get_all_participants_in_facility(manager, facility_name):
@@ -44,6 +45,20 @@ class Analytics(object):
             for sched in schedules:
                 sum_visits += len(sched.participants)
         return sum_visits
+
+    @staticmethod
+    def get_all_participants_in_facility_simulation(manager, facility_name, duration):
+        rooms = Room.get_by_facility_simulation(manager.company, facility_name)
+        if rooms is None:
+            return
+        sum_visits = 0
+        for day in range(duration):
+            for room in rooms:
+                schedules = Schedule.get_by_room_and_date_simulation(room._id,
+                                    (datetime.now()+timedelta(days = day)).strftime('%d/%m/%Y'))
+                for sched in schedules:
+                    sum_visits += len(sched.participants)
+        return sum_visits/duration
 
     @staticmethod
     def get_meeting_number(manager):
