@@ -3,6 +3,7 @@ from models.Room import Room
 from models.Schedule import Schedule
 from datetime import datetime
 from itertools import permutations
+import smtplib
 
 
 
@@ -220,6 +221,7 @@ class Order(object):
         }
         data = Database.find('orders', query)
         for order in data:
+
             orders.append(cls(**order))
         return orders
 
@@ -354,6 +356,32 @@ class Order(object):
         orders = cls.find_by_user_email_and_date_and_time(user_email, date, start_time, end_time)
         return True if len(orders) > 1 else False
 
+
+    @classmethod
+    def send_mail(cls, email_user, room_id, date, begin_meetin, end_meeting):
+        mail = smtplib.SMTP('smtp.gmail.com', 587)
+        mail.ehlo()
+        mail.starttls()
+        mail.login('theDoorsTechnion@gmail.com', '2018TheDoors')
+        SUBJECT = 'Reminder for meeting'
+        TEXT = 'We want to remind you about meeting Today'
+        message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
+
+        mail.sendmail('theDoorsTechnion@gmail.com', email_user, message)
+        mail.close()
+
+    @classmethod
+    def is_send_mail(cls, date):
+        current_day = datetime.today().date().day
+        current_month = datetime.today().date().month
+        current_year = datetime.today().date().year - 2000
+        string_date_current = date.split('/', 2)
+        if current_day == int(string_date_current[0]) and current_month == int(
+                string_date_current[1]) and current_year == int(string_date_current[2]):
+            if datetime.today().hour > 7:
+                return True
+        return False
+
     #simulation
     @classmethod
     def new_order(cls, _id, user_email, date, participants, start_time, end_time, company, facility, min_permission):
@@ -389,16 +417,22 @@ class Order(object):
         print(room_id)
         if status:
             new_order.save_to_mongodb()
+            if cls.is_send_mail(date):
+                cls.send_mail(user_email, room_id, date, start_time, end_time)
             return True, new_order._id, room_id
         else:
-            pass
-            all_conflict_orders = Order.find_by_date_and_time_facility(date, start_time, end_time, facility)
-            all_conflict_orders.append(new_order)
-            all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
-            cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
-            status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
-            new_order.save_to_mongodb()
-            return True, new_order._id, room_id
+            if cls.is_send_mail(date) == False:
+                pass
+                all_conflict_orders = Order.find_by_date_and_time_facility(date, start_time, end_time, facility)
+                all_conflict_orders.append(new_order)
+                all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
+                cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
+                status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
+                if status == True:
+                    new_order.save_to_mongodb()
+                    if cls.is_send_mail(date):
+                        cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
+                    return True, new_order._id, room_id
         return False, "There is not empty room", 'failed'
 
     @classmethod

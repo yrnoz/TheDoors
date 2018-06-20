@@ -60,11 +60,11 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false"><img
-                                src="{{ url_for('static' , filename='images/users/5.jpg') }}" alt="user"
+                                src="{{ url_for('static' , filename='images/users/userImage.png') }}" alt="user"
                                 class="profile-pic"/></a>
                         <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                             <ul class="dropdown-user">
-                                <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
+                                <li><a href="{{ url_for('settings') }}"><i class="ti-settings"></i> Setting</a></li>
                                 <li><a href="{{ url_for('logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
                             </ul>
                         </div>
@@ -82,24 +82,24 @@
                 <ul id="sidebarnav">
                     <li class="nav-devider"></li>
 
-                        <li class="nav-label">Home</li>
-                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
-                                class="hide-menu">Dashboard <span
-                                class="label label-rouded label-primary pull-right">2</span></span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{ url_for('route_simulation') }}">Simulation </a></li>
-                                <li><a href="{{ url_for('route_analytics') }}">Analytics </a></li>
-                            </ul>
-                        </li>
-                        <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
-                                class="hide-menu">Manager Tools <span
-                                class="label label-rouded label-primary pull-right">2</span></span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
-                                </li>
-                                <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a></li>
-                            </ul>
-                        </li>
+                    <li class="nav-label">Home</li>
+                    <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                            class="hide-menu">Dashboard <span
+                            class="label label-rouded label-primary pull-right">2</span></span></a>
+                        <ul aria-expanded="false" class="collapse">
+                            <li><a href="{{ url_for('route_simulation') }}">Simulation </a></li>
+                            <li><a href="{{ url_for('route_analytics') }}">Analytics </a></li>
+                        </ul>
+                    </li>
+                    <li><a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span
+                            class="hide-menu">Manager Tools <span
+                            class="label label-rouded label-primary pull-right">2</span></span></a>
+                        <ul aria-expanded="false" class="collapse">
+                            <li><a href="{{ url_for('route_employee_datatable') }}">Employees </a>
+                            </li>
+                            <li><a href="{{ url_for('route_rooms_datatable') }}">Rooms </a></li>
+                        </ul>
+                    </li>
 
                     <li class="nav-label">Actions</li>
                     <li><a href="{{ url_for('route_edit_friends') }}">Edit Friends</a></li>
@@ -144,69 +144,69 @@
         <div class="container-fluid">
             <!-- Start Page Content -->
             <div class="tab-pane  p-20" id="add" role="tabpanel">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card card-outline-primary">
-                        <div class="card-header">
-                            <h4 class="m-b-0 text-white">Simulation</h4>
-                        </div>
-                        <div class="card-body">
-                            <form action="{{ url_for('route_rooms_datatable') }}" method="post">
-                                <div class="form-body">
-                                    <h3 class="card-title m-t-15">Simulation Info</h3>
-                                    <hr>
-                                    <div class="row p-t-20">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="control-label">Max Employees</label>
-                                                <input type="text" id="Name" class="form-control"
-                                                       placeholder="10" required
-                                                       name="room_name">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-outline-primary">
+                            <div class="card-header">
+                                <h4 class="m-b-0 text-white">Simulation</h4>
+                            </div>
+                            <div class="card-body">
+                                <form action="{{ url_for('route_rooms_datatable') }}" method="post">
+                                    <div class="form-body">
+                                        <h3 class="card-title m-t-15">Simulation Info</h3>
+                                        <hr>
+                                        <div class="row p-t-20">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label">Max Employees</label>
+                                                    <input type="text" id="Name" class="form-control"
+                                                           placeholder="10" required
+                                                           name="room_name">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <!--/span-->
-                                        <div class="col-md-6">
-                                            <div class="form-group has-danger">
-                                                <label class="control-label">Max Rooms</label>
-                                                <input type="text" id="Email" name="floor"
-                                                       class="form-control form-control-danger"
-                                                       placeholder="10" required></div>
-                                        </div>
-                                        <!--/span-->
-                                    </div>
-                                    <!--/row-->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group has-danger">
-                                                <label class="control-label">Max Facilities</label>
-                                                <input type="text" id="ID" name="capacity"
-                                                       class="form-control form-control-danger"
-                                                       placeholder="1" required>
+                                            <!--/span-->
+                                            <div class="col-md-6">
+                                                <div class="form-group has-danger">
+                                                    <label class="control-label">Max Rooms</label>
+                                                    <input type="text" id="Email" name="floor"
+                                                           class="form-control form-control-danger"
+                                                           placeholder="10" required></div>
                                             </div>
+                                            <!--/span-->
                                         </div>
-                                        <!--/span-->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="control-label">Duration in DAYS</label>
+                                        <!--/row-->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group has-danger">
+                                                    <label class="control-label">Max Facilities</label>
+                                                    <input type="text" id="ID" name="capacity"
+                                                           class="form-control form-control-danger"
+                                                           placeholder="1" required>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label">Duration in DAYS</label>
 
-                                                <input type="text" id="ID1" name="duration"
-                                                       class="form-control form-control-danger"
-                                                       placeholder="1" required>
+                                                    <input type="text" id="ID1" name="duration"
+                                                           class="form-control form-control-danger"
+                                                           placeholder="1" required>
+                                                </div>
                                             </div>
+                                            <!--/span-->
                                         </div>
+                                        <!--/row-->
                                         <!--/span-->
                                     </div>
-                                    <!--/row-->
-                                        <!--/span-->
-                                    </div>
-                                </div>
-                                <input name="type" value="add_room" hidden>
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-success"><i
-                                            class="fa fa-check"></i> Run simulation
-                                    </button>
-                                </div>
-                                </form>
+                            </div>
+                            <input name="type" value="add_room" hidden>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success"><i
+                                        class="fa fa-check"></i> Run simulation
+                                </button>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

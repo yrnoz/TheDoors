@@ -122,6 +122,7 @@ def test_schedules_orders():
     user = User.get_by_email('email_1@gmail.com')
     participants = ['email_1@gmail.com', 'email_2@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
+    date = '26/06/18'
     status, string = user.new_order(date, participants, 1, 2, "YAHOO", 'matam')
     print(string)
     orders = user.get_orders()
@@ -135,6 +136,7 @@ def test_schedules_orders():
 
 
 def test_schedules_orders2():
+    User.print_values()
     Database.initialize()
     Database.dropAll()
     # Database.find_one('orders', {'_id' : '23/05/18' })
@@ -143,6 +145,7 @@ def test_schedules_orders2():
     # num2 = Database.count('orders')
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
+
 
     status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True) ########################################changed capacity
     assert status is True
@@ -177,7 +180,8 @@ def test_schedules_orders2():
     user2 = User.get_by_email('email_4@gmail.com')
     participants1 = ['email_1@gmail.com', 'email_2@gmail.com']
     participants2  =['email_4@gmail.com']
-    date = datetime.utcnow().strftime('%d/%m/%y')
+    #date = datetime.utcnow().strftime('%d/%m/%y')
+    date = '26/06/18'
     status2, string2 = user2.new_order(date, participants2, 6, 7, "YAHOO", 'matam')
     schedules2 = user2.get_schedule()
 
@@ -195,6 +199,89 @@ def test_schedules_orders2():
     assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
     schedules2 = user2.get_schedule()
     assert len(schedules2) > 0
+
+
+
+def test_schedules_orders3():
+    User.print_values()
+    Database.initialize()
+    Database.dropAll()
+    # Database.find_one('orders', {'_id' : '23/05/18' })
+    # num1 = Database.count('orders')
+    # Database.remove('orders', {'_id': '23/05/18'})
+    # num2 = Database.count('orders')
+
+    Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
+
+
+    status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True) ########################################changed capacity
+    assert status is True
+    status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
+    assert status is True
+    assert Room.remove_room(room_id) is True
+    status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', True)
+    status, room_id = Room.add_room(2, 2, 4, 4, 'YAHOO', 'matam', True)
+
+    num1 = Database.count('orders')
+    Database.remove('orders', {'_id': '23/05/18'})
+    num2 = Database.count('orders')
+    Database.remove('orders', {'date': '26/05/18'})
+    num3 = Database.count('orders')
+    num_users1 = Database.count('users')
+    Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_4@gmail.com", '123', 'yan', '026000000', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("email_6@gmail.com", '456', 'bim', '313324360', 'eng', 3, 'YAHOO', 'matam')
+    num_users2 = Database.count('users')
+    user2 = User.get_by_email('email_4@gmail.com')
+    user3 = User.get_by_email('email_6@gmail.com')
+
+    manager = Manager.get_by_email('user@yahoo.com')
+    assert manager is None
+    manager = Manager.get_by_email('admin@yahoo.com')
+    assert manager is not None
+    try:
+        manager.import_rooms(os.getcwd() + '\\rooms.csv')
+        manager.import_employee(os.getcwd() + '\\employee.csv')
+    # should'nt works on travis
+    except Exception as e:
+        pass
+    num_users2 = Database.count('users')
+
+    user1 = User.get_by_email('email_1@gmail.com')
+    user2 = User.get_by_email('email_4@gmail.com')
+    user3 = User.get_by_email('email_6@gmail.com')
+    participants1 = ['email_1@gmail.com', 'email_2@gmail.com']
+    participants2  =['email_4@gmail.com']
+    participants3 = ['email_7@gmail.com' , 'email_8@gmail.com']
+    date = datetime.utcnow().strftime('%d/%m/%y')
+    #date ='12/06/18'
+    status2, string2 = user2.new_order(date, participants2, 6, 7, "YAHOO", 'matam')
+    schedules2 = user2.get_schedule()
+
+    status1, string1 = user1.new_order(date, participants1, 6, 7, "YAHOO", 'matam')
+    schedules1 = user1.get_schedule()
+    schedules2 = user2.get_schedule()
+
+    status1, string1 = user3.new_order(date, participants3, 7, 8, "YAHOO", 'matam')
+    schedules1 = user1.get_schedule()
+    schedules2 = user2.get_schedule()
+    schedules3 = user3.get_schedule()
+    assert  len(schedules1) > 0
+    assert len(schedules2) > 0
+    assert len(schedules3) == 0
+
+    print(string1)
+
+    orders = user1.get_orders()
+    num_orders = len(orders)
+    assert len(user1.get_orders()) > 0
+    schedules1 = user1.get_schedule()
+    assert len(schedules1) > 0
+    schedules = Schedule.get_schedules('email_1@gmail.com')
+    assert len(Schedule.get_by_room("YAHOO matam 1")) > 0
+    schedules2 = user2.get_schedule()
+    assert len(schedules2) > 0
+
 
 
 def test_facilities():

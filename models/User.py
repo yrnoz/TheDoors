@@ -170,16 +170,7 @@ class User(object):
     def new_order(self, date, participants, start_time, end_time, company, facility):
 
         # print ("hi")
-        mail = smtplib.SMTP('smtp.gmail.com', 587)
-        mail.ehlo()
-        mail.starttls()
-        mail.login('theDoorsTechnion@gmail.com', '2018TheDoors')
-        SUBJECT = 'Reminder for meeting'
-        TEXT = 'We want to remind you about meeting'
-        message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
 
-        mail.sendmail('theDoorsTechnion@gmail.com', 'ilanalev1996@gmail.com', message)
-        mail.close()
 
         if self.email not in participants:
             participants.append(self.email)
@@ -267,7 +258,8 @@ class User(object):
 
     @classmethod
     def print_values(cls):
-        sched.every(1).seconds.do(cls.print_time)
+        print ("")
+        #sched.every(1).seconds.do(cls.print_time)
 
 
 
