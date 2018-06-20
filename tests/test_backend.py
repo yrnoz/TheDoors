@@ -374,9 +374,15 @@ def test_analytics():
     Database.dropAll()
 
     assert Analytics.get_num_employees_facility_simulation('YAHOO', 'matam') == 0
-    assert Analytics.get_num_rooms_facility_simulation('YAHOO', facility_id=None) == 0
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
+
+    manager = Manager.get_by_email('admin@yahoo.com')
+    assert manager is not None
+
+    assert Analytics.get_num_rooms_facility_simulation('YAHOO', facility_id=None) == 0
+    assert Analytics.get_meetings_number_in_facility_simulation(manager, 'matam') == 0
+    assert Analytics.get_all_rooms_occupancy_simulation(manager, 1) == []
     Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
     Manager.user_register("user@yahoo.com", '123', 'yosi', '023412349', 'eng', 1, 'YAHOO', 'matam')
     Manager.user_register("user2@yahoo.com", '123', 'dave', '123412348', 'eng', 1, 'YAHOO', 'matam')
@@ -384,6 +390,7 @@ def test_analytics():
 
 
     Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True)
+    occupancy_yahoo_matam_1 =  Analytics.get_room_occupancy(1, 'YAHOO', time=datetime.now())
     status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
     status, room_id = Room.add_room(2, 1, 5, 4, 'YAHOO', 'matam', True)
     status, room_id = Room.add_room(2, 2, 4, 4, 'YAHOO', 'matam', True)
@@ -409,8 +416,6 @@ def test_analytics():
 
     assert Analytics.get_num_employees_facility('YAHOO') == 6
 
-    manager = Manager.get_by_email('admin@yahoo.com')
-    assert manager is not None
     assert manager.delete_user('email_2@gmail.com') is True
     assert Analytics.get_num_employees_facility('YAHOO') == 5
 
