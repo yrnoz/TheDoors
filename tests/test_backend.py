@@ -10,6 +10,7 @@ from models.Schedule import Schedule
 from models.User import Manager, User
 from models.facilities import Facilities
 from models.friends import Friends
+from models.Analytics import Analytics
 
 
 @pytest.fixture(autouse=True)
@@ -366,3 +367,41 @@ def test_friends():
 
     assert user2 is not None
     assert manager.delete_user('email_2@gmail.com') is True
+
+
+def test_analytics():
+    Database.initialize()
+    Database.dropAll()
+
+    Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
+
+
+    print "Test Analytics"
+
+    Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True)
+    status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
+    status, room_id = Room.add_room(2, 1, 5, 4, 'YAHOO', 'matam', True)
+    status, room_id = Room.add_room(2, 2, 4, 4, 'YAHOO', 'matam', True)
+
+    assert Analytics.get_num_rooms_facility('YAHOO') == 4
+
+    Room.remove_room(room_id)
+
+    assert Analytics.get_num_rooms_facility('YAHOO') == 3
+
+    Manager.manager_register("admin_Herz@yahoo.com", 'admin_Herz', 'Admin admin', '023412349', 'eng', 1, 'YAHOO', 'Herzeliya')
+
+    assert Manager.get_by_email("admin_Herz@yahoo.com").company == 'YAHOO'
+
+
+    Room.add_room(2, 2, 1, 3, 'YAHOO', 'Herzeliya', True)
+    Room.add_room(2, 2, 2, 3, 'YAHOO', 'Herzeliya', True)
+    Room.add_room(2, 2, 3, 3, 'YAHOO', 'Herzeliya', True)
+    Room.add_room(2, 2, 4, 3, 'YAHOO', 'Herzeliya', True)
+
+    assert Analytics.get_num_rooms_facility('YAHOO') == 7
+    assert Analytics.get_num_rooms_facility('YAHOO', 'matam') == 3
+    assert Analytics.get_num_rooms_facility('YAHOO', 'Herzeliya') == 4
+
+    assert Analytics.get_num_employees_facility('YAHOO') == 1
+    # get_num_employees_facility(company_id, facility_id=None)
