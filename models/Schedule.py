@@ -330,9 +330,20 @@ class Schedule(object):
     @classmethod
     def get_by_room_and_date_and_hour(cls, _id, date, begin_hour, end_hour):
         schedules = []
+        query = {'$and': [{'date': date}, {'room_id': _id}]}
+        data = Database.find('schedules', query)
+        if data is not None:
+            for schedule in data:
+                if schedule.end_meeting < end_hour and schedule.begin_meeting > begin_hour:
+                    schedules.append(cls(**schedule))
+        return schedules
+
+    @classmethod
+    def get_by_room_and_date_and_hour_simulation(cls, _id, date, begin_hour, end_hour):
+        schedules = []
         query = {'$and': [{'date': date}, {'room_id': _id},
                           {'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]}
-        data = Database.find('schedules', query)
+        data = Database.findSimulation('schedules', query)
         if data is not None:
             for sched in data:
                 schedules.append(cls(**sched))
@@ -364,20 +375,16 @@ class Schedule(object):
                     schedules.append(cls(**sched))
         return schedules
 
-
-
-
     @classmethod
     def get_by_email_and_date_and_hour_simulation(cls, email, date, begin_hour, end_hour):
         ###need to change the queary
         schedules = []
-        query = {'$and': [{'date': date}, {'email': email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
-        # query = {'$and': [{'date': date}, {'email': email},
-        #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
+        query = {'$and': [{'date': date}, {'email': email}]}
         data = Database.findSimulation('schedules', query)
         if data is not None:
             for sched in data:
-                schedules.append(cls(**sched))
+                if cls.check_time_interval(sched, begin_hour, end_hour) == True:
+                    schedules.append(cls(**sched))
         return schedules
 
     @classmethod
