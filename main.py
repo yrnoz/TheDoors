@@ -177,18 +177,19 @@ def route_simulation():
     if request.method == 'POST':
         manager = Manager.get_by_email(session['email'])
         if session['email'] is not None and manager is not None:
+            duration = 1
             # simulation_engine(max_rooms, max_employees, max_facilities, duration)
             employees_no = len(manager.get_employees_simulation())
             facility_no = len(manager.get_facilities_simulation())
             facility_visits_meetings = []
             facilities = manager.get_facilities_simulation()
             for facility in facilities:
-                visits = Analytics.get_all_participants_in_facility(manager, facility)
-                meetings = Analytics.get_meetings_number_in_facility(manager, facility)
+                visits = Analytics.get_all_participants_in_facility_simulation(manager, facility,duration)
+                meetings = Analytics.get_meetings_number_in_facility_simulation(manager, facility, duration)
                 facility_visits_meetings.append((facility, visits, meetings))
             rooms_no = len(Room.get_by_company_simulation(manager.company))
-            occupancies = Analytics.get_all_rooms_occupancy_simulation(manager)
-            meetings_no = Analytics.get_meeting_number_simulation(manager)
+            occupancies = Analytics.get_all_rooms_occupancy_simulation(manager, duration)
+            meetings_no = Analytics.get_meeting_number_simulation(manager, duration)
             return render_template('Simulation.html', employees_no=employees_no, rooms_no=rooms_no,
                                    facility_no=facility_no,
                                    meetings_no=meetings_no, facility_visits_meetings=facility_visits_meetings,
