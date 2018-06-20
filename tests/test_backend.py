@@ -373,6 +373,9 @@ def test_analytics():
     Database.initialize()
     Database.dropAll()
 
+    assert Analytics.get_num_employees_facility_simulation('YAHOO', 'matam') == 0
+    assert Analytics.get_num_rooms_facility_simulation('YAHOO', facility_id=None) == 0
+
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
     Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
     Manager.user_register("user@yahoo.com", '123', 'yosi', '023412349', 'eng', 1, 'YAHOO', 'matam')
@@ -412,3 +415,9 @@ def test_analytics():
     assert Analytics.get_num_employees_facility('YAHOO') == 5
 
     Analytics.get_all_participants_in_facility(manager, 'matam')
+    meetings_number_yahoo = Analytics.get_meetings_number_in_facility(manager, "YAHOO")
+    # assert meetings_number_yahoo ==
+    meetings_number_yahoo = Analytics.get_meeting_number(manager)
+    # assert meetings_number_yahoo ==
+    room_occupancy_yahoo = Analytics.get_all_rooms_occupancy(manager)
+    # assert room_occupancy_yahoo ==
