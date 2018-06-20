@@ -76,7 +76,7 @@ def order_rooms_simulation(duration):
                     participant = random.randint(1, NUM_EMPLOYEES)
                 participants_id.append(participant)
             participants = map(lambda id: "simulationEmp" + str(id) +"@gmail.com", participants_id)
-            user.new_order_simulation(DATE,participants,time, time+1, 'Simulation', user.facility)
+            user.new_order_simulation(DATE.utcnow().strftime('%d/%m/%Y'),participants,time, time+1, 'Simulation', user.facility)
         if hour%10 == 0:
             day_need_to_add += 1
 

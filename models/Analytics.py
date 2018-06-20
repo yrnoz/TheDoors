@@ -1,4 +1,11 @@
+import functools
+
+
 from common.database import Database
+from datetime import datetime,timedelta
+
+from models.Schedule import Schedule
+from models.Room import Room
 
 """
     in this class we implement tools for the analytics
@@ -8,14 +15,56 @@ from common.database import Database
 
 class Analytics(object):
 
+    def get_meetings_number_in_facility(manager, facility_name):
+        rooms = Room.get_by_facility(manager.company, facility_name)
+        if rooms is None:
+            return
+        sum_meetings = 0
+        for room in rooms:
+            occupancy = room.get_occupancy(datetime.now(), room._id)
+            sum_meetings += occupancy
+        return sum_meetings
+
+
+    def get_all_participants_in_facility(manager, facility_name):
+        rooms = Room.get_by_facility(manager.company, facility_name)
+        if rooms is None:
+            return
+        sum_visits = 0
+        for room in rooms:
+            schedules = Schedule.get_by_room_and_date(room._id, datetime.now().strftime('%d/%m/%Y'))
+            for sched in schedules:
+                sum_visits += len(sched.participants)
+        return sum_visits
+
+    def get_meeting_number(manager):
+        all_rooms = Room.get_by_company(manager.company)
+        if all_rooms is None:
+            return
+        meetings = []
+        for room in all_rooms:
+            occupancy = room.get_occupancy(datetime.now(), room._id)
+            meetings.append(occupancy)
+        return functools.reduce(lambda a,b: a+b, meetings)
+
+    # @staticmethod
+    def get_all_rooms_occupancy(manager):
+        all_rooms = Room.get_by_company(manager.company)
+        if all_rooms is None:
+            return
+        occupancies = []
+        for room in all_rooms:
+            occupancy = room.get_occupancy(datetime.now(), room._id)
+            occupancies.append((room._id, occupancy / room.capacity))
+        return occupancies
+
     @staticmethod
-    def get_room_occupancy(room_id, facility_id, time):
+    def get_room_occupancy(room_id, facility_id, time=datetime.now()):
         query = {'$and': [{'facility': facility_id}, {'room': room_id}]}
         room = Database.find_one('rooms', query)
         if room is None:
             return
-        # TODO: implement get_occupancy (will be after room ordering is done)
-        occupancy = room.get_occupancy(time)
+        occupancy = room.get_occupancy(time, room_id)
         return occupancy/room.capacity
 
     @staticmethod
@@ -24,7 +73,6 @@ class Analytics(object):
         room = Database.find_oneSimulation('rooms', query)
         if room is None:
             return
-        # TODO: implement get_occupancy (will be after room ordering is done)
         occupancy = room.get_occupancy_simulation(time)
         return occupancy / room.capacity
 

@@ -12,6 +12,7 @@ import subprocess
 from models.Room import Room
 from models.Schedule import Schedule
 from models.User import User, Manager
+from models.Analytics import Analytics
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
@@ -163,10 +164,18 @@ def route_analytics():
     if session['email'] is not None and manager is not None:
         employees_no = len(manager.get_employees())
         facility_no = len(manager.get_facilities())
+        facility_visits_meetings = []
+        facilities = manager.get_facilities()
+        for facility in facilities:
+            visits = Analytics.get_all_participants_in_facility(manager, facility)
+            meetings = Analytics.get_meetings_number_in_facility(manager, facility)
+            facility_visits_meetings.append((facility, visits, meetings))
         rooms_no = len(Room.get_by_company(manager.company))
-        meetings_no = 7  # todo
+        occupancies = Analytics.get_all_rooms_occupancy(manager)
+        meetings_no = Analytics.get_meeting_number(manager)
         return render_template('Analytics.html', employees_no=employees_no, rooms_no=rooms_no, facility_no=facility_no,
-                               meetings_no=meetings_no)
+                               meetings_no=meetings_no, facility_visits_meetings=facility_visits_meetings,
+                               occupancies=occupancies)
 
 
 def get_user_roles_facilities(manager):
@@ -325,9 +334,9 @@ def route_reserve_room():
             reserve_room()
     return redirect(url_for('route_reserve_room'))
 
-@app.route('/my_reservations', methods=['POST'])
-def route_cancel_reserve_room():
-    return
+# @app.route('/my_reservations', methods=['POST'])
+# def route_cancel_reserve_room():
+#     return
     # if session['email'] is not None:
     #     email = session['email']
     #     user = User.get_by_email(email)

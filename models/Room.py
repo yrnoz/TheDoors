@@ -1,3 +1,5 @@
+import functools
+
 from common.database import Database
 from datetime import datetime
 
@@ -67,6 +69,26 @@ class Room(object):
         else:
             return False
         '''
+
+    @classmethod
+    def get_occupancy(cls, time, room_id):
+        schedules = Schedule.get_by_room_and_date_and_hour(room_id, time.strftime('%d/%m/%Y'), time.hour, time.hour+1)
+        lengthes = []
+        lengthes = map(lambda a: len(a.participants), schedules)
+        sum = 0
+        for length in lengthes:
+            sum += length
+        return sum
+
+    @classmethod
+    def get_occupancy_simulation(cls, time, room_id):
+        schedules = Schedule.get_by_room_and_date_and_hour_simulation(room_id, time, time.hour, time.hour + 1)
+        lengthes = []
+        lengthes = map(lambda a: len(a.participants), schedules)
+        sum = 0
+        for length in lengthes:
+            sum += length
+        return sum
 
     @classmethod
     def get_by_facility(cls, company, facility):
