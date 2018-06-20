@@ -374,7 +374,10 @@ def test_analytics():
     Database.dropAll()
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
-
+    Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
+    Manager.user_register("user@yahoo.com", '123', 'yosi', '023412349', 'eng', 1, 'YAHOO', 'matam')
+    Manager.user_register("user2@yahoo.com", '123', 'dave', '123412348', 'eng', 1, 'YAHOO', 'matam')
+    Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
 
     print "Test Analytics"
 
@@ -389,11 +392,6 @@ def test_analytics():
 
     assert Analytics.get_num_rooms_facility('YAHOO') == 3
 
-    Manager.manager_register("admin_Herz@yahoo.com", 'admin_Herz', 'Admin admin', '023412349', 'eng', 1, 'YAHOO', 'Herzeliya')
-
-    assert Manager.get_by_email("admin_Herz@yahoo.com").company == 'YAHOO'
-
-
     Room.add_room(2, 2, 1, 3, 'YAHOO', 'Herzeliya', True)
     Room.add_room(2, 2, 2, 3, 'YAHOO', 'Herzeliya', True)
     Room.add_room(2, 2, 3, 3, 'YAHOO', 'Herzeliya', True)
@@ -403,5 +401,13 @@ def test_analytics():
     assert Analytics.get_num_rooms_facility('YAHOO', 'matam') == 3
     assert Analytics.get_num_rooms_facility('YAHOO', 'Herzeliya') == 4
 
-    assert Analytics.get_num_employees_facility('YAHOO') == 1
-    # get_num_employees_facility(company_id, facility_id=None)
+    assert Analytics.get_num_employees_facility('YAHOO') == 5
+
+    Manager.user_register("email_2@gmail.com", '123', 'avi', '000260000', 'eng', 3, 'YAHOO', 'matam')
+
+    assert Analytics.get_num_employees_facility('YAHOO') == 6
+
+    manager = Manager.get_by_email('admin@yahoo.com')
+    assert manager is not None
+    assert manager.delete_user('email_2@gmail.com') is True
+    assert Analytics.get_num_employees_facility('YAHOO') == 5
