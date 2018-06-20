@@ -1,1 +1,3 @@
-{}
+{
+  "test_backend.py::test_analytics": true
+}
