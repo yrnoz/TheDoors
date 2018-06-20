@@ -97,6 +97,22 @@ def logout():
     return redirect(url_for('home'))
 
 
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    user = User.get_by_email(session['email'])
+    if request.method == 'GET':
+        return render_template('settings.html', manager=user.manager)
+    else:
+        if user.password != request.form['old_password']:
+            flash("Wrong Password!")
+        elif request.form['new_password'] != request.form['again']:
+            flash("New Password Not Match!")
+        else:
+            user.update_user(user.username, request.form['again'], user.role, user.permission, user.facility)
+            flash("Password Changed Successfully!")
+        return redirect(url_for('settings'))
+
+
 @app.route('/')
 def home():
     # Todo
@@ -324,6 +340,7 @@ def route_reserve_room():
         elif request.method == 'POST':
             reserve_room()
     return redirect(url_for('route_reserve_room'))
+
 
 @app.route('/my_reservations', methods=['POST'])
 def route_cancel_reserve_room():

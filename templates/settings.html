@@ -75,7 +75,7 @@
                                 class="profile-pic"/></a>
                         <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                             <ul class="dropdown-user">
-                                <li><a href="{{ url_for('settings') }}"><i class="ti-settings"></i> Setting</a></li>
+                                <li><a href="#"><i class="ti-settings"></i> Setting</a></li>
                                 <li><a href="{{ url_for('logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
                             </ul>
                         </div>
@@ -148,11 +148,11 @@
         <!-- Bread crumb -->
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h3 class="text-primary">Schedule Your Next Meeting:</h3></div>
+                <h3 class="text-primary">Settings</h3></div>
             <div class="col-md-7 align-self-center">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                    <li class="breadcrumb-item active">Reserve room</li>
+                    <li class="breadcrumb-item active">Change password</li>
                 </ol>
             </div>
         </div>
@@ -166,84 +166,43 @@
                 <div class="col-lg-8">
                     <div class="card card-outline-primary">
                         <div class="card-header">
-                            <h4 class="m-b-0 text-white">New Order</h4>
+                            <h4 class="m-b-0 text-white">Settings</h4>
                         </div>
                         <div class="card-body">
-                            <form action="{{ url_for('route_reserve_room') }}" method="post">
+                            <form action="{{ url_for('settings') }}" method="post">
                                 <div class="form-body">
-                                    <h3 class="card-title m-t-15">Reserve Info</h3>
+                                    <h3 class="card-title m-t-15">Change Password</h3>
                                     <hr>
                                     <div class="row p-t-20">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="control-label">Date</label>
-                                                <input name="date" type="date" id="date"
+                                                <label class="control-label">Old password</label>
+                                                <input name="old_password" type="password" id="old_password"
                                                        class="form-control" value=""
-                                                       required >
+                                                       required>
                                             </div>
-                                            <script>$(function () {
 
-                                                var now = new Date(),
-                                                    minDate = now.toISOString().substring(0, 10);
-                                                $("#date").prop('min', minDate);
-                                                $("#date").prop('value', minDate);
-
-                                            })
-                                            </script>
 
                                             <div class="form-group">
-                                                <label class="control-label">Guests - option</label>
-                                                <select name="participants" type="text" list="friends"
-                                                        class="form-control custom-select js-example-basic-multiple"
-                                                        data-placeholder="Choose a Category"
-                                                        tabindex="1" multiple>
-                                                    {% for friend in friends %}
-                                                        <option value="{{ friend }}">{{ friend }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                <label class="control-label">New password</label>
+                                                <input name="new_password" type="password" id="new_password"
+                                                       class="form-control" value=""
+                                                       required>
+                                            </div>
 
+                                            <div class="form-group">
+                                                <label class="control-label">Again</label>
+                                                <input name="again" type="password" id="again"
+                                                       class="form-control" value=""
+                                                       required>
                                             </div>
                                             <div class="form-actions">
                                                 <button type="submit" class="btn btn-success"><i
-                                                        class="fa fa-check"></i> Add
+                                                        class="fa fa-check"></i> Change password
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <div class="form-group">
-                                                    <label class="control-label">Begin Hour</label>
-                                                    <select name="start" id="start"
-                                                            class="form-control"
-                                                            required>
-                                                        <option value="8">8:00</option>
-                                                        <option value="9">9:00</option>
-                                                        <option value="10">10:00</option>
-                                                        <option value="11">11:00</option>
-                                                        <option value="12">12:00</option>
-                                                        <option value="13">13:00</option>
-                                                        <option value="14">14:00</option>
-                                                        <option value="15">15:00</option>
-                                                        <option value="16">16:00</option>
-                                                        <option value="17">17:00</option>
-                                                        <option value="18">18:00</option>
-                                                    </select>
 
-                                                </div>
-                                                <label class="control-label">Meeting Duration</label>
-                                                <select name="duration" id="duration"
-                                                        class="form-control"
-                                                        required>
-                                                    <option value="1"> 1 Hour</option>
-                                                    <option value="2"> 2 Hours</option>
-                                                    <option value="3"> 3 Hours</option>
-                                                </select>
-                                            </div>
-
-
-                                            <!--/span-->
-
-                                        </div>
                                         <!--/row-->
 
                                         <!--/row-->
