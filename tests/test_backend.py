@@ -379,7 +379,6 @@ def test_analytics():
     Manager.user_register("user2@yahoo.com", '123', 'dave', '123412348', 'eng', 1, 'YAHOO', 'matam')
     Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
 
-    print "Test Analytics"
 
     Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True)
     status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
