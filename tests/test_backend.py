@@ -10,7 +10,6 @@ from models.Schedule import Schedule
 from models.User import Manager, User
 from models.facilities import Facilities
 from models.friends import Friends
-from models.Analytics import Analytics
 
 
 @pytest.fixture(autouse=True)
@@ -367,48 +366,3 @@ def test_friends():
 
     assert user2 is not None
     assert manager.delete_user('email_2@gmail.com') is True
-
-
-def test_analytics():
-    Database.initialize()
-    Database.dropAll()
-
-    Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
-    Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
-    Manager.user_register("user@yahoo.com", '123', 'yosi', '023412349', 'eng', 1, 'YAHOO', 'matam')
-    Manager.user_register("user2@yahoo.com", '123', 'dave', '123412348', 'eng', 1, 'YAHOO', 'matam')
-    Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
-
-
-    Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True)
-    status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
-    status, room_id = Room.add_room(2, 1, 5, 4, 'YAHOO', 'matam', True)
-    status, room_id = Room.add_room(2, 2, 4, 4, 'YAHOO', 'matam', True)
-
-    assert Analytics.get_num_rooms_facility('YAHOO') == 4
-
-    Room.remove_room(room_id)
-
-    assert Analytics.get_num_rooms_facility('YAHOO') == 3
-
-    Room.add_room(2, 2, 1, 3, 'YAHOO', 'Herzeliya', True)
-    Room.add_room(2, 2, 2, 3, 'YAHOO', 'Herzeliya', True)
-    Room.add_room(2, 2, 3, 3, 'YAHOO', 'Herzeliya', True)
-    Room.add_room(2, 2, 4, 3, 'YAHOO', 'Herzeliya', True)
-
-    assert Analytics.get_num_rooms_facility('YAHOO') == 7
-    assert Analytics.get_num_rooms_facility('YAHOO', 'matam') == 3
-    assert Analytics.get_num_rooms_facility('YAHOO', 'Herzeliya') == 4
-
-    assert Analytics.get_num_employees_facility('YAHOO') == 5
-
-    Manager.user_register("email_2@gmail.com", '123', 'avi', '000260000', 'eng', 3, 'YAHOO', 'matam')
-
-    assert Analytics.get_num_employees_facility('YAHOO') == 6
-
-    manager = Manager.get_by_email('admin@yahoo.com')
-    assert manager is not None
-    assert manager.delete_user('email_2@gmail.com') is True
-    assert Analytics.get_num_employees_facility('YAHOO') == 5
-
-    assert Analytics.get_all_participants_in_facility(manager, 'matam') == 0

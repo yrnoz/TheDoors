@@ -472,7 +472,7 @@ class Order(object):
             all_conflict_orders.append(new_order)
             all_conflict_schedules = Schedule.get_by_date_and_hour_simulation(date, start_time, end_time)
             cls.remove_conflict_schedule_simulation(all_conflict_schedules, date, start_time, end_time)
-            status, room_id = cls.bactracking_algorithm_simulation(all_conflict_orders, facility, date, start_time, end_time)
+            status, room_id = cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
             new_order.save_to_mongodb_simulation()
             return True, new_order._id, room_id
         return False, "There is not empty room", 'failed'

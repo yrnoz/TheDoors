@@ -389,21 +389,16 @@ def route_reservations():
     if session['email'] is not None:
         email = session['email']
         user = User.get_by_email(email)
-        print(user.email)
         meetings = []
         for day in get_week(datetime.today().date()):
             d = str(day.day) if day.day > 9 else '0' + str(day.day)
             month = str(day.month) if day.month > 9 else '0' + str(day.month)
             year = str(day.year)[2:]
             date = '{}/{}/{}'.format(d, month, year)
-            print(date)
             scheds = user.get_schedule(date)
-            print(scheds)
             if len(scheds) > 0:
                 meetings = meetings + scheds
-        for m in meetings:
-            print(m)
-        print('after we prinbt meeatings')
+
         return render_template('reservation.html', manager=user.manager, meetings=meetings)
 
 
@@ -415,8 +410,14 @@ def initialize_database():
 
 @app.route('/event_abs_circuit.html', methods=['GET'])
 def event_abs_circuit():
-    print('sssssssssssssssssssssssss')
     return render_template('event-abs-circuit.html')
+
+
+@app.route('/meeting_info/<meeting_id>/<meeting_date>/', methods=['GET', 'POST'])
+def meeting_info(meeting_id):
+    print(meeting_id)
+    print("ssssssssssssssssssssssssssssssssss")
+    return render_template('reservation.html')
 
 
 if __name__ == '__main__':

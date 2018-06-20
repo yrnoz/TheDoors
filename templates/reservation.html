@@ -173,6 +173,11 @@
 
                 </ul>
             </div> <!-- .timeline -->
+            {% for meeting in  meetings %}
+                <form id="{{ meeting._id }}"
+                      action="{{ url_for('meeting_info' , meeting_id=meeting._id , meeting_date=meeting.) }}" method="POST" hidden>
+                </form>
+            {% endfor %}
 
 
             <div class="events">
@@ -230,7 +235,7 @@
                                                        end: {{ meeting.get_end_time() }}
                                                         participants: {{ meeting.participants }}"
                                         data-event="event-3">
-                                        <a href="#0">
+                                        <a href="{{ url_for('meeting_info(meeting)') }}">
                                             <!--<em class="event-name">Restorative Yoga</em>-->
                                         </a>
                                     </li>
@@ -246,14 +251,22 @@
                         <ul>
                             {% for meeting in  meetings %}
                                 {% if meeting.get_day() == 'Wednesday' %}
-                                    <li class="single-event" data-start="09:30" data-end="10:30"
+
+                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
+                                        data-end="{{ meeting.get_end_time() }}"
                                         data-content="start: {{ meeting.get_start_time() }}
                                                        end: {{ meeting.get_end_time() }}
                                                         participants: {{ meeting.participants }}"
                                         data-event="event-4">
-                                        <a href="#0">
-                                            <!--<em class="event-name">Abs Circuit</em>-->
-                                        </a>
+
+
+                                        <a href="#"
+                                           onclick="document.getElementById('{{ meeting._id }}').submit();"></a>
+
+
+                                        {#                                    <a href="{{ url_for('meeting_info' , meeting=meeting) }}">#}
+                                        {#                                        <!--<em class="event-name">Abs Circuit</em>-->#}
+                                        {#                                    </a>#}
                                     </li>
                                 {% endif %}
                             {% endfor %}
@@ -282,27 +295,30 @@
                     </li>
                 </ul>
             </div>
-            <div class="event-modal">
-                <header class="header">
-                    <div class="content">
-                        <span class="event-date"></span>
-                        <h3 class="event-name"></h3>
+            <form action="{{ url_for('route_cancel_reserve_room') }}"
+                  method="post">
+                <div class="event-modal">
+                    <header class="header">
+                        <div class="content">
+                            <span class="event-date"></span>
+                            <h3 class="event-name"></h3>
+                        </div>
+
+                        <div class="header-bg"></div>
+                    </header>
+
+                    <div class="body">
+                        <div class="event-info"></div>
+                        <div class="body-bg"></div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-info btn-flat btn-addon m-b-10 m-l-5">
+                                <i class="ti-close"></i>Remove
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="header-bg"></div>
-                </header>
-
-                <div class="body">
-                    <div class="event-info"></div>
-                    <div class="body-bg"></div>
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-info btn-flat btn-addon m-b-10 m-l-5">
-                            <i class="fa fa-check"></i>Remove
-                        </button>
-                    </div>
                 </div>
-
-            </div>
+            </form>
             <div class="cover-layer"></div>
         </div> <!-- .cd-schedule -->
         <script src="{{ url_for('static' , filename='js/modernizr.js') }}"></script>

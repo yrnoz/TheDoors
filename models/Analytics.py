@@ -1,11 +1,4 @@
-import functools
-
-
 from common.database import Database
-from datetime import datetime,timedelta
-
-from models.Schedule import Schedule
-from models.Room import Room
 
 """
     in this class we implement tools for the analytics
@@ -116,48 +109,65 @@ class Analytics(object):
 
 
     @staticmethod
-    def get_num_rooms_facility(company_id, facility_id = None):
-        if facility_id is None:
-            query = {'company': company_id}
-            # print "Here"
-        else :
-            query = {'$and': [{'facility': facility_id}, {'company': company_id}]}
-            # print query
-        rooms = Database.find('rooms', query)
-        if rooms is None:
-            return
-        return rooms.count(True)
-
-    @staticmethod
-    def get_num_rooms_facility_simulation(company_id, facility_id = None):
-        if facility_id is None:
-            query = {'company': company_id}
-        else:
-            query = {'$and': [{'facility': facility_id}, {'company': company_id}]}
-        rooms = Database.findSimulation('rooms', query)
-        if rooms is None:
-            return
-        return rooms.count(True)
-
-    @staticmethod
-    def get_num_employees_facility(company_id, facility_id = None):
-        if facility_id is None :
-            query = {'company': company_id}
-        else:
-            query = {'$and': [{'facility': facility_id}, {'company': company_id}]}
+    def get_num_employees_company(company_id):
+        query = {'company_id': company_id}
         emps = Database.find('users', query)
         if emps is None:
             return
         return emps.count(True)
 
     @staticmethod
-    def get_num_employees_facility_simulation(company_id, facility_id = None):
-        if facility_id is None:
-            query = {'company': company_id}
-        else:
-            query = {'$and': [{'facility': facility_id}, {'company': company_id}]}
+    def get_num_employees_company_simulation(company_id):
+        query = {'company_id': company_id}
         emps = Database.findSimulation('users', query)
         if emps is None:
             return
         return emps.count(True)
 
+    @staticmethod
+    def get_num_employees_facility(company_id, facility_id):
+        query = {'$and': [{'facility': facility_id}, {'company_id': company_id}]}
+        emps = Database.find('users', query)
+        if emps is None:
+            return
+        return emps.count(True)
+
+    @staticmethod
+    def get_num_employees_facility_simulation(company_id, facility_id):
+        query = {'$and': [{'facility': facility_id}, {'company_id': company_id}]}
+        emps = Database.findSimulation('users', query)
+        if emps is None:
+            return
+        return emps.count(True)
+
+    @staticmethod
+    def get_num_rooms_facility(company_id):
+        query = {'company_id': company_id}
+        rooms = Database.find('rooms', query)
+        if rooms is None:
+            return
+        return rooms.count(True)
+
+    @staticmethod
+    def get_num_rooms_facility_simulation(company_id):
+        query = {'company_id': company_id}
+        rooms = Database.findSimulation('rooms', query)
+        if rooms is None:
+            return
+        return rooms.count(True)
+
+    @staticmethod
+    def get_num_rooms_facility(company_id, facility_id):
+        query = {'$and': [{'facility': facility_id}, {'company_id': company_id}]}
+        rooms = Database.find('rooms', query)
+        if rooms is None:
+            return
+        return rooms.count(True)
+
+    @staticmethod
+    def get_num_rooms_facility_simulation(company_id, facility_id):
+        query = {'$and': [{'facility': facility_id}, {'company_id': company_id}]}
+        rooms = Database.findSimulation('rooms', query)
+        if rooms is None:
+            return
+        return rooms.count(True)
