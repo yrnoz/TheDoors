@@ -15,6 +15,7 @@ from models.Room import Room
 
 class Analytics(object):
 
+    @staticmethod
     def get_meetings_number_in_facility(manager, facility_name):
         rooms = Room.get_by_facility(manager.company, facility_name)
         if rooms is None:
@@ -25,7 +26,7 @@ class Analytics(object):
             sum_meetings += occupancy
         return sum_meetings
 
-
+    @staticmethod
     def get_all_participants_in_facility(manager, facility_name):
         rooms = Room.get_by_facility(manager.company, facility_name)
         if rooms is None:
@@ -37,6 +38,7 @@ class Analytics(object):
                 sum_visits += len(sched.participants)
         return sum_visits
 
+    @staticmethod
     def get_meeting_number(manager):
         all_rooms = Room.get_by_company(manager.company)
         if all_rooms is None:
@@ -47,7 +49,7 @@ class Analytics(object):
             meetings.append(occupancy)
         return functools.reduce(lambda a,b: a+b, meetings)
 
-    # @staticmethod
+    @staticmethod
     def get_all_rooms_occupancy(manager):
         all_rooms = Room.get_by_company(manager.company)
         if all_rooms is None:

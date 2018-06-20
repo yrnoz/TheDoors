@@ -410,3 +410,5 @@ def test_analytics():
     assert manager is not None
     assert manager.delete_user('email_2@gmail.com') is True
     assert Analytics.get_num_employees_facility('YAHOO') == 5
+
+    assert Analytics.get_all_participants_in_facility(manager, 'matam') == 0
