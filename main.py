@@ -12,7 +12,6 @@ import subprocess
 from models.Room import Room
 from models.Schedule import Schedule
 from models.User import User, Manager
-from models.Analytics import Analytics
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
@@ -168,30 +167,10 @@ def manager_register():
             return redirect(url_for('manager_register'))
 
 
-@app.route('/simulation', methods=['GET', 'POST'])
+@app.route('/simulation', methods=['GET'])
 def route_simulation():
-    if request.method == 'GET':
-        return render_template('Simulation.html', employees_no=0, rooms_no=0, facility_no=0,
-                               meetings_no=0, facility_visits_meetings=[("None",0,0)],
-                               occupancies=[("None", 0)])
-    if request.method == 'POST':
-        manager = Manager.get_by_email(session['email'])
-        if session['email'] is not None and manager is not None:
-            simulation_engine(max_rooms, max_employees, max_facilities, duration)
-            employees_no = len(manager.get_employees_simulation())
-            facility_no = len(manager.get_facilities_simulation())
-            facility_visits_meetings = []
-            facilities = manager.get_facilities_simulation()
-            for facility in facilities:
-                visits = Analytics.get_all_participants_in_facility(manager, facility)
-                meetings = Analytics.get_meetings_number_in_facility(manager, facility)
-                facility_visits_meetings.append((facility, visits, meetings))
-            rooms_no = len(Room.get_by_company_simulation(manager.company))
-            occupancies = Analytics.get_all_rooms_occupancy_simulation(manager)
-            meetings_no = Analytics.get_meeting_number_simulation(manager)
-            return render_template('Simulation.html', employees_no=employees_no, rooms_no=rooms_no, facility_no=facility_no,
-                                   meetings_no=meetings_no, facility_visits_meetings=facility_visits_meetings,
-                                   occupancies=occupancies)
+    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
+        return render_template('Simulation.html')
 
 
 @app.route('/analytics', methods=['GET'])
@@ -200,18 +179,10 @@ def route_analytics():
     if session['email'] is not None and manager is not None:
         employees_no = len(manager.get_employees())
         facility_no = len(manager.get_facilities())
-        facility_visits_meetings = []
-        facilities = manager.get_facilities()
-        for facility in facilities:
-            visits = Analytics.get_all_participants_in_facility(manager, facility)
-            meetings = Analytics.get_meetings_number_in_facility(manager, facility)
-            facility_visits_meetings.append((facility, visits, meetings))
         rooms_no = len(Room.get_by_company(manager.company))
-        occupancies = Analytics.get_all_rooms_occupancy(manager)
-        meetings_no = Analytics.get_meeting_number(manager)
+        meetings_no = 7  # todo
         return render_template('Analytics.html', employees_no=employees_no, rooms_no=rooms_no, facility_no=facility_no,
-                               meetings_no=meetings_no, facility_visits_meetings=facility_visits_meetings,
-                               occupancies=occupancies)
+                               meetings_no=meetings_no)
 
 
 def get_user_roles_facilities(manager):
@@ -370,9 +341,10 @@ def route_reserve_room():
             reserve_room()
     return redirect(url_for('route_reserve_room'))
 
-# @app.route('/my_reservations', methods=['POST'])
-# def route_cancel_reserve_room():
-#     return
+
+@app.route('/my_reservations', methods=['POST'])
+def route_cancel_reserve_room():
+    return
     # if session['email'] is not None:
     #     email = session['email']
     #     user = User.get_by_email(email)
@@ -413,11 +385,12 @@ def event_abs_circuit():
     return render_template('event-abs-circuit.html')
 
 
-@app.route('/meeting_info/<meeting_id>/<meeting_date>/', methods=['GET', 'POST'])
-def meeting_info(meeting_id):
-    print(meeting_id)
-    print("ssssssssssssssssssssssssssssssssss")
-    return render_template('reservation.html')
+@app.route('/meeting_info', methods=['GET', 'POST'])
+def meeting_info():
+    email = session['email']
+    user = User.get_by_email(email)
+    meeting = Schedule.get_by_id(request.form.get('meeting_id'))
+    return render_template('meeting.html', manager=user.manager, meeting=meeting)
 
 
 if __name__ == '__main__':
