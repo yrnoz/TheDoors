@@ -495,9 +495,10 @@ def test_analytics():
 def test_add_some_orders():
     Database.initialize()
     manager = Manager.get_by_email('admin@yahoo.com')
-    manager.new_order('17/06/18', [manager.email], 8, 9, "YAHOO", 'matam')
-    manager.new_order('18/06/18', [manager.email], 8, 9, "YAHOO", 'matam')
+    manager.new_order('17/06/18', [manager.email], 12, 14, "YAHOO", 'matam')
+    manager.new_order('18/06/18', [manager.email], 12, 14, "YAHOO", 'matam')
 
-    manager.new_order('19/06/18', [manager.email], 8, 9, "YAHOO", 'matam')
-    manager.new_order('20/06/18', [manager.email], 8, 9, "YAHOO", 'matam')
+    manager.new_order('19/06/18', [manager.email], 12, 14, "YAHOO", 'matam')
+    manager.new_order('20/06/18', [manager.email], 12, 14, "YAHOO", 'matam')
+    manager.new_order('21/06/18', [manager.email], 12, 14, "YAHOO", 'matam')
 
