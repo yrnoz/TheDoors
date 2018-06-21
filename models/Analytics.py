@@ -23,7 +23,7 @@ class Analytics(object):
         return sum_meetings
 
     @staticmethod
-    def get_meetings_number_in_facility_simulation(manager, facility_name, duration):
+    def get_meetings_number_in_facility_simulation(manager, facility_name, duration = 1):
         rooms = Room.get_by_facility(manager.company, facility_name)
         if rooms is None:
             return
