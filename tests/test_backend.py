@@ -1,8 +1,12 @@
+from _json import make_encoder
+
 import pytest
 import os
 import subprocess
 
 from datetime import datetime
+
+from setuptools.command.egg_info import manifest_maker
 
 from common.database import Database
 from models.Room import Room
@@ -147,8 +151,8 @@ def test_schedules_orders2():
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
-
-    status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True) ########################################changed capacity
+    status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam',
+                                    True)  ########################################changed capacity
     assert status is True
     status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
     assert status is True
@@ -180,8 +184,8 @@ def test_schedules_orders2():
     user1 = User.get_by_email('email_1@gmail.com')
     user2 = User.get_by_email('email_4@gmail.com')
     participants1 = ['email_1@gmail.com', 'email_2@gmail.com']
-    participants2  =['email_4@gmail.com']
-    #date = datetime.utcnow().strftime('%d/%m/%y')
+    participants2 = ['email_4@gmail.com']
+    # date = datetime.utcnow().strftime('%d/%m/%y')
     date = '26/06/18'
     status2, string2 = user2.new_order(date, participants2, 6, 7, "YAHOO", 'matam')
     schedules2 = user2.get_schedule()
@@ -202,7 +206,6 @@ def test_schedules_orders2():
     assert len(schedules2) > 0
 
 
-
 def test_schedules_orders3():
     User.print_values()
     Database.initialize()
@@ -214,8 +217,8 @@ def test_schedules_orders3():
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
-
-    status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True) ########################################changed capacity
+    status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam',
+                                    True)  ########################################changed capacity
     assert status is True
     status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
     assert status is True
@@ -252,10 +255,10 @@ def test_schedules_orders3():
     user2 = User.get_by_email('email_4@gmail.com')
     user3 = User.get_by_email('email_6@gmail.com')
     participants1 = ['email_1@gmail.com', 'email_2@gmail.com']
-    participants2  =['email_4@gmail.com']
-    participants3 = ['email_7@gmail.com' , 'email_8@gmail.com']
+    participants2 = ['email_4@gmail.com']
+    participants3 = ['email_7@gmail.com', 'email_8@gmail.com']
     date = datetime.utcnow().strftime('%d/%m/%y')
-    #date ='12/06/18'
+    # date ='12/06/18'
     status2, string2 = user2.new_order(date, participants2, 6, 7, "YAHOO", 'matam')
     schedules2 = user2.get_schedule()
 
@@ -267,7 +270,7 @@ def test_schedules_orders3():
     schedules1 = user1.get_schedule()
     schedules2 = user2.get_schedule()
     schedules3 = user3.get_schedule()
-    assert  len(schedules1) > 0
+    assert len(schedules1) > 0
     assert len(schedules2) > 0
     assert len(schedules3) == 0
 
@@ -295,8 +298,8 @@ def test_schedules_orders4():
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
 
-
-    status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True) ########################################changed capacity
+    status, room_id = Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam',
+                                    True)  ########################################changed capacity
     assert status is True
     status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
     assert status is True
@@ -333,18 +336,17 @@ def test_schedules_orders4():
     user2 = User.get_by_email('email_4@gmail.com')
     user3 = User.get_by_email('email_6@gmail.com')
     participants1 = ['email_1@gmail.com', 'email_2@gmail.com']
-    participants2  =['email_4@gmail.com']
-    participants3 = ['email_7@gmail.com' , 'email_8@gmail.com']
-    #date = datetime.utcnow().strftime('%d/%m/%y')
-    date ='21/06/18'
+    participants2 = ['email_4@gmail.com']
+    participants3 = ['email_7@gmail.com', 'email_8@gmail.com']
+    # date = datetime.utcnow().strftime('%d/%m/%y')
+    date = '21/06/18'
     status2, string2 = user2.new_order(date, participants2, 6, 7, "YAHOO", 'matam')
     schedules2 = user2.get_schedule()
-    assert status2==True
+    assert status2 == True
     date_next = '22/06/18'
     status3, string3 = user2.new_order(date_next, participants2, 6, 7, "YAHOO", 'matam')
     # assert status3==True
     schedules2 = user2.get_schedule()
-
 
 
 def test_facilities():
@@ -385,7 +387,7 @@ def test_facilities():
 
 def test_friends():
     Database.initialize()
-    # Database.dropAll()
+    Database.dropAll()
 
     Manager.manager_register("admin@yahoo.com", 'admin', 'Admin admin', '000000000', 'eng', 1, 'YAHOO', 'matam')
     Manager.user_register("email@gmail.com", '123', 'ely', '000000026', 'eng', 3, 'YAHOO', 'matam')
@@ -450,9 +452,8 @@ def test_analytics():
     Manager.user_register("user2@yahoo.com", '123', 'dave', '123412348', 'eng', 1, 'YAHOO', 'matam')
     Manager.user_register("email_1@gmail.com", '123', 'foox', '000002600', 'eng', 3, 'YAHOO', 'matam')
 
-
     Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True)
-    occupancy_yahoo_matam_1 =  Analytics.get_room_occupancy(1, 'YAHOO', time=datetime.now())
+    occupancy_yahoo_matam_1 = Analytics.get_room_occupancy(1, 'YAHOO', time=datetime.now())
     Analytics.get_room_occupancy_simulation(1, "YAHOO", datetime.now())
     status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
     status, room_id = Room.add_room(2, 1, 5, 4, 'YAHOO', 'matam', True)
@@ -489,3 +490,14 @@ def test_analytics():
     # assert meetings_number_yahoo ==
     room_occupancy_yahoo = Analytics.get_all_rooms_occupancy(manager)
     # assert room_occupancy_yahoo ==
+
+
+def test_add_some_orders():
+    Database.initialize()
+    manager = Manager.get_by_email('admin@yahoo.com')
+    manager.new_order('17/06/18', [manager.email], 8, 9, "YAHOO", 'matam')
+    manager.new_order('18/06/18', [manager.email], 8, 9, "YAHOO", 'matam')
+
+    manager.new_order('19/06/18', [manager.email], 8, 9, "YAHOO", 'matam')
+    manager.new_order('20/06/18', [manager.email], 8, 9, "YAHOO", 'matam')
+

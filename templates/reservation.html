@@ -219,7 +219,8 @@
                         <ul>
                             {% for meeting in meetings %}
                                 {% if meeting.get_day() == 'Monday' %}
-                                    <li class="single-event" data-start="10:00" data-end="11:00"
+                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
+                                        data-end="{{ meeting.get_end_time() }}"
                                         data-content="start: {{ meeting.get_start_time() }}
                                            end: {{ meeting.get_end_time() }}
                                            participants: {{ meeting.participants }}"
