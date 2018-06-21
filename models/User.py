@@ -219,6 +219,10 @@ class User(object):
             return self.cancel_order(order_id)
         if order_id is not None:
             Order.participant_cancel(self.email, order_id)
+            meetings = Schedule.get_by_order(order_id)
+            for m in meetings:
+                m.remove_participants(self.email)
+
 
     def cancel_order(self, order_id):
         """

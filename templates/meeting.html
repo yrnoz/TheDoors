@@ -164,7 +164,7 @@
                 <div class="col-lg-8">
                     <div class="card card-outline-primary">
                         <div class="card-body">
-                            <form action="{{ url_for('settings') }}" method="post">
+                            <form action="{{ url_for('meeting_cancel') }}" method="post">
                                 <div class="form-body">
                                     <h3 class="card-title m-t-15">Reservation</h3>
                                     <hr>
@@ -203,7 +203,7 @@
 
                                             <div class="form-group">
                                                 <label class="control-label">Participants:</label>
-                                                {% for p in  meeting.participants %
+                                                {% for p in  meeting.participants %}
                                                 <input name="participants" type="text" id="participants"
                                                        class="form-control" value="{{ p}}"
 
@@ -211,11 +211,17 @@
                                                 {% endfor %}
 
                                             </div>
-                                            <div class="form-actions">
-                                                <button type="submit" class="btn btn-success"><i
-                                                        class="fa fa-check"></i> Remove Meeting
-                                                </button>
-                                            </div>
+
+
+                                                <input name="meeting_id" type="text"
+                                                       class="form-control" value="{{ meeting._id}}" hidden>
+                                                <div class="form-actions">
+                                                    <button type="submit" class="btn btn-success"><i
+                                                            class="fa fa-check"></i> Remove Meeting
+                                                    </button>
+                                                </div>
+
+
                                         </div>
 
                                         <!--/row-->
