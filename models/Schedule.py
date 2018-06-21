@@ -12,7 +12,7 @@ from common.database import Database
 from datetime import datetime
 
 time_dict = {'8': "08:00", '9': "09:00", '10': "10:00", '11': "11:00", '12': "12:00", '13': "13:00", '14': "14:00",
-             '15': "15:00", '16': "16:00", "17": "17:00", '18': "18:00"}
+             '15': "15:00", '16': "16:00", "17": "17:00", '18': "18:00",'19': "19:00",'20': "20:00",'21': "21:00"}
 
 
 class Schedule(object):
@@ -349,6 +349,7 @@ class Schedule(object):
                 if int(schedule.end_meeting) <= int(end_hour) and int(schedule.begin_meeting) >= int(begin_hour):
                     schedules.append(cls(**schedule))
         return schedules
+
     @classmethod
     def check_time_interval(self, sched, begin_hour, end_hour):
         sched_begin_meeting = sched['begin_meeting']
