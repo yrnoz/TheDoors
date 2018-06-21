@@ -335,21 +335,20 @@ class Schedule(object):
         data = Database.find('schedules', query)
         if data is not None:
             for schedule in data:
-                if schedule.end_meeting < end_hour and schedule.begin_meeting > begin_hour:
+                if int(schedule.end_meeting) <= int(end_hour) and int(schedule.begin_meeting) >= int(begin_hour):
                     schedules.append(cls(**schedule))
         return schedules
 
     @classmethod
     def get_by_room_and_date_and_hour_simulation(cls, _id, date, begin_hour, end_hour):
         schedules = []
-        query = {'$and': [{'date': date}, {'room_id': _id},
-                          {'$or': [{'$gt': {'start_time': end_hour}}, {'$st': {'end_time': begin_hour}}]}]}
+        query = {'$and': [{'date': date}, {'room_id': _id}]}
         data = Database.findSimulation('schedules', query)
         if data is not None:
-            for sched in data:
-                schedules.append(cls(**sched))
+            for schedule in data:
+                if int(schedule.end_meeting) <= int(end_hour) and int(schedule.begin_meeting) >= int(begin_hour):
+                    schedules.append(cls(**schedule))
         return schedules
-
     @classmethod
     def check_time_interval(self, sched, begin_hour, end_hour):
         sched_begin_meeting = sched['begin_meeting']

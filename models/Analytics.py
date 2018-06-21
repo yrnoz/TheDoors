@@ -11,6 +11,7 @@ from datetime import datetime,timedelta
 
 
 class Analytics(object):
+
     @staticmethod
     def get_meetings_number_in_facility(manager, facility_name):
         rooms = Room.get_by_facility_simulation(manager.company, facility_name)
@@ -18,7 +19,7 @@ class Analytics(object):
             return
         sum_meetings = 0
         for room in rooms:
-            occupancy = room.get_occupancy(datetime.utcnow(), room._id)
+            occupancy = room.get_occupancy(datetime.now(), room._id)
             sum_meetings += occupancy
         return sum_meetings
 
@@ -31,7 +32,7 @@ class Analytics(object):
         for room in rooms:
             sum_meetings = 0
             for day in range(duration):
-                occupancy = room.get_occupancy(datetime.utcnow(), room._id)
+                occupancy = room.get_occupancy(datetime.now(), room._id)
                 sum_meetings += occupancy
         return sum_meetings/duration
 
@@ -42,7 +43,7 @@ class Analytics(object):
             return
         sum_visits = 0
         for room in rooms:
-            schedules = Schedule.get_by_room_and_date(room._id, datetime.utcnow().strftime('%d/%m/%Y'))
+            schedules = Schedule.get_by_room_and_date(room._id, datetime.now().strftime('%d/%m/%Y'))
             for sched in schedules:
                 sum_visits += len(sched.participants)
         return sum_visits
@@ -56,7 +57,7 @@ class Analytics(object):
         for day in range(duration):
             for room in rooms:
                 schedules = Schedule.get_by_room_and_date_simulation(room._id,
-                                    (datetime.utcnow()+timedelta(days = day)).strftime('%d/%m/%Y'))
+                                    (datetime.now()+timedelta(days = day)).strftime('%d/%m/%Y'))
                 for sched in schedules:
                     sum_visits += len(sched.participants)
         return sum_visits/duration
@@ -68,7 +69,7 @@ class Analytics(object):
             return
         meetings = []
         for room in all_rooms:
-            occupancy = int(room.get_occupancy(datetime.utcnow(), room._id))
+            occupancy = int(room.get_occupancy(datetime.now(), room._id))
             meetings.append(occupancy)
         return functools.reduce(lambda a,b: a+b, meetings)
 
@@ -80,7 +81,7 @@ class Analytics(object):
         sum_meetings = []
         for day in range(duration):
             for room in all_rooms:
-                occupancy = room.get_occupancy_simulation(datetime.utcnow()+timedelta(days = day), room._id)
+                occupancy = room.get_occupancy_simulation(datetime.now()+timedelta(days = day), room._id)
                 sum_meetings += occupancy
         return sum_meetings/duration
 
@@ -91,7 +92,7 @@ class Analytics(object):
             return
         occupancies = []
         for room in all_rooms:
-            occupancy = room.get_occupancy(datetime.utcnow(), room._id)
+            occupancy = room.get_occupancy(datetime.now(), room._id)
             occupancies.append((room._id, (int(occupancy) * 100) / int(room.capacity)))
         return occupancies
 
@@ -105,12 +106,12 @@ class Analytics(object):
         for room in all_rooms:
             sum_occupancy = 0
             for day in range(duration):
-                sum_occupancy += room.get_occupancy_simulation(datetime.utcnow()+timedelta(days = day), room._id)
+                sum_occupancy += room.get_occupancy_simulation(datetime.now()+timedelta(days = day), room._id)
             occupancies.append((room._id, (sum_occupancy * 100) / (int(room.capacity)*duration)))
         return occupancies
 
     @staticmethod
-    def get_room_occupancy(room_id, facility_id, time=datetime.utcnow()):
+    def get_room_occupancy(room_id, facility_id, time=datetime.now()):
         query = {'$and': [{'facility': facility_id}, {'room': room_id}]}
         room = Database.find_one('rooms', query)
         if room is None:
