@@ -14,8 +14,6 @@ from models.facilities import Facilities
 from models.friends import Friends
 
 
-
-
 class User(object):
     def __init__(self, email, username, password, _id, role, permission, company, facility,
                  added_date=datetime.utcnow().strftime('%d/%m/%y'), manager=False, roles=[]):
@@ -169,8 +167,6 @@ class User(object):
 
     def new_order(self, date, participants, start_time, end_time, company, facility):
 
-        # print ("hi")
-
 
         if self.email not in participants:
             participants.append(self.email)
@@ -185,30 +181,31 @@ class User(object):
                                                     facility, min_permission)
 
         if status:
-            print ("what was that")
+            print("what was that")
             # not finish yet
             Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
-            #self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+            # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
 
     def new_order_simulation(self, date, participants, start_time, end_time, company, facility):
         if self.email not in participants:
             participants.append(self.email)
         problematic_participants = Schedule.all_participants_are_free_simulation(date, participants, start_time,
-                                                                      end_time)
+                                                                                 end_time)
 
         if len(problematic_participants) > 0:
             return False, problematic_participants
         min_permission = User.min_permission_simulation(participants)
         _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
-        status, order_id, room_id = Order.new_order_simulation(_id, self.email, date, participants, start_time, end_time, company,
-                                                    facility, min_permission)
+        status, order_id, room_id = Order.new_order_simulation(_id, self.email, date, participants, start_time,
+                                                               end_time, company,
+                                                               facility, min_permission)
 
         if status:
-            print ("what was that")
+            print("what was that")
             # not finish yet
             Schedule.assign_all_simulation(date, participants, start_time, end_time, order_id, room_id)
-            #self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+            # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
 
     def cancel_meeting(self, meeting_id):
@@ -254,13 +251,12 @@ class User(object):
 
     @classmethod
     def print_time(cls):
-        print ("************************************************From print_time", time.time())
+        print("************************************************From print_time", time.time())
 
     @classmethod
     def print_values(cls):
-        print ("")
-        #sched.every(1).seconds.do(cls.print_time)
-
+        print("")
+        # sched.every(1).seconds.do(cls.print_time)
 
 
 class Manager(User):
@@ -306,12 +302,12 @@ class Manager(User):
         if data is not None:
             return False, "company already exist"
         else:
-            Facilities.add_company(company, facility)
             user = cls.get_by_email(email)
             if not cls.check_id(_id):
                 return False, "bad number ID"
             if user is None:
                 # User dose'nt exist, create new user
+                Facilities.add_company(company, facility)
                 new_user = cls(email, username, password, _id, role, permission, company, facility)
                 try:
                     new_user.save_to_mongodb()
@@ -396,8 +392,6 @@ class Manager(User):
             # User already exist
             return False, "user email already exist"
 
-
-
     def delete_user(self, user_email):
         user = User.get_by_email(user_email)
         if user is not None and user.company == self.company:
@@ -472,4 +466,3 @@ class Manager(User):
 
     def get_rooms(self):
         return Room.get_by_company(self.company)
-

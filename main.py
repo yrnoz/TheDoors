@@ -163,7 +163,7 @@ def manager_register():
             User.login(email)
             return redirect(url_for('route_analytics'))
         else:
-            print(info)
+            flash(info)
             return redirect(url_for('manager_register'))
 
 
@@ -370,7 +370,8 @@ def route_reservations():
             scheds = user.get_schedule(date)
             if len(scheds) > 0:
                 meetings = meetings + scheds
-
+        for m in  meetings:
+            print(m.date)
         return render_template('reservation.html', manager=user.manager, meetings=meetings)
 
 

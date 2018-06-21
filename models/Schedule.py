@@ -165,7 +165,7 @@ class Schedule(object):
             for sched in data:
                 # this user is not free on this time
                 print(sched._id)
-                if not sched.is_available(start_time, end_time):
+                if not sched.is_available(date, start_time, end_time):
                     problematics.append(user_email)
                     break
         return problematics
@@ -229,13 +229,15 @@ class Schedule(object):
                 Database.removeSimulation('schedules', {'_id': schedule_id})
         return True
 
-    def is_available(self, start_time, end_time):
+    def is_available(self, date, start_time, end_time):
         """
 
         :param start_time:
         :param end_time:
         :return: True if [start_time,end_time] intersection with [ self.begin_meeting , self.end_meeting] is empty
         """
+        if date!=self.date:
+            return True
         before = (int(end_time) <= int(self.begin_meeting))
         after = (int(start_time) >= int(self.end_meeting))
         return True if (before or after) else False
@@ -353,9 +355,9 @@ class Schedule(object):
     def check_time_interval(self, sched, begin_hour, end_hour):
         sched_begin_meeting = sched['begin_meeting']
         sched_end_meeting = sched['end_meeting']
-        op1 = int(sched_begin_meeting)<=begin_hour and sched_end_meeting > begin_hour and sched_end_meeting<=end_hour
-        op2 = sched_begin_meeting >= begin_hour and sched_end_meeting<=end_hour
-        op3 = sched_begin_meeting<end_hour and sched_end_meeting>=end_hour
+        op1 = int(sched_begin_meeting)<=int(begin_hour) and int(sched_end_meeting) > int(begin_hour) and int(sched_end_meeting)<=int(end_hour)
+        op2 = int(sched_begin_meeting) >= int(begin_hour) and int(sched_end_meeting)<=int(end_hour)
+        op3 = int(sched_begin_meeting)<int(end_hour) and int(sched_end_meeting)>=int(end_hour)
         return op1 or op2 or op3
 
     @classmethod

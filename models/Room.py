@@ -54,11 +54,11 @@ class Room(object):
 
     def intersection(self, start_time, end_time, schedule):
         is_intersect = False
-        if schedule.begin_meeting <= start_time and schedule.end_meeting >= end_time:
+        if int(schedule.begin_meeting) <= int(start_time) and int(schedule.end_meeting) >= int(end_time):
             is_intersect = True
-        if schedule.begin_meeting < start_time and schedule.end_meeting > start_time and schedule.end_meeting < end_time:
+        if int(schedule.begin_meeting) < int(start_time) and int(schedule.end_meeting) > int(start_time) and int(schedule.end_meeting) < int(end_time):
             is_intersect = True
-        if schedule.begin_meeting > start_time and schedule.begin_meeting < end_time and schedule.end_meeting > end_time:
+        if int(schedule.begin_meeting) > int(start_time) and int(schedule.begin_meeting) < int(end_time) and int(schedule.end_meeting) > int(end_time):
             is_intersect = True
         return is_intersect
         '''

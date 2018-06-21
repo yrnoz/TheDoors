@@ -417,8 +417,8 @@ class Order(object):
         print(room_id)
         if status:
             new_order.save_to_mongodb()
-            if cls.is_send_mail(date):
-                cls.send_mail(user_email, room_id, date, start_time, end_time)
+            #if cls.is_send_mail(date):
+             #   cls.send_mail(user_email, room_id, date, start_time, end_time)
             return True, new_order._id, room_id
         else:
             if cls.is_send_mail(date) == False:
