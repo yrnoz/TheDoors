@@ -189,7 +189,7 @@ def route_simulation():
             facility_visits_meetings = []
             facilities = manager.get_facilities_simulation()
             for facility in facilities:
-                visits = Analytics.get_all_participants_in_facility_simulation(manager, facility,duration)
+                visits = Analytics.get_all_participants_in_facility_simulation(manager, facility, duration)
                 meetings = Analytics.get_meetings_number_in_facility_simulation(manager, facility, duration)
                 facility_visits_meetings.append((facility, visits, meetings))
             rooms_no = len(Room.get_by_company_simulation(manager.company))
@@ -348,7 +348,7 @@ def convert_date():
 def reserve_room():
     participants = list(request.form.getlist('participants', None))
     date = convert_date()
-    print(date)
+
     start_time = request.form['start']
     meeting_duration = request.form['duration']
     user = User.get_by_email(session['email'])
@@ -374,7 +374,10 @@ def route_reserve_room():
         if request.method == 'GET':
             return render_template('order.html', manager=user.manager, friends=friends)
         elif request.method == 'POST':
-            reserve_room()
+            if get_day(convert_date()) == 'Saturday' or get_day(convert_date()) == 'Friday':
+                flash('This day is not working day.')
+            else:
+                reserve_room()
     return redirect(url_for('route_reserve_room'))
 
 
@@ -406,7 +409,7 @@ def route_reservations():
             scheds = user.get_schedule(date)
             if len(scheds) > 0:
                 meetings = meetings + scheds
-        for m in  meetings:
+        for m in meetings:
             print(m.date)
         return render_template('reservation.html', manager=user.manager, meetings=meetings)
 
@@ -437,6 +440,11 @@ def meeting_cancel():
         user = User.get_by_email(email)
         user.cancel_meeting(request.form.get('meeting_id'))
     return redirect(url_for('route_reservations'))
+
+
+def get_day(date):
+    date = datetime.strptime(date, '%d/%m/%y')
+    return str(date.strftime("%A"))
 
 
 if __name__ == '__main__':
