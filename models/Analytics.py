@@ -27,6 +27,7 @@ class Analytics(object):
         rooms = Room.get_by_facility(manager.company, facility_name)
         if rooms is None:
             return
+        sum_meetings = 0
         for room in rooms:
             sum_meetings = 0
             for day in range(duration):
