@@ -181,7 +181,6 @@ class User(object):
                                                     facility, min_permission)
 
         if status:
-            print("what was that")
             # not finish yet
             Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
             # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
@@ -202,7 +201,6 @@ class User(object):
                                                                facility, min_permission)
 
         if status:
-            print("what was that")
             # not finish yet
             Schedule.assign_all_simulation(date, participants, start_time, end_time, order_id, room_id)
             # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)

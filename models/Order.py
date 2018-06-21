@@ -382,7 +382,6 @@ class Order(object):
                 return True
         return False
 
-    #simulation
     @classmethod
     def new_order(cls, _id, user_email, date, participants, start_time, end_time, company, facility, min_permission):
         """
@@ -401,10 +400,6 @@ class Order(object):
         if one of the participants already have a meeting on this time --> false
         else --> true
         """
-
-
-
-
 
         new_order = cls(_id, user_email, date, participants, start_time, end_time, company, facility)
         # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
