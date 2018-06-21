@@ -141,7 +141,7 @@ def login_user():
         if Manager.get_by_email(email) is not None:
             return redirect(url_for('route_analytics'))
         elif User.get_by_email(email) is not None:
-            return redirect(url_for('route_edit_friends'))
+            return redirect(url_for('route_reservations'))
     else:
         User.logout()
         return render_template('page-login.html', wrong_password=True, email=email)
