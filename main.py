@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import sys
+
+from common.Simulation import simulation_engine
 from common.database import Database
 import os
 import subprocess
@@ -177,8 +179,11 @@ def route_simulation():
     if request.method == 'POST':
         manager = Manager.get_by_email(session['email'])
         if session['email'] is not None and manager is not None:
-            duration = 1
-            # simulation_engine(max_rooms, max_employees, max_facilities, duration)
+            duration = int(request.form['duration'])
+            max_rooms = int(request.form['room'])
+            max_employees = int(request.form['employee'])
+            max_facilities = int(request.form['facility'])
+            simulation_engine(max_rooms, max_employees, max_facilities, duration)
             employees_no = len(manager.get_employees_simulation())
             facility_no = len(manager.get_facilities_simulation())
             facility_visits_meetings = []
