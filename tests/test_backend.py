@@ -453,6 +453,7 @@ def test_analytics():
 
     Room.add_room(2, 2, 1, 3, 'YAHOO', 'matam', True)
     occupancy_yahoo_matam_1 =  Analytics.get_room_occupancy(1, 'YAHOO', time=datetime.now())
+    Analytics.get_room_occupancy_simulation(1, "YAHOO", datetime.now())
     status, room_id = Room.add_room(2, 1, 3, 4, 'YAHOO', 'matam', False)
     status, room_id = Room.add_room(2, 1, 5, 4, 'YAHOO', 'matam', True)
     status, room_id = Room.add_room(2, 2, 4, 4, 'YAHOO', 'matam', True)
