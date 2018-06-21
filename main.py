@@ -430,6 +430,15 @@ def meeting_info():
     return render_template('meeting.html', manager=user.manager, meeting=meeting)
 
 
+@app.route('/meeting_cancel', methods=['GET', 'POST'])
+def meeting_cancel():
+    if session['email'] is not None:
+        email = session['email']
+        user = User.get_by_email(email)
+        user.cancel_meeting(request.form.get('meeting_id'))
+    return redirect(url_for('route_reservations'))
+
+
 if __name__ == '__main__':
     app.debug = True
     # for day in get_week(datetime.today().date()):

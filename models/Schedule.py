@@ -16,7 +16,6 @@ time_dict = {'8': "08:00", '9': "09:00", '10': "10:00", '11': "11:00", '12': "12
 
 
 class Schedule(object):
-
     def __init__(self, email, date, begin_meeting, end_meeting, order_id, participants, room_id=None, _id=None):
         _id = email + ' ' + date + ' ' + room_id + ' start: ' + str(begin_meeting) + ' end: ' + str(end_meeting)
         self.email = email
@@ -31,14 +30,14 @@ class Schedule(object):
     def save_to_mongodb(self):
         data = self.json()
         print(data)
-        data1 = Database.find_one('schedules' , {'email': 'email_1@gmail.com'})
+        data1 = Database.find_one('schedules', {'email': 'email_1@gmail.com'})
         data2 = Database.find_one('schedules', {'email': 'email_4@gmail.com'})
         Database.insert(collection='schedules', data=self.json())
 
     def save_to_mongodb_simulation(self):
         data = self.json()
         print(data)
-        data1 = Database.find_oneSimulation('schedules' , {'email': 'email_1@gmail.com'})
+        data1 = Database.find_oneSimulation('schedules', {'email': 'email_1@gmail.com'})
         data2 = Database.find_oneSimulation('schedules', {'email': 'email_4@gmail.com'})
         Database.insertSimulation(collection='schedules', data=self.json())
 
@@ -89,8 +88,8 @@ class Schedule(object):
         room_query = {'room_id': room_id} if room_id is not None else {}
         begin_query = {'begin_meeting': start_time} if start_time is not None else {}
         end_query = {'end_meeting': end_time} if end_time is not None else {}
-        #query = {'$and': [email_query, date_query, room_query, begin_query, end_query]}
-        query ={'email': user_email}
+        # query = {'$and': [email_query, date_query, room_query, begin_query, end_query]}
+        query = {'email': user_email}
         schedules = []
         data = Database.find('schedules', query)
         print(query)
@@ -154,7 +153,6 @@ class Schedule(object):
                 schedules.append(cls(**sched))
         return schedules
 
-
     @classmethod
     def all_participants_are_free(cls, date, participants, start_time, end_time):
         problematics = []
@@ -165,7 +163,7 @@ class Schedule(object):
             for sched in data:
                 # this user is not free on this time
                 print(sched._id)
-                if not sched.is_available(date, start_time, end_time):
+                if not sched.is_available(start_time, end_time):
                     problematics.append(user_email)
                     break
         return problematics
@@ -229,33 +227,32 @@ class Schedule(object):
                 Database.removeSimulation('schedules', {'_id': schedule_id})
         return True
 
-    def is_available(self, date, start_time, end_time):
+    def is_available(self, start_time, end_time):
         """
 
         :param start_time:
         :param end_time:
         :return: True if [start_time,end_time] intersection with [ self.begin_meeting , self.end_meeting] is empty
         """
-        if date!=self.date:
-            return True
         before = (int(end_time) <= int(self.begin_meeting))
         after = (int(start_time) >= int(self.end_meeting))
         return True if (before or after) else False
 
-    #simulation
+    # simulation
     @classmethod
     def assign_all(cls, date, participants, start_time, end_time, order_id, room_id):
         for user_email in participants:
             new_meeting = Schedule(user_email, date, start_time, end_time, order_id, participants, room_id)
-            sched_user =cls.get_by_email_and_date_and_hour(user_email, date, start_time, end_time)
-            if len(sched_user)==0:
+            sched_user = cls.get_by_email_and_date_and_hour(user_email, date, start_time, end_time)
+            if len(sched_user) == 0:
                 new_meeting.save_to_mongodb()
 
     @classmethod
     def assign_all_simulation(cls, date, participants, start_time, end_time, order_id, room_id):
         for user_email in participants:
             new_meeting = Schedule(user_email, date, start_time, end_time, order_id, participants, room_id)
-            sched_user = cls.get_by_email_and_date_and_hour_simulation(user_email, date, start_time, end_time) #simulation
+            sched_user = cls.get_by_email_and_date_and_hour_simulation(user_email, date, start_time,
+                                                                       end_time)  # simulation
             if len(sched_user) == 0:
                 new_meeting.save_to_mongodb_simulation()
 
@@ -355,21 +352,22 @@ class Schedule(object):
     def check_time_interval(self, sched, begin_hour, end_hour):
         sched_begin_meeting = sched['begin_meeting']
         sched_end_meeting = sched['end_meeting']
-        op1 = int(sched_begin_meeting)<=int(begin_hour) and int(sched_end_meeting) > int(begin_hour) and int(sched_end_meeting)<=int(end_hour)
-        op2 = int(sched_begin_meeting) >= int(begin_hour) and int(sched_end_meeting)<=int(end_hour)
-        op3 = int(sched_begin_meeting)<int(end_hour) and int(sched_end_meeting)>=int(end_hour)
+        op1 = int(
+            sched_begin_meeting) <= begin_hour and sched_end_meeting > begin_hour and sched_end_meeting <= end_hour
+        op2 = sched_begin_meeting >= begin_hour and sched_end_meeting <= end_hour
+        op3 = sched_begin_meeting < end_hour and sched_end_meeting >= end_hour
         return op1 or op2 or op3
 
     @classmethod
     def get_by_email_and_date_and_hour(cls, email, date, begin_hour, end_hour):
         ###need to change the queary
         schedules = []
-        #query = {'$and': [{'date': date} , {'email': email}, {'$gt': {'begin_meeting': begin_hour}}]}
+        # query = {'$and': [{'date': date} , {'email': email}, {'$gt': {'begin_meeting': begin_hour}}]}
 
         query = {'$and': [{'date': date}, {'email': email}]}
-        #query = {'$and': [{'date': date}, {'email':email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
-        #query = {'$and': [{'date': date}, {'email': email},
-         #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
+        # query = {'$and': [{'date': date}, {'email':email}, {'begin_meeting': begin_hour}, {'end_meeting': end_hour}]}
+        # query = {'$and': [{'date': date}, {'email': email},
+        #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
         data = Database.find('schedules', query)
         if data is not None:
             for sched in data:
@@ -392,9 +390,9 @@ class Schedule(object):
     @classmethod
     def get_by_date_and_hour(cls, date, begin_hour, end_hour):
         schedules = []
-        query ={'$and': [{'date': date}, {'begin_meeting': begin_hour}]}
-        #query = {'$and': [{'date': date},
-         #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
+        query = {'$and': [{'date': date}, {'begin_meeting': begin_hour}]}
+        # query = {'$and': [{'date': date},
+        #                 {'$or': [{'$gt': {'begin_meeting': end_hour}}, {'$st': {'end_meeting': begin_hour}}]}]}
         data = Database.find('schedules', query)
         if data is not None:
             for sched in data:
@@ -437,3 +435,8 @@ class Schedule(object):
     @classmethod
     def delete_order(cls, order_id):
         Database.remove('schedules', {'order_id': order_id})
+
+    def remove_participants(self, user_to_remove):
+        self.participants.remove(user_to_remove)
+        Database.remove('schedules', {'_id': self._id})
+        Database.insert('schedules', self.json())

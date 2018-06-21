@@ -610,19 +610,18 @@ class Order(object):
             order = cls(**order)
             Database.remove('orders', {'_id': order_id})
             order.participants.remove(user_email)
+
             Database.insert('orders', order.json())
 
     @classmethod
     def delete_order(cls, order_id):
         found = Database.find_one('orders', {'_id': order_id})
         Database.remove('orders', {'_id': order_id})
-        found = Database.find_one('orders', {'_id': order_id})
-        a =1+2
 
     @classmethod
     def who_create_order(cls, order_id):
         order = cls.find_by_id(order_id)
-        return order.user_email
+        return order[0].user_email
 
     def try_schedule_naive_algorithm(self, company, facility, min_permission, participant_num):
         rooms = Room.available_rooms(self.date, participant_num, self.start_time, self.end_time, min_permission,
