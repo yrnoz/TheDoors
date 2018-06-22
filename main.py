@@ -411,6 +411,7 @@ def route_reservations():
                 meetings = meetings + scheds
         for m in meetings:
             print(m.date)
+            print(m.participants)
         return render_template('reservation.html', manager=user.manager, meetings=meetings)
 
 

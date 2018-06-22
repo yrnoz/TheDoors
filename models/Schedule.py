@@ -88,8 +88,8 @@ class Schedule(object):
         room_query = {'room_id': room_id} if room_id is not None else {}
         begin_query = {'begin_meeting': start_time} if start_time is not None else {}
         end_query = {'end_meeting': end_time} if end_time is not None else {}
-        # query = {'$and': [email_query, date_query, room_query, begin_query, end_query]}
-        query = {'email': user_email}
+        query = {'$and': [email_query, date_query, room_query, begin_query, end_query]}
+        # query = {'email': user_email}
         schedules = []
         data = Database.find('schedules', query)
         print(query)
