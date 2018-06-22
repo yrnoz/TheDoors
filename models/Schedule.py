@@ -92,8 +92,7 @@ class Schedule(object):
         # query = {'email': user_email}
         schedules = []
         data = Database.find('schedules', query)
-        print(query)
-        print(date)
+
         if data is not None:
             for sched in data:
                 schedules.append(cls(**sched))

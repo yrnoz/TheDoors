@@ -409,9 +409,6 @@ def route_reservations():
             scheds = user.get_schedule(date)
             if len(scheds) > 0:
                 meetings = meetings + scheds
-        for m in meetings:
-            print(m.date)
-            print(m.participants)
         return render_template('reservation.html', manager=user.manager, meetings=meetings)
 
 
