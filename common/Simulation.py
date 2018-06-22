@@ -40,7 +40,7 @@ def add_random_rooms_simulation(maxRooms, manager):
     global NUM_FACILITIES
     NUM_ROOMS = random.randint(1, maxRooms)
     for i in range():
-        manager.add_room_simulation(random.randint(1,3), random.randint(30,100), i, random.randint(1,3), "facility" + str(random.randint(1, NUM_FACILITIES)), True)
+        Room.add_room_simulation(random.randint(1,3), random.randint(30,100), i, random.randint(5,8), "facility" + str(random.randint(1, NUM_FACILITIES)), True)
 
 def add_random_facilities_simulation(maxFacilities, manager):
     '''

@@ -445,8 +445,8 @@ class Manager(User):
     def add_room(self, permission, capacity, room_num, floor, facility, disabled_access):
         return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
 
-    def add_room_simulation(self, permission, capacity, room_num, floor, facility, disabled_access):
-        return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
+    # def add_room_simulation(self, permission, capacity, room_num, floor, facility, disabled_access):
+    #     return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
 
     def import_rooms(self, file):
         """

@@ -247,13 +247,10 @@ class Room(object):
     def add_room_simulation(cls, permission, capacity, room_num, floor, company, facility, disabled_access=False):
         _id = company + " " + facility + ' ' + str(room_num)
         if not cls.is_room_exist_simulation(_id):
-            print('not exist' + _id)
             new_room = cls(permission, capacity, _id, floor, company, facility, disabled_access)
             Database.insertSimulation('rooms', new_room.json())
             return True, _id
         else:
-            print(' exist' + _id)
-
             # room already exist
             return False, _id
 
