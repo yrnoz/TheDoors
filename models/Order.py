@@ -411,23 +411,23 @@ class Order(object):
 
         print(room_id)
         if status:
-            new_order.save_to_mongodb()
+            # new_order.save_to_mongodb()
             #if cls.is_send_mail(date):
              #   cls.send_mail(user_email, room_id, date, start_time, end_time)
             return True, new_order._id, room_id
-        # else:
-        #     if cls.is_send_mail(date) == False:
-        #         pass
-        #         all_conflict_orders = Order.find_by_date_and_time_facility(date, start_time, end_time, facility)
-        #         all_conflict_orders.append(new_order)
-        #         all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
-        #         cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
-        #         status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
-        #         if status == True:
-        #             new_order.save_to_mongodb()
-        #             if cls.is_send_mail(date):
-        #                 cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
-        #             return True, new_order._id, room_id
+        else:
+            if cls.is_send_mail(date) == False:
+                pass
+                all_conflict_orders = Order.find_by_date_and_time_facility(date, start_time, end_time, facility)
+                all_conflict_orders.append(new_order)
+                all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
+                cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
+                status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
+                if status == True:
+                    # new_order.save_to_mongodb()
+                    if cls.is_send_mail(date):
+                        cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
+                    return True, new_order._id, room_id
         return False, "There is not empty room", 'failed'
 
     @classmethod
