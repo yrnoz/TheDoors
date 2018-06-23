@@ -42,7 +42,7 @@ class Database(object):
 
     @staticmethod
     def find_one(collection, query):
-        return Database.DATABASE[collection].find_one(query)
+        return Database.DATABASE[collection].find(query)
 
     @staticmethod
     def remove(collection, query):
@@ -70,7 +70,7 @@ class Database(object):
 
     @staticmethod
     def insertSimulation(collection, data):
-        Database.SIMULATION[collection].insert_one(data)
+        Database.SIMULATION[collection].insert(data)
 
     @staticmethod
     def findSimulation(collection, query):
@@ -82,7 +82,7 @@ class Database(object):
 
     @staticmethod
     def find_oneSimulation(collection, query):
-        return Database.SIMULATION[collection].find_one(query)
+        return Database.SIMULATION[collection].find(query)
 
     @staticmethod
     def removeSimulation(collection, query):
