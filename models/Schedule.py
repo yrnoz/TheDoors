@@ -29,7 +29,7 @@ class Schedule(object):
 
     def save_to_mongodb(self):
         data = self.json()
-        print(data)
+        # print(data)
         data1 = Database.find_one('schedules', {'email': 'email_1@gmail.com'})
         data2 = Database.find_one('schedules', {'email': 'email_4@gmail.com'})
         Database.insert(collection='schedules', data=self.json())
