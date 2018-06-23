@@ -515,7 +515,7 @@ class Order(object):
                 return False, "There is no room"
             room = all_rooms[index_room]
             room_id = room.get_id_room()
-            Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
+            # Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
             scheds_by_order = Schedule.get_by_order(order_id)
             already_scheduled.append(scheds_by_order[0])
         return True, room_id
