@@ -180,7 +180,7 @@ class User(object):
         status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
                                                     facility, min_permission)
 
-        if status:
+        # if status:
             # not finish yet
             # Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
             # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
