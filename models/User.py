@@ -173,18 +173,18 @@ class User(object):
         problematic_participants = Schedule.all_participants_are_free(date, participants, start_time,
                                                                       end_time)
 
-        if len(problematic_participants) > 0:
-            return False, problematic_participants
-        min_permission = User.min_permission(participants)
-        _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
-        status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
-                                                    facility, min_permission)
-
-        if status:
-            # not finish yet
-            Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
-            # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
-        return status, order_id
+        # if len(problematic_participants) > 0:
+        #     return False, problematic_participants
+        # min_permission = User.min_permission(participants)
+        # _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
+        # status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
+        #                                             facility, min_permission)
+        #
+        # if status:
+        #     # not finish yet
+        #     Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
+        #     # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+        return True, 1
 
     def new_order_simulation(self, date, participants, start_time, end_time, company, facility):
         if self.email not in participants:
