@@ -177,9 +177,9 @@ class User(object):
             return False, problematic_participants
         min_permission = User.min_permission(participants)
         _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
-        # status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
-        #                                             facility, min_permission)
-        #
+        status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
+                                                    facility, min_permission)
+
         # if status:
         #     # not finish yet
         #     Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
