@@ -422,7 +422,7 @@ class Order(object):
                 all_conflict_orders.append(new_order)
                 all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
                 cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
-                status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
+                # status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
                 if status == True:
                     # new_order.save_to_mongodb()
                     # if cls.is_send_mail(date):
