@@ -424,7 +424,7 @@ class Order(object):
                 cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
                 status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
                 if status == True:
-                    new_order.save_to_mongodb()
+                    # new_order.save_to_mongodb()
                     # if cls.is_send_mail(date):
                     #     cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
                     return True, new_order._id, room_id
