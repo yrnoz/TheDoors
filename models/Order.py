@@ -425,8 +425,8 @@ class Order(object):
                 status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
                 if status == True:
                     new_order.save_to_mongodb()
-                    if cls.is_send_mail(date):
-                        cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
+                    # if cls.is_send_mail(date):
+                    #     cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
                     return True, new_order._id, room_id
         return False, "There is not empty room", 'failed'
 
