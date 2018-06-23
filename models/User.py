@@ -173,10 +173,10 @@ class User(object):
         problematic_participants = Schedule.all_participants_are_free(date, participants, start_time,
                                                                       end_time)
 
-        # if len(problematic_participants) > 0:
-        #     return False, problematic_participants
-        # min_permission = User.min_permission(participants)
-        # _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
+        if len(problematic_participants) > 0:
+            return False, problematic_participants
+        min_permission = User.min_permission(participants)
+        _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
         # status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
         #                                             facility, min_permission)
         #
