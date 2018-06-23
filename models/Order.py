@@ -422,12 +422,12 @@ class Order(object):
                 all_conflict_orders.append(new_order)
                 all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
                 cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
-                # status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
-                if status == True:
-                    # new_order.save_to_mongodb()
-                    # if cls.is_send_mail(date):
-                    #     cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
-                    return True, new_order._id, room_id
+                status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
+                # if status == True:
+                #     new_order.save_to_mongodb()
+                #     if cls.is_send_mail(date):
+                #         cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
+                #     return True, new_order._id, room_id
         return False, "There is not empty room", 'failed'
 
     @classmethod
@@ -475,17 +475,17 @@ class Order(object):
     @classmethod
     def bactracking_algorithm(cls, all_conflict_orders, facility, date, start_time, end_time):
         all_rooms=list(Room.find_by_facility(facility))
-        list_room_id =[]
-        for room in all_rooms:
-            room_id = room._id
-            list_room_id.append(room_id)
-        perm_list = list(permutations(all_rooms ,len(all_rooms)))
-
-
-        for i in perm_list:
-            is_sucess, room_id = cls.simple_algo(all_conflict_orders, i, date, start_time, end_time)
-            if is_sucess:
-                return True, room_id,
+        # list_room_id =[]
+        # for room in all_rooms:
+        #     room_id = room._id
+        #     list_room_id.append(room_id)
+        # perm_list = list(permutations(all_rooms ,len(all_rooms)))
+        #
+        #
+        # for i in perm_list:
+        #     is_sucess, room_id = cls.simple_algo(all_conflict_orders, i, date, start_time, end_time)
+        #     if is_sucess:
+        #         return True, room_id,
         return False, "no room"
 
     @classmethod
