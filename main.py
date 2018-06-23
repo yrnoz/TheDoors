@@ -354,16 +354,16 @@ def reserve_room():
     meeting_duration = request.form['duration']
     user = User.get_by_email(session['email'])
     end_time = str(int(start_time) + int(meeting_duration))
-    status, info = user.new_order(date, participants, start_time, end_time, user.company,
-                                  user.facility)
-    if not status:
-        if isinstance(info, str):
-            flash('Fail!\n' + info)
-        else:
-            str1 = ' '.join(info)
-            flash('Fail!\n Those participants already have meeting on this time ' + str1)
-    elif status:
-        flash('Meeting create successfully')
+    # status, info = user.new_order(date, participants, start_time, end_time, user.company,
+    #                               user.facility)
+    # if not status:
+    #     if isinstance(info, str):
+    #         flash('Fail!\n' + info)
+    #     else:
+    #         str1 = ' '.join(info)
+    #         flash('Fail!\n Those participants already have meeting on this time ' + str1)
+    # elif status:
+    #     flash('Meeting create successfully')
 
 
 @app.route('/reserve_room', methods=['GET', 'POST'])
