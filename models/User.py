@@ -181,10 +181,10 @@ class User(object):
                                                     facility, min_permission)
 
         # if status:
-        #     # not finish yet
-        #     Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
-        #     # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
-        return True, 1
+            # not finish yet
+            # Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
+            # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+        return status, order_id
 
     def new_order_simulation(self, date, participants, start_time, end_time, company, facility):
         if self.email not in participants:

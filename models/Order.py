@@ -509,7 +509,7 @@ class Order(object):
         for order in all_conflict_orders:
             order_id = order.get_id()
             participents_order = order.get_participents()
-            # index_room = Room.get_next_room_from_list(all_rooms, index_room, len(participents_order), date, start_time, end_time)
+            index_room = Room.get_next_room_from_list(all_rooms, index_room, len(participents_order), date, start_time, end_time)
             # if index_room == -1:
             #     cls.remove_conflict_schedule(already_scheduled, date, start_time, end_time)
             #     return False, "There is no room"
