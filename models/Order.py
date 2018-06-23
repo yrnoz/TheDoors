@@ -475,11 +475,11 @@ class Order(object):
     @classmethod
     def bactracking_algorithm(cls, all_conflict_orders, facility, date, start_time, end_time):
         all_rooms=list(Room.find_by_facility(facility))
-        # list_room_id =[]
-        # for room in all_rooms:
-        #     room_id = room._id
-        #     list_room_id.append(room_id)
-        # perm_list = list(permutations(all_rooms ,len(all_rooms)))
+        list_room_id =[]
+        for room in all_rooms:
+            room_id = room._id
+            list_room_id.append(room_id)
+        perm_list = list(permutations(all_rooms ,len(all_rooms)))
         #
         #
         # for i in perm_list:
