@@ -132,7 +132,7 @@ class Room(object):
         for schedule in schedules:
             if schedule.date == date and self.intersection(start_time, end_time, schedule):
                 save_place += len(schedule.participants)
-        return True if demand_sits <= self.capacity - save_place else False
+        return True if demand_sits <= int(self.capacity) - save_place else False
 
     def available_on_time_simulation(self, date, start_time, end_time, demand_sits):
         schedules = self.get_schedules_simulation()
@@ -140,7 +140,7 @@ class Room(object):
         for schedule in schedules:
             if schedule.date == date and self.intersection(start_time, end_time, schedule):
                 save_place += len(schedule.participants)
-        return True if demand_sits <= self.capacity - save_place else False
+        return True if demand_sits <= int(self.capacity) - save_place else False
 
     def occupation_room(self, date, start_time, end_time):
         schedules = self.get_schedules()

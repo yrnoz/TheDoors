@@ -29,7 +29,7 @@ class Schedule(object):
 
     def save_to_mongodb(self):
         data = self.json()
-        # print(data)
+        print(data)
         data1 = Database.find_one('schedules', {'email': 'email_1@gmail.com'})
         data2 = Database.find_one('schedules', {'email': 'email_4@gmail.com'})
         Database.insert(collection='schedules', data=self.json())
@@ -245,8 +245,8 @@ class Schedule(object):
         for user_email in participants:
             new_meeting = Schedule(user_email, date, start_time, end_time, order_id, participants, room_id)
             sched_user = cls.get_by_email_and_date_and_hour(user_email, date, start_time, end_time)
-            # if len(sched_user) == 0:
-                # new_meeting.save_to_mongodb()
+            if len(sched_user) == 0:
+                new_meeting.save_to_mongodb()
 
     @classmethod
     def assign_all_simulation(cls, date, participants, start_time, end_time, order_id, room_id):

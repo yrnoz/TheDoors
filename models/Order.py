@@ -411,7 +411,7 @@ class Order(object):
 
         print(room_id)
         if status:
-            # new_order.save_to_mongodb()
+            new_order.save_to_mongodb()
             #if cls.is_send_mail(date):
              #   cls.send_mail(user_email, room_id, date, start_time, end_time)
             return True, new_order._id, room_id
@@ -423,11 +423,11 @@ class Order(object):
                 all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
                 cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
                 status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
-                # if status == True:
-                #     new_order.save_to_mongodb()
-                #     if cls.is_send_mail(date):
-                #         cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
-                #     return True, new_order._id, room_id
+                if status == True:
+                    new_order.save_to_mongodb()
+                    if cls.is_send_mail(date):
+                        cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
+                    return True, new_order._id, room_id
         return False, "There is not empty room", 'failed'
 
     @classmethod
@@ -480,10 +480,12 @@ class Order(object):
             room_id = room._id
             list_room_id.append(room_id)
         perm_list = list(permutations(all_rooms ,len(all_rooms)))
+
+
         for i in perm_list:
             is_sucess, room_id = cls.simple_algo(all_conflict_orders, i, date, start_time, end_time)
             if is_sucess:
-                return True, room_id
+                return True, room_id,
         return False, "no room"
 
     @classmethod
@@ -510,16 +512,15 @@ class Order(object):
             order_id = order.get_id()
             participents_order = order.get_participents()
             index_room = Room.get_next_room_from_list(all_rooms, index_room, len(participents_order), date, start_time, end_time)
-            # if index_room == -1:
-            #     cls.remove_conflict_schedule(already_scheduled, date, start_time, end_time)
-            #     return False, "There is no room"
-            # room = all_rooms[index_room]
-            # room_id = room.get_id_room()
-            # Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
-            # scheds_by_order = Schedule.get_by_order(order_id)
-            # already_scheduled.append(scheds_by_order[0])
-        #return True, room_id
-        return True, 1
+            if index_room == -1:
+                cls.remove_conflict_schedule(already_scheduled, date, start_time, end_time)
+                return False, "There is no room"
+            room = all_rooms[index_room]
+            room_id = room.get_id_room()
+            Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
+            scheds_by_order = Schedule.get_by_order(order_id)
+            already_scheduled.append(scheds_by_order[0])
+        return True, room_id
 
     @classmethod
     def simple_algo_simulation(cls, all_conflict_orders, all_rooms, date, start_time, end_time):
