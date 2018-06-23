@@ -518,7 +518,7 @@ class Order(object):
             # Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
             # scheds_by_order = Schedule.get_by_order(order_id)
             # already_scheduled.append(scheds_by_order[0])
-        return True, room_id
+        return True, 1
 
     @classmethod
     def simple_algo_simulation(cls, all_conflict_orders, all_rooms, date, start_time, end_time):
