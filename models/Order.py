@@ -480,12 +480,12 @@ class Order(object):
             room_id = room._id
             list_room_id.append(room_id)
         perm_list = list(permutations(all_rooms ,len(all_rooms)))
-        #
-        #
-        # for i in perm_list:
-        #     is_sucess, room_id = cls.simple_algo(all_conflict_orders, i, date, start_time, end_time)
-        #     if is_sucess:
-        #         return True, room_id,
+
+
+        for i in perm_list:
+            is_sucess, room_id = cls.simple_algo(all_conflict_orders, i, date, start_time, end_time)
+            if is_sucess:
+                return True, room_id
         return False, "no room"
 
     @classmethod
