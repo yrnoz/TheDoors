@@ -8,11 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    {# here we try something new#}
+    {#    here we try something new#}
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static' , filename='css/reset.css') }}"> <!-- CSS reset -->
     <link rel="stylesheet" href="{{ url_for('static' , filename='css/style-calander.css') }}"> <!-- Resource style -->
-    {# done here#}
+    {#   done here#}
 
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename= 'images/favicon.png') }}">
@@ -31,7 +31,7 @@
     <!--[if lt IE 9]>
     <script src="https:**oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https:**oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+<![endif]-->
 </head>
 
 <body class="fix-header fix-sidebar">
@@ -123,226 +123,176 @@
         </div>
         <!-- End Sidebar scroll-->
     </div>
+
+
+
     <!-- End Left Sidebar  -->
     <!-- Page wrapper  -->
     <div class="page-wrapper">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <!-- Bread crumb -->
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h3 class="text-primary">My reservations</h3></div>
+                <h3 class="text-primary">Reservations</h3></div>
             <div class="col-md-7 align-self-center">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Actions</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
                     <li class="breadcrumb-item active">Reservations</li>
                 </ol>
             </div>
         </div>
+        <!-- End Bread crumb -->
+        <!-- Container fluid  -->
+
+        <!-- Start Page Content -->
+
+        <div class="tab-pane  p-20" id="add" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card card-outline-primary">
+                        <div class="card-body">
+                            <form action="{{ url_for('meeting_cancel') }}" method="post">
+                                <div class="form-body">
+                                    <h3 class="card-title m-t-15">Reservation</h3>
+                                    <hr>
+                                    <div class="row p-t-20">
+                                        <div class="col-md-6">
+
+
+                                            <div class="form-group">
+                                                <label class="control-label">Meeting Creator:</label>
+                                                <input name="meeting_creator" type="text" id="meeting_creator"
+                                                       class="form-control" value="{{ meeting.email }}"
+                                                       readonly>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label">Start Time:</label>
+                                                <input name="start_time" type="text" id="start_time"
+                                                       class="form-control" value="{{ meeting.get_start_time() }}"
+                                                       readonly>
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <label class="control-label">End Time:</label>
+                                                <input name="end_time" type="text" id="end_time"
+                                                       class="form-control" value="{{ meeting.get_end_time() }}"
+                                                       readonly>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label">Location:</label>
+                                                <input name="location" type="text" id="location"
+                                                       class="form-control" value="{{ meeting.room_id }}"
+                                                       readonly>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label">Participants:</label>
+                                                {% for p in  meeting.participants %}
+                                                <input name="participants" type="text" id="participants"
+                                                       class="form-control" value="{{ p}}"
+
+                                                       readonly>
+                                                {% endfor %}
+
+                                            </div>
+
+
+                                                <input name="meeting_id" type="text"
+                                                       class="form-control" value="{{ meeting._id}}" hidden>
+                                                <div class="form-actions">
+                                                    <button type="submit" class="btn btn-success"><i
+                                                            class="fa fa-check"></i> Remove Meeting
+                                                    </button>
+                                                </div>
+
+
+                                        </div>
+
+                                        <!--/row-->
+
+                                        <!--/row-->
+
+                                        <!--/row-->
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- /# column -->
+    </div>
+    <!-- /# row -->
+
+
+    <!-- End Container fluid  -->
+    <!-- footer -->
+    <!-- End footer -->
+</div>
+
+
+
+
+    <!--&lt;!&ndash; End Left Sidebar  &ndash;&gt;-->
+    <!--&lt;!&ndash; Page wrapper  &ndash;&gt;-->
+    <!--<div class="page-wrapper">-->
+        <!--&lt;!&ndash; Bread crumb &ndash;&gt;-->
+        <!--<div class="row page-titles">-->
+            <!--<div class="col-md-5 align-self-center">-->
+                <!--<h3 class="text-primary">My reservations</h3></div>-->
+            <!--<div class="col-md-7 align-self-center">-->
+                <!--<ol class="breadcrumb">-->
+                    <!--<li class="breadcrumb-item"><a href="javascript:void(0)">Actions</a></li>-->
+                    <!--<li class="breadcrumb-item active">Reservations</li>-->
+                <!--</ol>-->
+            <!--</div>-->
+        <!--</div>-->
 
 
         <!-- End Bread crumb -->
         <!-- Container fluid  -->
-        {#
-        <div class="container-fluid">#}
+        {#        <div class="container-fluid">#}
         <!-- Start Page Content -->
-        {#
-            <div class="row justify-content-center">#}
-        {#
-                <div class="col-lg-6">#}
-        {#
-                    <div class="card">#}
-        {#
-                        <div class="card-body">#}
-        {#
-                            <div class="year-calendar"></div>
-                            #}
-
-        {# here we try sometihng new #}
-        <div class="cd-schedule loading">
-            <div class="timeline">
-                <ul>
-                    <li><span>08:00</span></li>
-                    <li><span>09:00</span></li>
-                    <li><span>10:00</span></li>
-                    <li><span>11:00</span></li>
-                    <li><span>12:00</span></li>
-                    <li><span>13:00</span></li>
-                    <li><span>14:00</span></li>
-                    <li><span>15:00</span></li>
-                    <li><span>16:00</span></li>
-                    <li><span>17:00</span></li>
-                    <li><span>18:00</span></li>
-                    <li><span>19:00</span></li>
-                    <li><span>20:00</span></li>
-                    <li><span>21:00</span></li>
-                    <li><span>22:00</span></li>
-                    <li><span>23:00</span></li>
-                    <li><span>00:00</span></li>
-
-                </ul>
-            </div> <!-- .timeline -->
-            {% for meeting in meetings %}
-                <form id="{{ meeting._id }}"
-                      action="{{ url_for('meeting_info') }}" method="POST" hidden>
-
-                    <input type="text" name="meeting_id" hidden value="{{ meeting._id }}">
+        {#            <div class="row justify-content-center">#}
+        {#                <div class="col-lg-6">#}
+        {#                    <div class="card">#}
+        {#                        <div class="card-body">#}
+        {#                            <div class="year-calendar"></div>#}
 
 
-                </form>
-            {% endfor %}
-
-
-            <div class="events">
-                <ul>
-                    <li class="events-group">
-                        <div class="top-info"><span>Sunday</span></div>
-
-                        <ul>
-                            {% for meeting in meetings %}
-                                {% if meeting.get_day() == 'Sunday' %}
-                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
-                                        data-end="{{ meeting.get_end_time() }}"
-                                        data-content="#"
-                                        data-event="event-1">
-                                        <a href="#"
-                                           onclick="document.getElementById('{{ meeting._id }}').submit();"></a>
-
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-
-                        </ul>
-                    </li>
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Monday</span></div>
-
-                        <ul>
-                            {% for meeting in meetings %}
-                                {% if meeting.get_day() == 'Monday' %}
-                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
-                                        data-end="{{ meeting.get_end_time() }}"
-                                        data-content="start: {{ meeting.get_start_time() }}
-                                           end: {{ meeting.get_end_time() }}
-                                           participants: {{ meeting.participants }}"
-                                        data-event="event-2">
-                                        <a href="#"
-                                           onclick="document.getElementById('{{ meeting._id }}').submit();"></a>
-
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-
-                        </ul>
-                    </li>
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Tuesday</span></div>
-
-                        <ul>
-                            {% for meeting in meetings %}
-                                {% if meeting.get_day() == 'Tuesday' %}
-                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
-                                        data-end="{{ meeting.get_end_time() }}"
-                                        data-content="start: {{ meeting.get_start_time() }}
-                                                       end: {{ meeting.get_end_time() }}
-                                                        participants: {{ meeting.participants }}"
-                                        data-event="event-3">
-                                        <a href="#"
-                                           onclick="document.getElementById('{{ meeting._id }}').submit();"></a>
-
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-
-                        </ul>
-                    </li>
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Wednesday</span></div>
-
-                        <ul>
-                            {% for meeting in meetings %}
-                                {% if meeting.get_day() == 'Wednesday' %}
-
-                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
-                                        data-end="{{ meeting.get_end_time() }}"
-                                        data-content="start: {{ meeting.get_start_time() }}
-                                                       end: {{ meeting.get_end_time() }}
-                                                        participants: {{ meeting.participants }}"
-                                        data-event="event-4">
-
-
-                                        <a href="#"
-                                           onclick="document.getElementById('{{ meeting._id }}').submit();"></a>
-
-
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </li>
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Thursday</span></div>
-
-                        <ul>
-                            {% for meeting in meetings %}
-
-                                {% if meeting.get_day() == 'Thursday' %}
-                                    <li class="single-event" data-start="{{ meeting.get_start_time() }}"
-                                        data-end="{{ meeting.get_end_time() }}"
-                                        data-content=""
-                                        data-event="event-1">
-
-                                        <a href="#"
-                                           onclick="document.getElementById('{{ meeting._id }}').submit();"></a>
-
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="cover-layer"></div>
-        </div> <!-- .cd-schedule -->
-        <script src="{{ url_for('static' , filename='js/modernizr.js') }}"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-        <script>
-            if (!window.jQuery) document.write('<script src="{{ url_for("static" , filename="js/jquery-3.0.0.min.js") }}"><\/script>');
-
-
-        </script>
-        <script src="{{ url_for('static' , filename='js/main.js') }}"></script>
-        <!-- Resource jQuery -->
-
-
-        {# here we try sometihng new #}
-
-        {#
-                        </div>
-                        #}
-        {#
-                    </div>
-                    #}
-        {#
-                </div>
-                #}
-        {#
-            </div>
-            #}
+        {#            </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
         <!-- End PAge Content -->
-        {#
-        </div>
-        #}
+        {#        </div>#}
         <!-- End Container fluid  -->
         <!-- footer -->
         <footer class="footer"> © 2018 All rights reserved. Template designed by <a
                 href="https://colorlib.com">Colorlib</a></footer>
         <!-- End footer -->
     </div>
+
+
     <!-- End Page wrapper  -->
 </div>
 <!-- End Wrapper -->

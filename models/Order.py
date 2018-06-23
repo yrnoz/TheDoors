@@ -3,6 +3,8 @@ from models.Room import Room
 from models.Schedule import Schedule
 from datetime import datetime
 from itertools import permutations
+import smtplib
+
 
 
 class Order(object):
@@ -27,6 +29,9 @@ class Order(object):
 
     def save_to_mongodb(self):
         Database.insert(collection='orders', data=self.json())
+
+    def save_to_mongodb_simulation(self):
+        Database.insertSimulation(collection='orders', data=self.json())
 
     # need to be option to save to user
 
@@ -81,6 +86,16 @@ class Order(object):
         for order in data:
             orders.append(cls(**order))
         return orders
+
+    def get_num_parctipents(self):
+        num_participents= len(self.participants)
+        return num_participents
+
+    def get_participents(self):
+        return self.participants
+
+    def get_id(self):
+        return self._id
 
     @classmethod
     def find_by_user_email_and_date_and_time(cls, user_email, date, beign, end):
@@ -206,9 +221,72 @@ class Order(object):
         }
         data = Database.find('orders', query)
         for order in data:
+
             orders.append(cls(**order))
         return orders
 
+    @classmethod
+    def find_by_date_and_time_facility_simulation(cls, date, beign, end, facility):
+        orders = []
+
+        intersection = {
+            '$or':
+                [
+                    {
+                        '$and':
+                            [
+                                {
+                                    'start_time':
+                                        {
+                                            '$not':
+                                                {
+                                                    '$gte': end
+
+                                                }
+                                        }
+
+                                },
+                                {
+                                    'end_time':
+                                        {
+                                            '$gte': end
+                                        }
+                                }
+                            ]
+                    }
+                    ,
+                    {
+                        '$and':
+                            [
+                                {
+                                    'start_time':
+                                        {
+                                            '$not':
+                                                {
+                                                    '$gte': beign
+
+                                                }
+                                        }
+
+                                },
+                                {
+                                    'end_time':
+                                        {
+                                            '$gt': beign
+                                        }
+                                }
+                            ]
+                    }
+                ]
+        }
+
+        query = {
+            '$and': [{'date': date}, {'facility': facility}, intersection]
+        }
+        data = Database.findSimulation('orders', query)
+        for order in data:
+            orders.append(cls(**order))
+        return orders
 
     @classmethod
     def find_by_date_and_time(cls, user_email, date, beign, end):
@@ -278,6 +356,32 @@ class Order(object):
         orders = cls.find_by_user_email_and_date_and_time(user_email, date, start_time, end_time)
         return True if len(orders) > 1 else False
 
+
+    @classmethod
+    def send_mail(cls, email_user, room_id, date, begin_meetin, end_meeting):
+        mail = smtplib.SMTP('smtp.gmail.com', 587)
+        mail.ehlo()
+        mail.starttls()
+        mail.login('theDoorsTechnion@gmail.com', '2018TheDoors')
+        SUBJECT = 'Reminder for meeting'
+        TEXT = 'We want to remind you about meeting Today'
+        message = 'Subject: {}\n\n{}'.format(SUBJECT, TEXT)
+
+        mail.sendmail('theDoorsTechnion@gmail.com', email_user, message)
+        mail.close()
+
+    @classmethod
+    def is_send_mail(cls, date):
+        current_day = datetime.today().date().day
+        current_month = datetime.today().date().month
+        current_year = datetime.today().date().year - 2000
+        string_date_current = date.split('/', 2)
+        if current_day == int(string_date_current[0]) and current_month == int(
+                string_date_current[1]) and current_year == int(string_date_current[2]):
+            if datetime.today().hour > 7:
+                return True
+        return False
+
     @classmethod
     def new_order(cls, _id, user_email, date, participants, start_time, end_time, company, facility, min_permission):
         """
@@ -308,18 +412,68 @@ class Order(object):
         print(room_id)
         if status:
             new_order.save_to_mongodb()
+            #if cls.is_send_mail(date):
+             #   cls.send_mail(user_email, room_id, date, start_time, end_time)
+            return True, new_order._id, room_id
+        else:
+            if cls.is_send_mail(date) == False:
+                pass
+                all_conflict_orders = Order.find_by_date_and_time_facility(date, start_time, end_time, facility)
+                all_conflict_orders.append(new_order)
+                all_conflict_schedules = Schedule.get_by_date_and_hour(date, start_time, end_time)
+                cls.remove_conflict_schedule(all_conflict_schedules, date, start_time, end_time)
+                status, room_id =cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
+                if status == True:
+                    new_order.save_to_mongodb()
+                    if cls.is_send_mail(date):
+                        cls.send_mail(cls, user_email, room_id, date, start_time, end_time)
+                    return True, new_order._id, room_id
+        return False, "There is not empty room", 'failed'
+
+    @classmethod
+    def new_order_simulation(cls, _id, user_email, date, participants, start_time, end_time, company, facility, min_permission):
+        """
+
+        :param min_permission:
+        :param _id:
+        :param facility:
+        :param company:
+        :param user_email:
+        :param date:
+        :param participants:
+        :param start_time:
+        :param end_time:
+        :return: True if we can create new order:
+        if this user_email already had an order on this time --> false
+        if one of the participants already have a meeting on this time --> false
+        else --> true
+        """
+
+        new_order = cls(_id, user_email, date, participants, start_time, end_time, company, facility)
+        # todo - schedule algorithm, after it run we know the room_id that we will assign them in.
+        # todo - this algorithm try to assign the new order into specific room.
+        # todo - if it can't do this then it start to change other orders.
+
+        status, room_id = new_order.try_schedule_simple_algorithm_simulation(company, facility, min_permission,
+                                                                  len(participants))
+
+        print(room_id)
+        if status:
+            new_order.save_to_mongodb_simulation()
             return True, new_order._id, room_id
         else:
             pass
-            all_conflict_orders = Order.find_by_date_and_time_facility(date, start_time, end_time, facility)
+            all_conflict_orders = Order.find_by_date_and_time_facility_simulation(date, start_time, end_time, facility)
             all_conflict_orders.append(new_order)
-            cls.remove_conflict_schedule(all_conflict_orders)
-            cls.bactracking_algorithm(all_conflict_orders, facility)
+            all_conflict_schedules = Schedule.get_by_date_and_hour_simulation(date, start_time, end_time)
+            cls.remove_conflict_schedule_simulation(all_conflict_schedules, date, start_time, end_time)
+            status, room_id = cls.bactracking_algorithm(all_conflict_orders, facility, date, start_time, end_time)
+            new_order.save_to_mongodb_simulation()
+            return True, new_order._id, room_id
         return False, "There is not empty room", 'failed'
 
-
     @classmethod
-    def bactracking_algorithm(cls, all_conflict_orders, facility):
+    def bactracking_algorithm(cls, all_conflict_orders, facility, date, start_time, end_time):
         all_rooms=list(Room.find_by_facility(facility))
         list_room_id =[]
         for room in all_rooms:
@@ -327,34 +481,117 @@ class Order(object):
             list_room_id.append(room_id)
         perm_list = list(permutations(all_rooms ,len(all_rooms)))
 
+
         for i in perm_list:
-            #print "hi"
-            total = cls.aux_backtracking(all_conflict_orders, 0, list(i), len(all_rooms))
-            a = 1+2
-            if total:
-                break
-#        print total
+            is_sucess, room_id = cls.simple_algo(all_conflict_orders, i, date, start_time, end_time)
+            if is_sucess:
+                return True, room_id,
+        return False, "no room"
 
     @classmethod
-    def aux_backtracking(cls, all_conflict_orders, index_order, all_rooms, num_rooms):
+    def bactracking_algorithm_simulation(cls, all_conflict_orders, facility, date, start_time, end_time):
+        all_rooms = list(Room.find_by_facility_simulation(facility))
+        list_room_id = []
+        for room in all_rooms:
+            room_id = room._id
+            list_room_id.append(room_id)
+        perm_list = list(permutations(all_rooms, len(all_rooms)))
+
+        for i in perm_list:
+            is_sucess, room_id = cls.simple_algo_simulation(all_conflict_orders, i, date, start_time, end_time)
+            if is_sucess:
+                return True, room_id,
+        return False, "no room"
+
+
+    @classmethod
+    def simple_algo(cls, all_conflict_orders, all_rooms, date, start_time, end_time):
+        index_room =0
+        already_scheduled = []
+        for order in all_conflict_orders:
+            order_id = order.get_id()
+            participents_order = order.get_participents()
+            index_room = Room.get_next_room_from_list(all_rooms, index_room, len(participents_order), date, start_time, end_time)
+            if index_room == -1:
+                cls.remove_conflict_schedule(already_scheduled, date, start_time, end_time)
+                return False, "There is no room"
+            room = all_rooms[index_room]
+            room_id = room.get_id_room()
+            Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
+            scheds_by_order = Schedule.get_by_order(order_id)
+            already_scheduled.append(scheds_by_order[0])
+        return True, room_id
+
+    @classmethod
+    def simple_algo_simulation(cls, all_conflict_orders, all_rooms, date, start_time, end_time):
+        index_room = 0
+        already_scheduled = []
+        for order in all_conflict_orders:
+            order_id = order.get_id()
+            participents_order = order.get_participents()
+            index_room = Room.get_next_room_from_list_simulation(all_rooms, index_room, len(participents_order), date, start_time,
+                                                      end_time)
+            if index_room == -1:
+                cls.remove_conflict_schedule_simulation(already_scheduled, date, start_time, end_time)
+                return False, "There is no room"
+            room = all_rooms[index_room]
+            room_id = room.get_id_room()
+            Schedule.assign_all_simulation(date, participents_order, start_time, end_time, order_id, room_id)
+            scheds_by_order = Schedule.get_by_order_simulation(order_id)
+            already_scheduled.append(scheds_by_order[0])
+        return True, room_id
+
+    @classmethod
+    def aux_backtracking(cls, all_conflict_orders, index_order, all_rooms, num_rooms, date, start_time, end_time):
         if index_order > len(all_conflict_orders) - 1:
             return True
         for i in range(num_rooms):
             if all_conflict_orders[index_order] <= all_rooms[i]:
-                all_rooms[i] = all_rooms[i] - all_conflict_orders[index_order]
+                room = all_rooms[i]
+                room_occupation_current=room.occupation_room(date, start_time, end_time)
+                order = all_conflict_orders[index_order]
+                order_id = order.get_id()
+                demanded_space = order.get_num_parctipents()
+                participents_order = order.get_participents()
+                after_occupency_room = room_occupation_current - demanded_space
+                room_id = room.get_id_room()
+                Schedule.assign_all(date, participents_order, start_time, end_time, order_id, room_id)
+                #all_rooms[i] = room_occupation_current  - all_conflict_orders[index_order].
                 return cls.aux_backtracking(all_conflict_orders, index_order + 1, all_rooms, num_rooms)
         return False
 
 
 
+    @classmethod
+    def remove_conflict_schedule(cls, all_conflict_schedules, date, start_time, end_time):
+        for sched in all_conflict_schedules:
+
+            #participants =
+            participants = Schedule.get_participants(sched)
+            Schedule.delete_meeting_from_schedule(date, participants, start_time, end_time)
 
 
+        ''''
+        if len(all_conflict_orders)==0:
+            return
+        order = all_conflict_orders[0]
 
+        email = order.user_email
+        date = order.date
+        begin_hour = order.start_time
+        end_hour = order.end_time
+
+        all_conflict_schedules= Schedule.get_by_email_and_date_and_hour(email, date, begin_hour, end_hour)
+        for sched in all_conflict_schedules:
+            sched_id = Schedule.get_sched_id(sched)
+            Schedule.cancel_meeting(sched_id)
+        '''
 
     @classmethod
-    def remove_conflict_schedule(cls, all_conflict_orders):
-        for order in all_conflict_orders:
-            cls.delete_order(order._id)
+    def remove_conflict_schedule_simulation(cls, all_conflict_schedules, date, start_time, end_time):
+        for sched in all_conflict_schedules:
+            participants = Schedule.get_participants(sched)
+            Schedule.delete_meeting_from_schedule_simulation(date, participants, start_time, end_time)
 
     @classmethod
     def participant_cancel(cls, user_email, order_id):
@@ -368,16 +605,18 @@ class Order(object):
             order = cls(**order)
             Database.remove('orders', {'_id': order_id})
             order.participants.remove(user_email)
+
             Database.insert('orders', order.json())
 
     @classmethod
     def delete_order(cls, order_id):
+        found = Database.find_one('orders', {'_id': order_id})
         Database.remove('orders', {'_id': order_id})
 
     @classmethod
     def who_create_order(cls, order_id):
         order = cls.find_by_id(order_id)
-        return order.user_email
+        return order[0].user_email
 
     def try_schedule_naive_algorithm(self, company, facility, min_permission, participant_num):
         rooms = Room.available_rooms(self.date, participant_num, self.start_time, self.end_time, min_permission,
@@ -399,6 +638,18 @@ class Order(object):
         print(rooms)
         for room in rooms:
             if room.available_on_time(self.date, self.start_time, self.end_time, participant_num):
+                print('available')
+                return self._id, room._id
+        return False, 'fail'
+
+    def try_schedule_simple_algorithm_simulation(self, company, facility, min_permission, participant_num):
+        rooms = Room.available_rooms_simulation(self.date, participant_num, self.start_time, self.end_time, min_permission,
+                                     company, facility)
+
+        print('here the rooms available')
+        print(rooms)
+        for room in rooms:
+            if room.available_on_time_simulation(self.date, self.start_time, self.end_time, participant_num):
                 print('available')
                 return self._id, room._id
         return False, 'fail'
@@ -447,6 +698,8 @@ class Order(object):
             for order in orders:
                 order.remove_participant(user_email)
             return True
+
+
 
 
 ''''

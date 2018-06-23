@@ -4,6 +4,10 @@ from models.Room import Room
 from models.Schedule import Schedule
 from models.Order import Order
 from flask import session
+import smtplib
+import sched
+
+import time
 
 from common.database import Database
 from models.facilities import Facilities
@@ -84,8 +88,25 @@ class User(object):
         return set(users)
 
     @classmethod
+    def get_by_company_simulation(cls, company):
+        users = []
+        data = Database.findSimulation('users', {'company': company})
+        if data is not None:
+            for user in data:
+                users.append(cls(**user))
+        # print(len(users))
+        # print(users)
+        return set(users)
+
+    @classmethod
     def get_by_id(cls, _id):
         data = Database.find_one('users', {'_id': _id})
+        if data is not None:
+            return cls(**data)
+
+    @classmethod
+    def get_by_id_simulation(cls, _id):
+        data = Database.find_oneSimulation('users', {'_id': _id})
         if data is not None:
             return cls(**data)
 
@@ -139,14 +160,14 @@ class User(object):
         return Friends.remove_friend(self.email, friend_email)
 
     def get_orders(self, start=None, end=None):
-        # todo
         return Order.find_by_user_email(self.email)
 
     def get_schedule(self, date=None, start_time=None, end_time=None, room_id=None):
         return Schedule.get_schedules(self.email, date, start_time, end_time, room_id)
 
     def new_order(self, date, participants, start_time, end_time, company, facility):
-        # todo fix this function
+
+
         if self.email not in participants:
             participants.append(self.email)
         problematic_participants = Schedule.all_participants_are_free(date, participants, start_time,
@@ -158,8 +179,31 @@ class User(object):
         _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
         status, order_id, room_id = Order.new_order(_id, self.email, date, participants, start_time, end_time, company,
                                                     facility, min_permission)
+
         if status:
-            self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+            # not finish yet
+            Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
+            # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
+        return status, order_id
+
+    def new_order_simulation(self, date, participants, start_time, end_time, company, facility):
+        if self.email not in participants:
+            participants.append(self.email)
+        problematic_participants = Schedule.all_participants_are_free_simulation(date, participants, start_time,
+                                                                                 end_time)
+
+        if len(problematic_participants) > 0:
+            return False, problematic_participants
+        min_permission = User.min_permission_simulation(participants)
+        _id = self.email + ' ' + date + ' ' + str(start_time) + ' ' + str(end_time)
+        status, order_id, room_id = Order.new_order_simulation(_id, self.email, date, participants, start_time,
+                                                               end_time, company,
+                                                               facility, min_permission)
+
+        if status:
+            # not finish yet
+            Schedule.assign_all_simulation(date, participants, start_time, end_time, order_id, room_id)
+            # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
 
     def cancel_meeting(self, meeting_id):
@@ -173,6 +217,10 @@ class User(object):
             return self.cancel_order(order_id)
         if order_id is not None:
             Order.participant_cancel(self.email, order_id)
+            meetings = Schedule.get_by_order(order_id)
+            for m in meetings:
+                m.remove_participants(self.email)
+
 
     def cancel_order(self, order_id):
         """
@@ -191,8 +239,26 @@ class User(object):
         for user in participants:
             user = User.get_by_email(user)
             if user is not None:
-                permission = user.permission if user.permission < permission else permission
+                permission = int(user.permission) if int(user.permission) < permission else permission
         return permission
+
+    @classmethod
+    def min_permission_simulation(cls, participants):
+        permission = 1000000000
+        for user in participants:
+            user = User.get_by_email_simulation(user)
+            if user is not None:
+                permission = int(user.permission) if int(user.permission) < permission else permission
+        return permission
+
+    @classmethod
+    def print_time(cls):
+        print("************************************************From print_time", time.time())
+
+    @classmethod
+    def print_values(cls):
+        print("")
+        # sched.every(1).seconds.do(cls.print_time)
 
 
 class Manager(User):
@@ -227,6 +293,9 @@ class Manager(User):
     def get_employees(self):
         return User.get_by_company(self.company)
 
+    def get_employees_simulation(self):
+        return User.get_by_company_simulation(self.company)
+
     @classmethod
     def manager_register(cls, email, password, username, _id, role, permission, company, facility):
         data = Database.find_one('facilities', {'company': company})
@@ -235,12 +304,12 @@ class Manager(User):
         if data is not None:
             return False, "company already exist"
         else:
-            Facilities.add_company(company, facility)
             user = cls.get_by_email(email)
             if not cls.check_id(_id):
                 return False, "bad number ID"
             if user is None:
                 # User dose'nt exist, create new user
+                Facilities.add_company(company, facility)
                 new_user = cls(email, username, password, _id, role, permission, company, facility)
                 try:
                     new_user.save_to_mongodb()
@@ -338,6 +407,9 @@ class Manager(User):
     def get_facilities(self):
         return Facilities.get_facilities(self.company)
 
+    def get_facilities_simulation(self):
+        return Facilities.get_facilities_simulation(self.company)
+
     def get_roles(self):
         return self.roles
 
@@ -373,8 +445,8 @@ class Manager(User):
     def add_room(self, permission, capacity, room_num, floor, facility, disabled_access):
         return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
 
-    def add_room_simulation(self, permission, capacity, room_num, floor, facility, disabled_access):
-        return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
+    # def add_room_simulation(self, permission, capacity, room_num, floor, facility, disabled_access):
+    #     return Room.add_room(permission, capacity, room_num, floor, self.company, facility, disabled_access)
 
     def import_rooms(self, file):
         """

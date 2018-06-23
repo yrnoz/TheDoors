@@ -73,6 +73,20 @@ class Facilities(object):
         return facilities
 
     @staticmethod
+    def get_facilities_simulation(company):
+        """
+        :param company:
+        :return: List of company's facilities
+        """
+        facility_dict = Database.findSimulation('facilities', {'company': company})
+
+        facilities = []
+        for facility in facility_dict:
+            facility = facility['facility']
+            facilities.append(facility)
+        return facilities
+
+    @staticmethod
     def is_facility_exist(company, facility):
         """
         :param company:

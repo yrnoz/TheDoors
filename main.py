@@ -5,10 +5,13 @@ from datetime import datetime, timedelta
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import sys
+
+from common.Simulation import simulation_engine
 from common.database import Database
 import os
 import subprocess
 
+from models.Analytics import Analytics
 from models.Room import Room
 from models.Schedule import Schedule
 from models.User import User, Manager
@@ -97,6 +100,22 @@ def logout():
     return redirect(url_for('home'))
 
 
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    user = User.get_by_email(session['email'])
+    if request.method == 'GET':
+        return render_template('settings.html', manager=user.manager)
+    else:
+        if user.password != request.form['old_password']:
+            flash("Wrong Password!")
+        elif request.form['new_password'] != request.form['again']:
+            flash("New Password Not Match!")
+        else:
+            user.update_user(user.username, request.form['again'], user.role, user.permission, user.facility)
+            flash("Password Changed Successfully!")
+        return redirect(url_for('settings'))
+
+
 @app.route('/')
 def home():
     # Todo
@@ -122,7 +141,7 @@ def login_user():
         if Manager.get_by_email(email) is not None:
             return redirect(url_for('route_analytics'))
         elif User.get_by_email(email) is not None:
-            return redirect(url_for('route_edit_friends'))
+            return redirect(url_for('route_reservations'))
     else:
         User.logout()
         return render_template('page-login.html', wrong_password=True, email=email)
@@ -147,14 +166,39 @@ def manager_register():
             User.login(email)
             return redirect(url_for('route_analytics'))
         else:
-            print(info)
+            flash(info)
             return redirect(url_for('manager_register'))
 
 
-@app.route('/simulation', methods=['GET'])
+@app.route('/simulation', methods=['GET', 'POST'])
 def route_simulation():
-    if session['email'] is not None and Manager.get_by_email(session['email']) is not None:
-        return render_template('Simulation.html')
+    if request.method == 'GET':
+        return render_template('Simulation.html', employees_no=0, rooms_no=0, facility_no=0,
+                               meetings_no=0, facility_visits_meetings=[("None", 0, 0)],
+                               occupancies=[("None", 0)])
+    if request.method == 'POST':
+        manager = Manager.get_by_email(session['email'])
+        if session['email'] is not None and manager is not None:
+            duration = int(request.form['duration'])
+            max_rooms = int(request.form['room'])
+            max_employees = int(request.form['employee'])
+            max_facilities = int(request.form['facility'])
+            simulation_engine(max_rooms, max_employees, max_facilities, duration)
+            employees_no = len(manager.get_employees_simulation())
+            facility_no = len(manager.get_facilities_simulation())
+            facility_visits_meetings = []
+            facilities = manager.get_facilities_simulation()
+            for facility in facilities:
+                visits = Analytics.get_all_participants_in_facility_simulation(manager, facility, duration)
+                meetings = Analytics.get_meetings_number_in_facility_simulation(manager, facility, duration)
+                facility_visits_meetings.append((facility, visits, meetings))
+            rooms_no = len(Room.get_by_company_simulation(manager.company))
+            occupancies = Analytics.get_all_rooms_occupancy_simulation(manager, duration)
+            meetings_no = Analytics.get_meeting_number_simulation(manager, duration)
+            return render_template('Simulation.html', employees_no=employees_no, rooms_no=rooms_no,
+                                   facility_no=facility_no,
+                                   meetings_no=meetings_no, facility_visits_meetings=facility_visits_meetings,
+                                   occupancies=occupancies)
 
 
 @app.route('/analytics', methods=['GET'])
@@ -163,10 +207,18 @@ def route_analytics():
     if session['email'] is not None and manager is not None:
         employees_no = len(manager.get_employees())
         facility_no = len(manager.get_facilities())
+        facility_visits_meetings = []
+        facilities = manager.get_facilities()
+        for facility in facilities:
+            visits = Analytics.get_all_participants_in_facility(manager, facility)
+            meetings = Analytics.get_meetings_number_in_facility(manager, facility)
+            facility_visits_meetings.append((facility, visits, meetings))
         rooms_no = len(Room.get_by_company(manager.company))
-        meetings_no = 7  # todo
+        occupancies = Analytics.get_all_rooms_occupancy(manager)
+        meetings_no = Analytics.get_meeting_number(manager)
         return render_template('Analytics.html', employees_no=employees_no, rooms_no=rooms_no, facility_no=facility_no,
-                               meetings_no=meetings_no)
+                               meetings_no=meetings_no, facility_visits_meetings=facility_visits_meetings,
+                               occupancies=occupancies)
 
 
 def get_user_roles_facilities(manager):
@@ -297,7 +349,7 @@ def convert_date():
 def reserve_room():
     participants = list(request.form.getlist('participants', None))
     date = convert_date()
-    print(date)
+
     start_time = request.form['start']
     meeting_duration = request.form['duration']
     user = User.get_by_email(session['email'])
@@ -323,8 +375,25 @@ def route_reserve_room():
         if request.method == 'GET':
             return render_template('order.html', manager=user.manager, friends=friends)
         elif request.method == 'POST':
-            reserve_room()
+            if get_day(convert_date()) == 'Saturday' or get_day(convert_date()) == 'Friday':
+                flash('This day is not working day.')
+            else:
+                reserve_room()
     return redirect(url_for('route_reserve_room'))
+
+
+@app.route('/my_reservations', methods=['POST'])
+def route_cancel_reserve_room():
+    return
+    # if session['email'] is not None:
+    #     email = session['email']
+    #     user = User.get_by_email(email)
+    #     friends = user.get_friends_emails()
+    #     if request.method == 'GET':
+    #         return render_template('order.html', manager=user.manager, friends=friends)
+    #     elif request.method == 'POST':
+    #         reserve_room()
+    # return redirect(url_for('route_reserve_room'))
 
 
 @app.route('/my_reservations', methods=['GET'])
@@ -332,21 +401,15 @@ def route_reservations():
     if session['email'] is not None:
         email = session['email']
         user = User.get_by_email(email)
-        print(user.email)
         meetings = []
         for day in get_week(datetime.today().date()):
             d = str(day.day) if day.day > 9 else '0' + str(day.day)
             month = str(day.month) if day.month > 9 else '0' + str(day.month)
             year = str(day.year)[2:]
             date = '{}/{}/{}'.format(d, month, year)
-            print(date)
             scheds = user.get_schedule(date)
-            print(scheds)
             if len(scheds) > 0:
                 meetings = meetings + scheds
-        for m in meetings:
-            print(m)
-        print('after we prinbt meeatings')
         return render_template('reservation.html', manager=user.manager, meetings=meetings)
 
 
@@ -358,13 +421,36 @@ def initialize_database():
 
 @app.route('/event_abs_circuit.html', methods=['GET'])
 def event_abs_circuit():
-    print('sssssssssssssssssssssssss')
     return render_template('event-abs-circuit.html')
+
 
 
 #wsgi_app = main.wsgi_app
 
 wsgi_app = app.wsgi_app
+
+@app.route('/meeting_info', methods=['GET', 'POST'])
+def meeting_info():
+    email = session['email']
+    user = User.get_by_email(email)
+    meeting = Schedule.get_by_id(request.form.get('meeting_id'))
+    return render_template('meeting.html', manager=user.manager, meeting=meeting)
+
+
+@app.route('/meeting_cancel', methods=['GET', 'POST'])
+def meeting_cancel():
+    if session['email'] is not None:
+        email = session['email']
+        user = User.get_by_email(email)
+        user.cancel_meeting(request.form.get('meeting_id'))
+    return redirect(url_for('route_reservations'))
+
+
+def get_day(date):
+    date = datetime.strptime(date, '%d/%m/%y')
+    return str(date.strftime("%A"))
+
+
 if __name__ == '__main__':
     app.debug = True
     # for day in get_week(datetime.today().date()):
