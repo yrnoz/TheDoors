@@ -182,7 +182,7 @@ class User(object):
 
         if status:
             # not finish yet
-            Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
+            # Schedule.assign_all(date, participants, start_time, end_time, order_id, room_id)
             # self.create_meeting(start_time, end_time, order_id, room_id, date, participants)
         return status, order_id
 
