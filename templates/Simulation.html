@@ -87,7 +87,7 @@
                             class="hide-menu">Dashboard <span
                             class="label label-rouded label-primary pull-right">2</span></span></a>
                         <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{ url_for('route_simulation') }}">Simulation </a></li>
+{#                            <li><a href="{{ url_for('route_simulation') }}">Simulation </a></li>#}
                             <li><a href="{{ url_for('route_analytics') }}">Analytics </a></li>
                         </ul>
                     </li>
@@ -151,7 +151,7 @@
                                 <h4 class="m-b-0 text-white">Simulation</h4>
                             </div>
                             <div class="card-body">
-                                <form action="{{ url_for('route_rooms_datatable') }}" method="post">
+                                <form action="{{ url_for('route_simulation') }}" method="post">
                                     <div class="form-body">
                                         <h3 class="card-title m-t-15">Simulation Info</h3>
                                         <hr>
